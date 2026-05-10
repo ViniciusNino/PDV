@@ -1,55 +1,75 @@
 .checkout-container {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   background-color: var(--bg-base);
   overflow: hidden;
 }
 
-/* Sidebar / Menu Lateral */
-.checkout-sidebar {
-  width: 80px;
+/* Top Toolbar */
+.checkout-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: var(--bg-surface);
-  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.5rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+.toolbar-menu, .toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 0;
-  gap: 2rem;
-}
-
-.sidebar-logo {
-  color: var(--primary);
-  margin-bottom: 1rem;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  align-items: center;
-}
-
-.menu-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  color: var(--text-muted);
+  justify-content: center;
+  gap: 0.25rem;
   background: transparent;
-  padding: 0;
+  color: var(--text-secondary);
+  border: none;
+  padding: 0.5rem;
+  min-width: 70px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.menu-btn.active {
-  background: var(--primary-glow);
-  color: var(--primary);
+.toolbar-btn span {
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.menu-btn:hover {
+.toolbar-btn:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
 }
 
-/* Área Principal - Produtos e Busca */
+.toolbar-btn.active {
+  color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 32px;
+  background-color: var(--border-strong);
+  margin: 0 0.5rem;
+}
+
+/* Layout Principal (Abaixo da Topbar) */
+.checkout-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Área de Busca e Grid */
 .checkout-main {
   flex: 1;
   display: flex;
@@ -75,10 +95,6 @@
   box-shadow: none;
   font-size: 1.25rem;
   height: 100%;
-}
-
-.search-bar input:focus {
-  box-shadow: none;
 }
 
 .search-icon {
@@ -126,7 +142,7 @@
   font-size: 1.25rem;
 }
 
-/* Painel de Venda (Direita) */
+/* Painel de Venda (Lateral Direita) */
 .checkout-panel {
   width: 400px;
   background: var(--bg-surface);
@@ -222,7 +238,6 @@
   font-size: 1.25rem;
 }
 
-/* Atalhos de Teclado */
 .keyboard-shortcuts {
   display: flex;
   justify-content: center;

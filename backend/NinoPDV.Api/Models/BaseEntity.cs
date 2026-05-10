@@ -1,0 +1,10 @@
+namespace NinoPDV.Api.Models
+{
+    public abstract class BaseEntity
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsSynced { get; set; } = false;
+        public int Version { get; set; } = 1;
+    }
+}

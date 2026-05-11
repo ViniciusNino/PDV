@@ -1,0 +1,74 @@
+.setup-layout-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.1), transparent 60%), #1a202c;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fundo imitando a tela de carregamento do GrandChef */
+.setup-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #2c3e50 0%, #1a202c 100%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 5%;
+}
+
+.setup-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #fb923c;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+}
+
+.setup-title {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.setup-subtitle {
+  color: #cbd5e1;
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.setup-loading-text {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Overlay para escurecer o fundo quando o modal abrir */
+.setup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+/* Área onde os componentes filhos (Configuração ou Registro) vão renderizar */
+.setup-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -20,7 +20,7 @@ export function TelaLogin() {
     
     setTimeout(() => {
       setIsLoading(false);
-      navigate('/checkout'); // Temporarily navigating to checkout as the main system screen will be created next
+      navigate('/setup');
     }, 800);
   };
 
@@ -29,7 +29,7 @@ export function TelaLogin() {
       <div className="login-card glass-panel animate-fade-in">
         
         <div className="login-layout">
-          {/* Lado Esquerdo - Ícone da Chave (Referência Tela 1) */}
+          {/* Lado Esquerdo - Ícone da Chave */}
           <div className="login-icon-area">
             <div className="key-icon-wrapper">
               <KeyRound size={80} strokeWidth={1.5} />
@@ -86,12 +86,6 @@ export function TelaLogin() {
                 >
                   Cancelar
                 </button>
-              </div>
-              
-              <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}>
-                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register'); }} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>
-                  Registrar licença de teste
-                </a>
               </div>
             </form>
           </div>

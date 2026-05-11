@@ -1,10 +1,9 @@
 .register-container {
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05), transparent 60%), var(--bg-base);
   padding: 2rem;
+  width: 100%;
 }
 
 .register-card {

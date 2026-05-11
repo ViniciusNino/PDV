@@ -19,7 +19,7 @@ export function TelaCriarConta() {
           <h1 className="register-title">Criar conta</h1>
         </div>
 
-        <form className="register-form" onSubmit={(e) => { e.preventDefault(); navigate('/'); }}>
+        <form className="register-form" onSubmit={(e) => { e.preventDefault(); navigate('/checkout'); }}>
           <div className="input-group">
             <label htmlFor="name">Nome completo:</label>
             <input type="text" id="name" required />
@@ -81,7 +81,7 @@ export function TelaCriarConta() {
         </form>
 
         <div className="register-footer">
-          Já possui uma conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Clique aqui</a>
+          Já possui uma conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>Clique aqui</a>
         </div>
 
       </div>

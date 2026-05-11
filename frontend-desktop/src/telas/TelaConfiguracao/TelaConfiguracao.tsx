@@ -29,7 +29,7 @@ export function TelaConfiguracao() {
           ))}
         </div>
 
-        <div className="settings-body">
+        <div className="settings-body" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
           {activeTab === 'Empresa' && (
             <>
               <div className="subtabs">
@@ -50,8 +50,9 @@ export function TelaConfiguracao() {
                 </button>
               </div>
 
+              {/* Conteúdo Variante por SubAba */}
               {activeSubTab === 'Basico' && (
-                <div className="form-grid">
+                <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
                   <div className="image-upload-area">
                     <ImageIcon size={48} />
                   </div>
@@ -74,59 +75,117 @@ export function TelaConfiguracao() {
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
 
-                  <div className="address-grid">
-                    <div className="field-group">
-                      <label>CEP:</label>
-                      <input type="text" defaultValue="21520-680" />
+              {activeSubTab === 'Documentos' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="field-group" style={{ flex: 1 }}>
+                      <label>CNPJ:</label>
+                      <input type="text" placeholder="__.___.___/____-__" />
                     </div>
-                    <div className="field-group">
-                      <label>Estado:</label>
-                      <select><option>Rio de Janeiro</option></select>
-                    </div>
-                    <div className="field-group">
-                      <label>Cidade:</label>
-                      <input type="text" defaultValue="Rio de Janeiro" />
-                    </div>
-                    <div className="field-group">
-                      <label>Bairro:</label>
-                      <input type="text" defaultValue="Pavuna" />
-                    </div>
-
-                    <div className="field-group">
-                      <label>Tipo de localização:</label>
-                      <select><option>Casa</option><option>Apartamento</option><option>Loja</option></select>
-                    </div>
-                    <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                      <label>Logradouro:</label>
-                      <input type="text" defaultValue="Alameda Guarani" />
-                    </div>
-                    <div className="field-group">
-                      <label>Número:</label>
+                    <div className="field-group" style={{ flex: 1 }}>
+                      <label>IE:</label>
                       <input type="text" />
                     </div>
-
-                    <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                      <label>Complemento:</label>
-                      <input type="text" />
-                    </div>
-                    <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                      <label>Ponto de referência:</label>
+                    <div className="field-group" style={{ flex: 1 }}>
+                      <label>IM:</label>
                       <input type="text" />
                     </div>
                   </div>
+                  <div className="field-group" style={{ width: '300px' }}>
+                    <label>Data de fundação:</label>
+                    <input type="date" />
+                  </div>
                 </div>
               )}
-              
-              {activeSubTab !== 'Basico' && (
-                <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem' }}>
-                  Aba "{activeSubTab}" em desenvolvimento...
+
+              {/* Endereço - Fixo na aba Empresa */}
+              <div className="address-grid">
+                <span style={{ gridColumn: 'span 3', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Endereço</span>
+                <div style={{ gridColumn: 'span 3', display: 'grid', gridTemplateColumns: '150px 1fr 1fr 1fr', gap: '1rem' }}>
+                  <div className="field-group">
+                    <label>CEP:</label>
+                    <input type="text" defaultValue="21520-680" />
+                  </div>
+                  <div className="field-group">
+                    <label>Estado:</label>
+                    <select><option>Rio de Janeiro</option></select>
+                  </div>
+                  <div className="field-group">
+                    <label>Cidade:</label>
+                    <input type="text" defaultValue="Rio de Janeiro" />
+                  </div>
+                  <div className="field-group">
+                    <label>Bairro:</label>
+                    <input type="text" defaultValue="Pavuna" />
+                  </div>
+
+                  <div className="field-group">
+                    <label>Tipo de localização:</label>
+                    <select><option>Casa</option><option>Loja</option></select>
+                  </div>
+                  <div className="field-group" style={{ gridColumn: 'span 2' }}>
+                    <label>Logradouro:</label>
+                    <input type="text" defaultValue="Alameda Guarani" />
+                  </div>
+                  <div className="field-group">
+                    <label>Número:</label>
+                    <input type="text" />
+                  </div>
+
+                  <div className="field-group" style={{ gridColumn: 'span 2' }}>
+                    <label>Complemento:</label>
+                    <input type="text" />
+                  </div>
+                  <div className="field-group" style={{ gridColumn: 'span 2' }}>
+                    <label>Ponto de referência:</label>
+                    <input type="text" />
+                  </div>
                 </div>
-              )}
+              </div>
             </>
           )}
 
-          {activeTab !== 'Empresa' && (
+          {activeTab === 'Impressão' && (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+              <div>
+                <h3 style={{ color: 'var(--primary)', marginBottom: '1rem', fontSize: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>Aparência</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {['Imprimir o CNPJ', 'Imprimir o endereço', 'Imprimir o telefone 1', 'Imprimir o telefone 2', 'Imprimir todos os garçons', 'Imprimir garçons no relatório', 'Imprimir o(a) atendente de caixa', 'Imprimir slogan', 'Imprimir gráficos em 3D'].map((item, i) => (
+                    <label key={i} style={{ display: 'flex', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                      <input type="checkbox" defaultChecked={i % 2 === 0} />
+                      {item}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 style={{ color: 'var(--primary)', marginBottom: '1rem', fontSize: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>Guias</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {['Imprimir fechamento de caixa', 'Imprimir comprovante de contas', 'Imprimir operações financeiras', 'Imprimir conta ao fechar pedidos'].map((item, i) => (
+                    <label key={i} style={{ display: 'flex', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                      <input type="checkbox" defaultChecked={true} />
+                      {item}
+                    </label>
+                  ))}
+                </div>
+                
+                <h3 style={{ color: 'var(--primary)', margin: '1.5rem 0 1rem 0', fontSize: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem' }}>Comportamento</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <label style={{ display: 'flex', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                    <input type="checkbox" /> Exibir pergunta de impressão
+                  </label>
+                  <label style={{ display: 'flex', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                    <input type="checkbox" defaultChecked /> Imprimir serviços sem perguntar
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(activeTab === 'Sistema' || activeTab === 'E-mail') && (
             <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '5rem' }}>
               Configurações de {activeTab} em desenvolvimento...
             </div>
@@ -134,9 +193,9 @@ export function TelaConfiguracao() {
         </div>
 
         <div className="settings-footer">
-          <button className="btn-default" onClick={() => navigate('/checkout')}>Ok</button>
-          <button className="btn-default">Aplicar</button>
-          <button className="btn-default" onClick={() => navigate('/checkout')}>Cancelar</button>
+          <button className="btn-default" onClick={() => navigate('/register')}>Ok</button>
+          <button className="btn-default" onClick={() => navigate('/register')}>Aplicar</button>
+          <button className="btn-default" onClick={() => navigate('/register')}>Cancelar</button>
         </div>
 
       </div>

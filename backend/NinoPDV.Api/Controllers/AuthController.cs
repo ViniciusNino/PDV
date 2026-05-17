@@ -51,6 +51,17 @@ public class AuthController : ControllerBase
         ));
     }
 
+    [HttpGet("users")]
+    public async Task<ActionResult<IEnumerable<UserListResponse>>> GetUsers()
+    {
+        var users = await _context.Users
+            .Where(u => u.IsActive)
+            .Select(u => new UserListResponse(u.Name, u.Username, u.Role))
+            .ToListAsync();
+
+        return Ok(users);
+    }
+
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(RegisterRequest request)
     {
@@ -71,6 +82,59 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(user);
+    }
+
+    [HttpPost("oauth")]
+    public async Task<ActionResult<LoginResponse>> OAuthLogin(OAuthLoginRequest request)
+    {
+        // 1. Procurar o usuário pelo ProviderId e Provider
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.OAuthProvider == request.Provider && u.ProviderId == request.ProviderId);
+
+        // 2. Se não existir, criar um novo usuário com esses dados
+        if (user == null)
+        {
+            // Criar username base no e-mail ou gerado
+            var username = string.IsNullOrEmpty(request.Email) 
+                ? $"{request.Provider.ToLower()}_{request.ProviderId}" 
+                : request.Email;
+
+            // Garantir que username seja único
+            if (await _context.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+            {
+                username = $"{username}_{Guid.NewGuid().ToString().Substring(0, 4)}";
+            }
+
+            user = new User
+            {
+                Name = request.Name,
+                Username = username,
+                PasswordHash = BC.HashPassword(Guid.NewGuid().ToString()), // Senha aleatória, pois o login é social
+                Role = "Admin", // Papel padrão, num sistema real poderia ser diferente
+                OAuthProvider = request.Provider,
+                ProviderId = request.ProviderId,
+                IsActive = true
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+        }
+
+        if (!user.IsActive)
+        {
+            return BadRequest("Usuário inativo.");
+        }
+
+        // 3. Gerar o Token JWT
+        var token = GenerateJwtToken(user);
+
+        return Ok(new LoginResponse(
+            Token: token,
+            Username: user.Username,
+            Name: user.Name,
+            Role: user.Role,
+            CloudAccountId: user.CloudAccountId
+        ));
     }
 
     private string GenerateJwtToken(User user)

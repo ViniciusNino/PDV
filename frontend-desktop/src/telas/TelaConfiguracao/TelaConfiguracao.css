@@ -1,18 +1,9 @@
-.settings-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  width: 100%;
-}
-
 .settings-card {
-  width: 100%;
-  max-width: 900px;
+  width: 100vw;
+  height: 100vh;
   background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  border: none;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
 }
@@ -20,6 +11,12 @@
 .settings-header {
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-info {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -32,6 +29,24 @@
 
 .settings-header svg {
   color: var(--primary);
+}
+
+.btn-close-settings {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.btn-close-settings:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .tabs-main {
@@ -498,6 +513,13 @@
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 0.25rem 0.5rem;
+  transition: opacity var(--transition-fast);
+}
+
+.inline-input.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .inline-input input {
@@ -528,9 +550,23 @@
   flex: 1;
   background: transparent;
   border: none;
-  padding: 0.6rem 0.5rem;
+  padding: 0.6rem 0.5rem 0.6rem 2.5rem; /* Aumentado padding esquerdo para o ícone */
   color: var(--text-primary);
   outline: none;
+}
+
+.icon-input-wrapper .input-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.icon-input-wrapper .action-icon {
+  position: absolute;
+  right: 0.75rem;
+  color: var(--primary);
+  cursor: pointer;
 }
 
 .input-icon {
@@ -540,7 +576,6 @@
 .action-icon {
   color: var(--primary);
   cursor: pointer;
-  margin-left: 0.5rem;
 }
 
 .devices-grid {
@@ -575,7 +610,7 @@
   position: relative;
 }
 
-.tef-label {
+.encryption-label {
   position: absolute;
   top: -10px;
   left: 10px;
@@ -631,7 +666,8 @@
 .encryption-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
+  margin-top: 1rem;
 }
 
 .encryption-box {

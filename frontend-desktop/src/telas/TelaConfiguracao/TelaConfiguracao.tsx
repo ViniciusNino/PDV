@@ -10,6 +10,9 @@ export function TelaConfiguracao() {
   const [activeSubTab, setActiveSubTab] = useState('Basico');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [autoLogout, setAutoLogout] = useState(false);
+  const [autoLogoutValue, setAutoLogoutValue] = useState(3);
+  const [enableCallerId, setEnableCallerId] = useState(false);
 
   const triggerLogoUpload = () => {
     fileInputRef.current?.click();
@@ -28,13 +31,32 @@ export function TelaConfiguracao() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  React.useEffect(() => {
+    if (window.require) {
+      const { ipcRenderer } = window.require('electron');
+      ipcRenderer.send('set-window-size', { 
+        width: 850, 
+        height: 700, 
+        resizable: false, 
+        maximizable: false, 
+        minimizable: false, 
+        centered: true 
+      });
+    }
+  }, []);
+
   return (
-    <div className="settings-container animate-fade-in">
-      <div className="settings-card glass-panel">
+    <>
+      <div className="settings-card glass-panel animate-fade-in">
         
         <div className="settings-header">
-          <Settings size={24} />
-          <h1>Configurações da Empresa e Sistema</h1>
+          <div className="header-info">
+            <Settings size={24} />
+            <h1>Configurações da Empresa e Sistema</h1>
+          </div>
+          <button className="btn-close-settings" onClick={() => navigate('/account/login')}>
+            <X size={24} />
+          </button>
         </div>
 
         <div className="tabs-main">
@@ -346,11 +368,25 @@ export function TelaConfiguracao() {
                 <div className="system-column">
                   <div className="checkbox-with-input">
                     <label className="custom-checkbox-label">
-                      <input type="checkbox" />
+                      <input 
+                        type="checkbox" 
+                        checked={autoLogout} 
+                        onChange={(e) => {
+                          setAutoLogout(e.target.checked);
+                          if (!e.target.checked) setAutoLogoutValue(3);
+                        }} 
+                      />
                       <span className="checkbox-text">Fazer logout automaticamente após inatividade</span>
                     </label>
-                    <div className="inline-input">
-                      <input type="number" defaultValue={3} />
+                    <div className={`inline-input ${!autoLogout ? 'disabled' : ''}`}>
+                      <input 
+                        type="number" 
+                        value={autoLogoutValue}
+                        min={1}
+                        max={60}
+                        onChange={(e) => setAutoLogoutValue(Math.min(60, Math.max(1, parseInt(e.target.value) || 1)))}
+                        disabled={!autoLogout} 
+                      />
                       <span>min</span>
                     </div>
                   </div>
@@ -416,7 +452,11 @@ export function TelaConfiguracao() {
                 </div>
                 <div className="device-item full-row">
                    <label className="custom-checkbox-label">
-                    <input type="checkbox" />
+                    <input 
+                      type="checkbox" 
+                      checked={enableCallerId}
+                      onChange={(e) => setEnableCallerId(e.target.checked)}
+                    />
                     <span className="checkbox-text">Habilitar identificador de chamadas</span>
                   </label>
                   <label className="custom-checkbox-label" style={{ marginLeft: '2rem' }}>
@@ -426,7 +466,11 @@ export function TelaConfiguracao() {
                 </div>
                 <div className="field-group" style={{ width: '200px', marginLeft: '2rem' }}>
                   <label>Tipo de dispositivo:</label>
-                  <select disabled><option>Identificador</option></select>
+                  <select disabled={!enableCallerId}>
+                    <option>Identificador</option>
+                    <option>Modem</option>
+                    <option>Icebox</option>
+                  </select>
                 </div>
               </div>
 
@@ -491,26 +535,28 @@ export function TelaConfiguracao() {
               </div>
               <div className="encryption-row">
                 <div className="encryption-box">
-                  <span className="tef-label">Encriptação</span>
+                  <span className="encryption-label">Encriptação</span>
                   <div className="radio-group-vertical">
                     <label className="custom-radio-label"><input type="radio" name="enc" /> Nenhum</label>
                     <label className="custom-radio-label"><input type="radio" name="enc" /> SSL</label>
                     <label className="custom-radio-label"><input type="radio" name="enc" defaultChecked /> TLS</label>
                   </div>
                 </div>
-                <button className="btn-test">
-                  <Send size={16} />
-                  Testar
-                </button>
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <button className="btn-test">
+                    <Send size={16} />
+                    Testar
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
 
         <div className="settings-footer">
-          <button className="btn-default" onClick={() => navigate('/register')}>Ok</button>
-          <button className="btn-default" onClick={() => navigate('/register')}>Aplicar</button>
-          <button className="btn-default" onClick={() => navigate('/register')}>Cancelar</button>
+          <button className="btn-default" onClick={() => navigate('/account/login')}>Ok</button>
+          <button className="btn-default" onClick={() => navigate('/account/login')}>Aplicar</button>
+          <button className="btn-default" onClick={() => navigate('/account/login')}>Cancelar</button>
         </div>
 
       </div>
@@ -554,7 +600,7 @@ export function TelaConfiguracao() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

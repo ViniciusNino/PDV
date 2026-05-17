@@ -4,6 +4,20 @@ import { Store } from 'lucide-react';
 import './SetupLayout.css';
 
 export function SetupLayout() {
+  React.useEffect(() => {
+    if (window.require) {
+      const { ipcRenderer } = window.require('electron');
+      ipcRenderer.send('set-window-size', { 
+        width: 850, 
+        height: 700, 
+        resizable: false, 
+        maximizable: false, 
+        minimizable: false, 
+        centered: true 
+      });
+    }
+  }, []);
+
   return (
     <div className="setup-layout-container">
       {/* Background que imita a tela de carregamento (Tela 2/3) */}

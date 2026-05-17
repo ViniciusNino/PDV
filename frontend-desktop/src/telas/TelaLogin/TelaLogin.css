@@ -1,18 +1,13 @@
-.login-container {
-  min-height: 100vh;
+.login-card {
+  width: 100vw;
+  height: 100vh;
+  padding: 2.5rem;
+  background: var(--bg-surface);
+  border: none;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05), transparent 60%), var(--bg-base);
-  padding: 2rem;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 500px;
-  padding: 2.5rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
 }
 
 .login-layout {

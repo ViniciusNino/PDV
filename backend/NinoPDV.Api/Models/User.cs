@@ -23,4 +23,11 @@ public class User : BaseEntity
     // Campos para a segunda etapa (Conta/Nuvem)
     public string? CloudAccountId { get; set; }
     public string? CloudUserToken { get; set; }
+
+    // Etapa 1: Autenticação Social / OAuth
+    [MaxLength(50)]
+    public string? OAuthProvider { get; set; } // e.g., "Facebook", "Google"
+    
+    [MaxLength(255)]
+    public string? ProviderId { get; set; }
 }

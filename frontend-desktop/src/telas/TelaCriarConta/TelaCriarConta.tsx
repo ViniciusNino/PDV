@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Store, Eye, EyeOff } from 'lucide-react';
+import { Store, Eye, EyeOff, X } from 'lucide-react';
 import './TelaCriarConta.css';
 
 export function TelaCriarConta() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  React.useEffect(() => {
+    if (window.require) {
+      const { ipcRenderer } = window.require('electron');
+      ipcRenderer.send('set-window-size', { 
+        width: 600, 
+        height: 650, 
+        resizable: false, 
+        maximizable: false, 
+        minimizable: false, 
+        centered: true 
+      });
+    }
+  }, []);
+
   return (
-    <div className="register-container animate-fade-in">
-      <div className="register-card glass-panel">
+    <div className="register-card glass-panel animate-fade-in">
         
         <div className="register-header">
-          <div className="register-logo">
-            <Store size={32} />
-            <span>NinoPDV</span>
+          <div className="header-top">
+            <div className="register-logo">
+              <Store size={32} />
+              <span>NinoPDV</span>
+            </div>
+            <button className="btn-close-acc" onClick={() => navigate('/checkout')}>
+              <X size={24} />
+            </button>
           </div>
           <h1 className="register-title">Criar conta</h1>
         </div>
@@ -81,10 +99,9 @@ export function TelaCriarConta() {
         </form>
 
         <div className="register-footer">
-          Já possui uma conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}>Clique aqui</a>
+          Já possui uma conta? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/account/login'); }}>Clique aqui</a>
         </div>
 
       </div>
-    </div>
   );
 }

@@ -12,19 +12,30 @@ public static class DataSeeder
         // Ensure the database is created and migrations are applied
         await context.Database.MigrateAsync();
 
-        if (!await context.Users.AnyAsync(u => u.Username == "Admin"))
+        var adminUser = await context.Users.FirstOrDefaultAsync(u => u.Username == "Admin");
+        if (adminUser == null)
         {
-            var adminUser = new User
+            adminUser = new User
             {
                 Name = "Administrador",
                 Username = "Admin",
-                PasswordHash = BC.HashPassword("123456"),
+                PasswordHash = BC.HashPassword("123"),
                 Role = "Admin",
                 IsActive = true
             };
 
             context.Users.Add(adminUser);
             await context.SaveChangesAsync();
+        }
+        else
+        {
+            // Garante que a senha seja "123" mesmo se o banco já tiver sido seedado com "123456"
+            if (!BC.Verify("123", adminUser.PasswordHash))
+            {
+                adminUser.PasswordHash = BC.HashPassword("123");
+                context.Users.Update(adminUser);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

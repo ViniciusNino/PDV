@@ -16,3 +16,17 @@ public record RegisterRequest(
     string Password, 
     string Role = "Admin"
 );
+
+public record OAuthLoginRequest(
+    string Provider, // e.g. "Facebook"
+    string ProviderId,
+    string Name,
+    string Email,
+    string? AccessToken
+);
+
+public record UserListResponse(
+    string Name,
+    string Username,
+    string Role
+);

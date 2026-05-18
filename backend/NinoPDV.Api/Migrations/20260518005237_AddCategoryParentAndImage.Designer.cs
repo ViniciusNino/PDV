@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NinoPDV.Api.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NinoPDV.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260518005237_AddCategoryParentAndImage")]
+    partial class AddCategoryParentAndImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +30,6 @@ namespace NinoPDV.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -95,9 +95,6 @@ namespace NinoPDV.Api.Migrations
                     b.Property<string>("Complement")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)
@@ -189,9 +186,6 @@ namespace NinoPDV.Api.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Encryption")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -233,96 +227,6 @@ namespace NinoPDV.Api.Migrations
                     b.ToTable("EmailSettings");
                 });
 
-            modelBuilder.Entity("NinoPDV.Api.Models.ModifierGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MaxSelections")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MinSelections")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PriceRule")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ModifierGroups");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ModifierOption", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("AdditionalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MaxQuantity")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ModifierGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModifierGroupId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ModifierOptions");
-                });
-
             modelBuilder.Entity("NinoPDV.Api.Models.PrintSetting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -331,9 +235,6 @@ namespace NinoPDV.Api.Migrations
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSynced")
                         .HasColumnType("boolean");
@@ -487,28 +388,13 @@ namespace NinoPDV.Api.Migrations
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("BasePrice")
-                        .HasColumnType("numeric");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
-
-                    b.Property<decimal>("CostPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageBase64")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsFractionable")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsSynced")
@@ -518,12 +404,8 @@ namespace NinoPDV.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -538,123 +420,11 @@ namespace NinoPDV.Api.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductCombo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ChildProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal?>("FixedPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ParentComboId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChildProductId");
-
-                    b.HasIndex("ParentComboId");
-
-                    b.ToTable("ProductCombos");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductComposition", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("IngredientProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ParentProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientProductId");
-
-                    b.HasIndex("ParentProductId");
-
-                    b.ToTable("ProductCompositions");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductPrice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Channel")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsSynced")
-                        .HasColumnType("boolean");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductPrices");
-                });
-
             modelBuilder.Entity("NinoPDV.Api.Models.Sale", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("numeric");
@@ -692,9 +462,6 @@ namespace NinoPDV.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSynced")
                         .HasColumnType("boolean");
@@ -763,9 +530,6 @@ namespace NinoPDV.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("DesativarAvisosDeEstoqueAbaixoDoMinimo")
                         .HasColumnType("boolean");
@@ -863,9 +627,6 @@ namespace NinoPDV.Api.Migrations
                     b.Property<string>("CloudUserToken")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Email")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -952,35 +713,6 @@ namespace NinoPDV.Api.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("NinoPDV.Api.Models.ModifierGroup", b =>
-                {
-                    b.HasOne("NinoPDV.Api.Models.Product", "Product")
-                        .WithMany("ModifierGroups")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ModifierOption", b =>
-                {
-                    b.HasOne("NinoPDV.Api.Models.ModifierGroup", "ModifierGroup")
-                        .WithMany("Options")
-                        .HasForeignKey("ModifierGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NinoPDV.Api.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ModifierGroup");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("NinoPDV.Api.Models.PrintSetting", b =>
                 {
                     b.HasOne("NinoPDV.Api.Models.Company", "Company")
@@ -1001,55 +733,6 @@ namespace NinoPDV.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductCombo", b =>
-                {
-                    b.HasOne("NinoPDV.Api.Models.Product", "ChildProduct")
-                        .WithMany()
-                        .HasForeignKey("ChildProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("NinoPDV.Api.Models.Product", "ParentCombo")
-                        .WithMany("ComboItems")
-                        .HasForeignKey("ParentComboId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChildProduct");
-
-                    b.Navigation("ParentCombo");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductComposition", b =>
-                {
-                    b.HasOne("NinoPDV.Api.Models.Product", "IngredientProduct")
-                        .WithMany()
-                        .HasForeignKey("IngredientProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("NinoPDV.Api.Models.Product", "ParentProduct")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("ParentProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("IngredientProduct");
-
-                    b.Navigation("ParentProduct");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ProductPrice", b =>
-                {
-                    b.HasOne("NinoPDV.Api.Models.Product", "Product")
-                        .WithMany("Prices")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("NinoPDV.Api.Models.SaleItem", b =>
@@ -1096,22 +779,6 @@ namespace NinoPDV.Api.Migrations
                     b.Navigation("PrintSetting");
 
                     b.Navigation("SystemSetting");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.ModifierGroup", b =>
-                {
-                    b.Navigation("Options");
-                });
-
-            modelBuilder.Entity("NinoPDV.Api.Models.Product", b =>
-                {
-                    b.Navigation("ComboItems");
-
-                    b.Navigation("Ingredients");
-
-                    b.Navigation("ModifierGroups");
-
-                    b.Navigation("Prices");
                 });
 
             modelBuilder.Entity("NinoPDV.Api.Models.Sale", b =>

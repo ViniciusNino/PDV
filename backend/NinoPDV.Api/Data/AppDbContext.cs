@@ -18,6 +18,12 @@ namespace NinoPDV.Api.Data
         public DbSet<PrintSetting> PrintSettings { get; set; }
         public DbSet<SystemSetting> SystemSettings { get; set; }
         public DbSet<EmailSetting> EmailSettings { get; set; }
+        
+        public DbSet<ProductPrice> ProductPrices { get; set; }
+        public DbSet<ProductComposition> ProductCompositions { get; set; }
+        public DbSet<ProductCombo> ProductCombos { get; set; }
+        public DbSet<ModifierGroup> ModifierGroups { get; set; }
+        public DbSet<ModifierOption> ModifierOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +40,13 @@ namespace NinoPDV.Api.Data
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
+
+            // Category -> SubCategory Relationship (Hierarchy)
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.ParentCategory)
+                .WithMany(c => c.SubCategories)
+                .HasForeignKey(c => c.ParentCategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Company -> PrintSetting Relationship (1-to-1)
             modelBuilder.Entity<Company>()
@@ -55,6 +68,60 @@ namespace NinoPDV.Api.Data
                 .WithOne(e => e.Company)
                 .HasForeignKey<EmailSetting>(e => e.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Product -> ProductPrice
+            modelBuilder.Entity<ProductPrice>()
+                .HasOne(pp => pp.Product)
+                .WithMany(p => p.Prices)
+                .HasForeignKey(pp => pp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ProductComposition
+            modelBuilder.Entity<ProductComposition>()
+                .HasOne(pc => pc.ParentProduct)
+                .WithMany(p => p.Ingredients)
+                .HasForeignKey(pc => pc.ParentProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<ProductComposition>()
+                .HasOne(pc => pc.IngredientProduct)
+                .WithMany()
+                .HasForeignKey(pc => pc.IngredientProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ProductCombo
+            modelBuilder.Entity<ProductCombo>()
+                .HasOne(pc => pc.ParentCombo)
+                .WithMany(p => p.ComboItems)
+                .HasForeignKey(pc => pc.ParentComboId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProductCombo>()
+                .HasOne(pc => pc.ChildProduct)
+                .WithMany()
+                .HasForeignKey(pc => pc.ChildProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ModifierGroup -> Product
+            modelBuilder.Entity<ModifierGroup>()
+                .HasOne(mg => mg.Product)
+                .WithMany(p => p.ModifierGroups)
+                .HasForeignKey(mg => mg.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ModifierOption -> ModifierGroup
+            modelBuilder.Entity<ModifierOption>()
+                .HasOne(mo => mo.ModifierGroup)
+                .WithMany(mg => mg.Options)
+                .HasForeignKey(mo => mo.ModifierGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ModifierOption -> Product (Item linkado ao opcional)
+            modelBuilder.Entity<ModifierOption>()
+                .HasOne(mo => mo.Product)
+                .WithMany()
+                .HasForeignKey(mo => mo.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public override int SaveChanges()

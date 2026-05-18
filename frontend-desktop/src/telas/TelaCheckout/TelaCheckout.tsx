@@ -9,6 +9,8 @@ import {
   ChevronRight, ArrowRightLeft
 } from 'lucide-react';
 import './TelaCheckout.css';
+import { ModalCategorias } from '../ModalCategorias/ModalCategorias';
+import { ModalProdutos } from '../ModalProdutos/ModalProdutos';
 
 const menusData: Record<string, { label: string; shortcut?: string; icon: React.ComponentType<{ size?: number }> | null; hasSub?: boolean }[]> = {
   Arquivo: [
@@ -111,6 +113,8 @@ const menusData: Record<string, { label: string; shortcut?: string; icon: React.
 export function TelaCheckout() {
   const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
   const [activeToolbarItem, setActiveToolbarItem] = React.useState<string>('PDV');
+  const [isCategoriesModalOpen, setIsCategoriesModalOpen] = React.useState(false);
+  const [isProductsModalOpen, setIsProductsModalOpen] = React.useState(false);
 
   const toggleMenu = (menuName: string) => {
     setActiveMenu(prev => prev === menuName ? null : menuName);
@@ -118,6 +122,16 @@ export function TelaCheckout() {
 
   const handleClickOutside = () => {
     if (activeMenu) setActiveMenu(null);
+  };
+
+  const handleDropdownItemClick = (menuName: string, label: string) => {
+    setActiveMenu(null);
+    if (menuName === 'Cadastro' && label === 'Categorias') {
+      setIsCategoriesModalOpen(true);
+    }
+    if (menuName === 'Cadastro' && label === 'Produtos') {
+      setIsProductsModalOpen(true);
+    }
   };
   
   React.useEffect(() => {
@@ -152,7 +166,14 @@ export function TelaCheckout() {
             {activeMenu === menuName && (
               <div className="dropdown-menu">
                 {menusData[menuName].map((item, idx) => (
-                  <button key={idx} className="dropdown-item">
+                  <button 
+                    key={idx} 
+                    className="dropdown-item"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDropdownItemClick(menuName, item.label);
+                    }}
+                  >
                     <span className="icon">
                       {item.icon && React.createElement(item.icon, { size: 14 })}
                     </span>
@@ -239,6 +260,12 @@ export function TelaCheckout() {
         </div>
       </footer>
 
+      {isCategoriesModalOpen && (
+        <ModalCategorias onClose={() => setIsCategoriesModalOpen(false)} />
+      )}
+      {isProductsModalOpen && (
+        <ModalProdutos onClose={() => setIsProductsModalOpen(false)} />
+      )}
     </div>
   );
 }

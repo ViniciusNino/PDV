@@ -45,7 +45,7 @@ Processos para gerenciar chaves de ativação, validação de teste offline e pe
 
 ## 📂 Etapa 4: Cadastro de Categoria
 Organização estrutural dos produtos no cardápio digital e no PDV.
-*   [ ] **Cadastro, Edição e Exclusão de Categorias** – [Assistir ao vídeo](https://www.youtube.com/watch?v=8_WM8ghEqLM&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=45)
+*   [ ] **Cadastro, Edição e Exclusão de Categorias** – [Assistir ao vídeo](https://www.youtube.com/watch?v=8_WM8ghEqLM&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=45)ps://www.youtube.com/watch?v=8_WM8ghEqLM&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=45)
     *   *Tarefas:* Tabela de categorias, CRUD no painel administrador e renderização dinâmica no PDV.
 *   [ ] **Alteração de Sequência/Ordenação das Categorias** – [Assistir ao vídeo](https://www.youtube.com/watch?v=Jrkfri8oN5s&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=6)
     *   *Tarefas:* Implementação de campo de ordenação (`ordem` / `sequencia`) na tabela e reordenação drag-and-drop no painel.
@@ -54,15 +54,10 @@ Organização estrutural dos produtos no cardápio digital e no PDV.
 
 ## 📦 Etapa 5: Cadastro de Produto
 Definições complexas de produtos, preços, complementos, controle de fracionamento e pesos.
-*   [ ] **Cadastro de Produto e Composição** – [Assistir ao vídeo](https://www.youtube.com/watch?v=dX12cxJEkJc&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=2)
-*   [ ] **Cadastro de Produto por Composição (Rápido)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=IDHP6KEusrM&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=66)
-*   [ ] **Cadastro de Combos de Produtos** – [Assistir ao vídeo](https://www.youtube.com/watch?v=3mUUX3FgTQc&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=11)
-*   [ ] **Edição de Preço e Visibilidade por Canal de Venda** – [Assistir ao vídeo](https://www.youtube.com/watch?v=U5S-KhCUYMg&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=17)
-*   [ ] **Associação de Produtos com o Cardápio iFood** – [Assistir ao vídeo](https://www.youtube.com/watch?v=hSePPaJkrDg&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=26)
-*   [ ] **Cadastro de Produtos via Código de Barras** – [Assistir ao vídeo](https://www.youtube.com/watch?v=jvkPvsjuCPQ&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=36)
-*   [ ] **Importação Completa do Cardápio do iFood** – [Assistir ao vídeo](https://www.youtube.com/watch?v=mXSCDuNzo3A&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=37)
-*   [ ] **Cadastro Especial de Pizza (Sabores Meio a Meio, Bordas)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=Ad5terjHzPY&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=41)
-*   [ ] **Montagem de Cardápio de Açaí usando Pacotes/Complementos** – [Assistir ao vídeo](https://www.youtube.com/watch?v=GgXkRyVzqvg&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=43)
-*   [ ] **Cadastro de Doses de Bebidas (Fracionamento para Bares)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=mz_seFoc5UU&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=47)
-*   [ ] **Venda por Peso / Venda por Quilo (Integração com Balança)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=sYhtY6_a6Wk&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=48)
-*   [ ] **Cadastro de Marmitas Personalizadas no Cardápio** – [Assistir ao vídeo](https://www.youtube.com/watch?v=bj-bbHcOakI&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=65)
+*   [x] **Cadastro de Produto e Composição** – [Assistir ao vídeo](https://www.youtube.com/watch?v=dX12cxJEkJc&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=2)
+*   [x] **Cadastro de Produto por Composição (Rápido)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=IDHP6KEusrM&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=66)
+*   [x] **Cadastro de Combos de Produtos** – [Assistir ao vídeo](https://www.youtube.com/watch?v=3mUUX3FgTQc&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=11)
+*   [x] **Edição de Preço e Visibilidade por Canal de Venda** – [Assistir ao vídeo](https://www.youtube.com/watch?v=U5S-KhCUYMg&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=17)
+*   [x] **Cadastro Especial de Pizza (Sabores Meio a Meio, Bordas)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=Ad5terjHzPY&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=41)
+*   [x] **Montagem de Cardápio de Açaí usando Pacotes/Complementos** – [Assistir ao vídeo](https://www.youtube.com/watch?v=GgXkRyVzqvg&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=43)
+*   [x] **Cadastro de Doses de Bebidas (Fracionamento para Bares)** – [Assistir ao vídeo](https://www.youtube.com/watch?v=mz_seFoc5UU&list=PLaWveaTRjHDdUSBSmKqzzvm2Jw8xaeguu&index=47)

@@ -71,4 +71,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Sobrescritas para que os modais de Registro e Configuração fiquem centralizados como cartões de vidro */
+.setup-layout-container .register-card {
+  width: 500px;
+  height: auto;
+  min-height: 480px;
+  max-height: 90vh;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-md);
+  background: rgba(26, 29, 45, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.setup-layout-container .settings-card {
+  width: 780px;
+  height: 600px;
+  max-height: 90vh;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-md);
+  background: rgba(26, 29, 45, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
 }

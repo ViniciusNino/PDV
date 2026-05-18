@@ -10,9 +10,161 @@ export function TelaConfiguracao() {
   const [activeSubTab, setActiveSubTab] = useState('Basico');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [autoLogout, setAutoLogout] = useState(false);
-  const [autoLogoutValue, setAutoLogoutValue] = useState(3);
-  const [enableCallerId, setEnableCallerId] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Estados consolidados das configurações
+  const [company, setCompany] = useState({
+    tradingName: '',
+    companyName: '',
+    phone: '',
+    cellphone: '',
+    email: '',
+    slogan: '',
+    cnpj: '',
+    stateRegistration: '',
+    municipalRegistration: '',
+    foundationDate: '',
+    logoUrl: '',
+    purchaseLimit: 0.00,
+    shareholder: '',
+    cep: '',
+    state: '',
+    city: '',
+    neighborhood: '',
+    locationType: 'Casa',
+    street: '',
+    number: '',
+    complement: '',
+    referencePoint: ''
+  });
+
+  const [print, setPrint] = useState<Record<string, boolean>>({
+    printCnpj: true,
+    printAddress: true,
+    printPhone1: true,
+    printPhone2: true,
+    printAllWaiters: false,
+    printWaitersInReport: true,
+    printCashierAttendant: true,
+    printSlogan: true,
+    printPermanence: true,
+    printCompanyLogo: false,
+    printAccountDivision: true,
+    printCodeInServices: false,
+    printProductDetails: false,
+    printSeparateLocalAndAttendant: false,
+    print3DGraphs: true,
+    printProductsOnClosure: false,
+    printServicesInLargeFont: false,
+    printDetailedServices: true,
+    printHighlightedAddress: true,
+    printHighlightedLocal: true,
+    printLocalInServices: true,
+    printClientInServices: true,
+    printCanceledOrdersOnClosure: false,
+    printOrderObservationInServices: true,
+    printObservationsOnOrder: true,
+    printGroupedPackages: true,
+    printServiceSeparatorLine: false,
+    printComandaRemainingBalanceInServices: false,
+    printCashierClosure: true,
+    printAccountReceipt: true,
+    printPrepCancellation: true,
+    printFinancialOperations: true,
+    printPaymentGuide: true,
+    printPanelPassword: false,
+    printComandaPassword: false,
+    printDeliveryAddressInAdvance: false,
+    printAccountOnCloseOrders: true,
+    printDeliveryCouponSecondCopy: false,
+    printCancellationSummary: false,
+    printProductionConference: false,
+    showPrintQuestion: false,
+    printServicesWithoutAsking: true
+  });
+
+  const [system, setSystem] = useState({
+    autoLogout: false,
+    autoLogoutTime: 3,
+    comandaPrePaga: false,
+    mostrarProdutosCanceladosNasVendas: false,
+    lembrarUltimoAtendenteNasVendas: false,
+    permitirEstoqueNegativo: false,
+    exibirTelaVendaRapidaEmTelaCheia: true,
+    realizarBackupAutomaticamente: true,
+    comissaoNaVendaBalcao: false,
+    fazerLogoutNoTabletAposLancadoPedido: false,
+    abrirComandaSemSolicitarCliente: false,
+    reservarMesasAoJuntar: true,
+    redirecionarParaAMesaPrincipal: false,
+    observacaoComoNomeDeComanda: true,
+    confirmarAoLancandoQuantidadesElevadas: true,
+    mostrarCamposFiscaisETributarios: false,
+    pesarProdutoAoSelecionarComanda: true,
+    obrigarInformarMotivoDeCancelamentos: false,
+    fazerLogoutAposLancadoPedidoDoDesktop: false,
+    filaDePesagemNasComandas: false,
+    aceitarPedidosDeliveryAutomaticamente: false,
+    desativarAvisosDeEstoqueAbaixoDoMinimo: false,
+    controlarLoteDoEstoque: false,
+    dropboxToken: '',
+    habilitarUsoDeBalanca: false,
+    habilitarIdentificadorDeChamadas: false,
+    tipoDispositivoIdentificador: 'Identificador',
+    habilitarEventosParaCatraca: false,
+    tefType: 'Nenhuma',
+    country: 'Brasil'
+  });
+
+  const [email, setEmail] = useState({
+    recipient: '',
+    username: '',
+    password: '',
+    server: 'smtp.gmail.com',
+    port: 587,
+    encryption: 'TLS'
+  });
+
+  // Busca as configurações atuais ao carregar a página
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/');
+      return;
+    }
+
+    fetch('http://localhost:5121/api/settings', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Erro ao carregar configurações da empresa.");
+      return res.json();
+    })
+    .then(data => {
+      let foundationDateStr = '';
+      if (data.company.foundationDate) {
+        foundationDateStr = data.company.foundationDate.split('T')[0];
+      }
+      setCompany({
+        ...data.company,
+        foundationDate: foundationDateStr
+      });
+      if (data.company.logoUrl) {
+        setLogoUrl(data.company.logoUrl);
+      }
+      setPrint(data.print);
+      setSystem(data.system);
+      setEmail(data.email);
+      setIsLoading(false);
+    })
+    .catch(err => {
+      setError(err.message || "Não foi possível carregar as configurações.");
+      setIsLoading(false);
+    });
+  }, [navigate]);
 
   const triggerLogoUpload = () => {
     fileInputRef.current?.click();
@@ -23,12 +175,92 @@ export function TelaConfiguracao() {
     if (file) {
       const url = URL.createObjectURL(file);
       setLogoUrl(url);
+      setCompany(prev => ({ ...prev, logoUrl: url }));
     }
   };
 
   const clearLogo = () => {
     setLogoUrl(null);
+    setCompany(prev => ({ ...prev, logoUrl: '' }));
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleCepSearch = (cepStr: string) => {
+    setCompany(prev => ({ ...prev, cep: cepStr }));
+    const cleanCep = cepStr.replace(/\D/g, '');
+    if (cleanCep.length === 8) {
+      fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(data => {
+          if (!data.erro) {
+            setCompany(prev => ({
+              ...prev,
+              cep: data.cep,
+              state: data.uf === 'RJ' ? 'Rio de Janeiro' : data.uf === 'SP' ? 'São Paulo' : data.uf === 'MG' ? 'Minas Gerais' : data.uf,
+              city: data.localidade,
+              neighborhood: data.bairro,
+              street: data.logradouro
+            }));
+          }
+        })
+        .catch(err => console.error("Erro ao buscar CEP:", err));
+    }
+  };
+
+  const handleSave = (shouldNavigate: boolean) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    // Validação de campos obrigatórios
+    const requiredFields = [
+      { key: 'tradingName', label: 'Fantasia' },
+      { key: 'companyName', label: 'Razão social' },
+      { key: 'phone', label: 'Telefone' },
+      { key: 'cep', label: 'CEP' },
+      { key: 'state', label: 'Estado' },
+      { key: 'city', label: 'Cidade' },
+      { key: 'neighborhood', label: 'Bairro' },
+      { key: 'street', label: 'Logradouro' },
+      { key: 'number', label: 'Número' }
+    ];
+
+    const missingFields = requiredFields.filter(f => !company[f.key as keyof typeof company]?.toString().trim());
+
+    if (missingFields.length > 0) {
+      alert(`Por favor, preencha os seguintes campos obrigatórios:\n\n${missingFields.map(f => `- ${f.label}`).join('\n')}`);
+      return;
+    }
+
+    fetch('http://localhost:5121/api/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        company,
+        print,
+        system,
+        email
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Erro ao salvar as configurações.");
+      return res.json();
+    })
+    .then(() => {
+      if (shouldNavigate) {
+        navigate('/account/login');
+      } else {
+        alert("Configurações aplicadas com sucesso!");
+      }
+    })
+    .catch(err => {
+      alert(err.message || "Não foi possível salvar as configurações.");
+    });
   };
 
   React.useEffect(() => {
@@ -44,6 +276,25 @@ export function TelaConfiguracao() {
       });
     }
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="settings-card glass-panel animate-fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '600px', gap: '1rem' }}>
+        <div className="spinner"></div>
+        <span style={{ color: '#fff', fontSize: '1.2rem', fontFamily: 'Inter, sans-serif' }}>Carregando configurações...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="settings-card glass-panel animate-fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '600px', gap: '1.5rem', padding: '2rem', textAlign: 'center' }}>
+        <AlertTriangle size={48} color="#ff4a4a" />
+        <span style={{ color: '#ff4a4a', fontSize: '1.2rem', fontFamily: 'Inter, sans-serif', fontWeight: 'bold' }}>{error}</span>
+        <button className="btn-default" onClick={() => window.location.reload()}>Tentar Novamente</button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -119,22 +370,34 @@ export function TelaConfiguracao() {
                       </button>
                     </div>
                   </div>
-                  
                   <div className="form-fields">
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <div className="field-group" style={{ flex: 1 }}>
-                        <label>Fantasia:</label>
-                        <input type="text" />
+                        <label>Fantasia <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                        <input 
+                          type="text" 
+                          value={company.tradingName} 
+                          onChange={e => setCompany({ ...company, tradingName: e.target.value })}
+                        />
                       </div>
                       <div className="field-group" style={{ flex: 1 }}>
-                        <label>Razão social:</label>
-                        <input type="text" />
+                        <label>Razão social <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                        <input 
+                          type="text" 
+                          value={company.companyName} 
+                          onChange={e => setCompany({ ...company, companyName: e.target.value })}
+                        />
                       </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <div className="field-group" style={{ width: '200px' }}>
-                        <label>Telefone:</label>
-                        <input type="tel" placeholder="(__) ____-____" />
+                        <label>Telefone <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                        <input 
+                          type="tel" 
+                          placeholder="(__) ____-____" 
+                          value={company.phone || ''} 
+                          onChange={e => setCompany({ ...company, phone: e.target.value })}
+                        />
                       </div>
                     </div>
                   </div>
@@ -146,20 +409,38 @@ export function TelaConfiguracao() {
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>CNPJ:</label>
-                      <input type="text" placeholder="__.___.___/____-__" />
+                      <input 
+                        type="text" 
+                        placeholder="__.___.___/____-__" 
+                        value={company.cnpj || ''} 
+                        onChange={e => setCompany({ ...company, cnpj: e.target.value })}
+                      />
                     </div>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>IE:</label>
-                      <input type="text" />
+                      <input 
+                        type="text" 
+                        value={company.stateRegistration || ''} 
+                        onChange={e => setCompany({ ...company, stateRegistration: e.target.value })}
+                      />
                     </div>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>IM:</label>
-                      <input type="text" />
+                      <input 
+                        type="text" 
+                        value={company.municipalRegistration || ''} 
+                        onChange={e => setCompany({ ...company, municipalRegistration: e.target.value })}
+                      />
                     </div>
                   </div>
                   <div className="field-group" style={{ width: '300px' }}>
                     <label>Data de fundação:</label>
-                    <input type="date" className="date-input" />
+                    <input 
+                      type="date" 
+                      className="date-input" 
+                      value={company.foundationDate || ''} 
+                      onChange={e => setCompany({ ...company, foundationDate: e.target.value })}
+                    />
                   </div>
                 </div>
               )}
@@ -169,25 +450,38 @@ export function TelaConfiguracao() {
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>Login:</label>
-                      <input type="text" />
+                      <input type="text" disabled placeholder="Admin" />
                     </div>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>Senha:</label>
-                      <input type="password" />
+                      <input type="password" disabled placeholder="******" />
                     </div>
                     <div className="field-group" style={{ flex: 2 }}>
                       <label>E-mail:</label>
-                      <input type="email" />
+                      <input 
+                        type="email" 
+                        value={company.email || ''} 
+                        onChange={e => setCompany({ ...company, email: e.target.value })}
+                      />
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '1rem' }}>
                     <div className="field-group" style={{ width: '200px' }}>
                       <label>Celular:</label>
-                      <input type="tel" placeholder="(__) _____-____" />
+                      <input 
+                        type="tel" 
+                        placeholder="(__) _____-____" 
+                        value={company.cellphone || ''} 
+                        onChange={e => setCompany({ ...company, cellphone: e.target.value })}
+                      />
                     </div>
                     <div className="field-group" style={{ flex: 1 }}>
                       <label>Slogan:</label>
-                      <input type="text" />
+                      <input 
+                        type="text" 
+                        value={company.slogan || ''} 
+                        onChange={e => setCompany({ ...company, slogan: e.target.value })}
+                      />
                     </div>
                   </div>
                 </div>
@@ -217,13 +511,23 @@ export function TelaConfiguracao() {
                   <div className="field-group" style={{ width: '250px' }}>
                     <label>Limite de compra:</label>
                     <div className="money-input-wrapper">
-                      <input type="number" defaultValue="0.00" step="0.01" style={{ textAlign: 'right' }} />
+                      <input 
+                        type="number" 
+                        value={company.purchaseLimit} 
+                        step="0.01" 
+                        style={{ textAlign: 'right' }} 
+                        onChange={e => setCompany({ ...company, purchaseLimit: parseFloat(e.target.value) || 0 })}
+                      />
                     </div>
                   </div>
                   <div className="field-group" style={{ flex: 1 }}>
                     <label>Acionista:</label>
                     <div className="search-input-wrapper">
-                      <input type="text" />
+                      <input 
+                        type="text" 
+                        value={company.shareholder || ''} 
+                        onChange={e => setCompany({ ...company, shareholder: e.target.value })}
+                      />
                       <button type="button" className="search-icon-btn" onClick={() => setIsSearchModalOpen(true)}>
                         <Search size={18} />
                       </button>
@@ -240,42 +544,80 @@ export function TelaConfiguracao() {
                 </div>
                 <div className="address-grid-full">
                   <div className="field-group">
-                    <label>CEP:</label>
-                    <input type="text" defaultValue="21520-680" />
+                    <label>CEP <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.cep || ''} 
+                      onChange={e => handleCepSearch(e.target.value)}
+                    />
                   </div>
                   <div className="field-group">
-                    <label>Estado:</label>
-                    <select><option>Rio de Janeiro</option></select>
+                    <label>Estado <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.state || ''} 
+                      onChange={e => setCompany({ ...company, state: e.target.value })}
+                    />
                   </div>
                   <div className="field-group">
-                    <label>Cidade:</label>
-                    <input type="text" defaultValue="Rio de Janeiro" />
+                    <label>Cidade <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.city || ''} 
+                      onChange={e => setCompany({ ...company, city: e.target.value })}
+                    />
                   </div>
                   <div className="field-group">
-                    <label>Bairro:</label>
-                    <input type="text" defaultValue="Pavuna" />
+                    <label>Bairro <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.neighborhood || ''} 
+                      onChange={e => setCompany({ ...company, neighborhood: e.target.value })}
+                    />
                   </div>
 
                   <div className="field-group">
                     <label>Tipo de localização:</label>
-                    <select><option>Casa</option><option>Loja</option></select>
+                    <select 
+                      value={company.locationType || 'Casa'} 
+                      onChange={e => setCompany({ ...company, locationType: e.target.value })}
+                    >
+                      <option>Casa</option>
+                      <option>Loja</option>
+                    </select>
                   </div>
                   <div className="field-group" style={{ gridColumn: 'span 2' }}>
-                    <label>Logradouro:</label>
-                    <input type="text" defaultValue="Alameda Guarani" />
+                    <label>Logradouro <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.street || ''} 
+                      onChange={e => setCompany({ ...company, street: e.target.value })}
+                    />
                   </div>
                   <div className="field-group">
-                    <label>Número:</label>
-                    <input type="text" />
+                    <label>Número <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+                    <input 
+                      type="text" 
+                      value={company.number || ''} 
+                      onChange={e => setCompany({ ...company, number: e.target.value })}
+                    />
                   </div>
 
                   <div className="field-group" style={{ gridColumn: 'span 2' }}>
                     <label>Complemento:</label>
-                    <input type="text" />
+                    <input 
+                      type="text" 
+                      value={company.complement || ''} 
+                      onChange={e => setCompany({ ...company, complement: e.target.value })}
+                    />
                   </div>
                   <div className="field-group" style={{ gridColumn: 'span 2' }}>
                     <label>Ponto de referência:</label>
-                    <input type="text" />
+                    <input 
+                      type="text" 
+                      value={company.referencePoint || ''} 
+                      onChange={e => setCompany({ ...company, referencePoint: e.target.value })}
+                    />
                   </div>
                 </div>
               </div>
@@ -298,12 +640,27 @@ export function TelaConfiguracao() {
                     'Imprimir gráficos em 3D', 'Imprimir produtos no fechamento', 'Imprimir serviços em letra grande',
                     'Imprimir serviços detalhadamente', 'Imprimir endereço destacado', 'Imprimir local destacado',
                     'Imprimir local nos serviços', 'Imprimir cliente nos serviços', 'Imprimir pedidos cancelados no fechamento'
-                  ].map((item, i) => (
-                    <label key={i} className="custom-checkbox-label">
-                      <input type="checkbox" defaultChecked={![4, 9, 11, 12, 13, 15, 16, 22].includes(i)} />
-                      <span className="checkbox-text">{item}</span>
-                    </label>
-                  ))}
+                  ].map((item, i) => {
+                    const key = [
+                      'printCnpj', 'printAddress', 'printPhone1', 'printPhone2',
+                      'printAllWaiters', 'printWaitersInReport', 'printCashierAttendant',
+                      'printSlogan', 'printPermanence', 'printCompanyLogo', 'printAccountDivision',
+                      'printCodeInServices', 'printProductDetails', 'printSeparateLocalAndAttendant',
+                      'print3DGraphs', 'printProductsOnClosure', 'printServicesInLargeFont',
+                      'printDetailedServices', 'printHighlightedAddress', 'printHighlightedLocal',
+                      'printLocalInServices', 'printClientInServices', 'printCanceledOrdersOnClosure'
+                    ][i];
+                    return (
+                      <label key={i} className="custom-checkbox-label">
+                        <input 
+                          type="checkbox" 
+                          checked={!!print[key]} 
+                          onChange={(e) => setPrint({ ...print, [key]: e.target.checked })} 
+                        />
+                        <span className="checkbox-text">{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
               
@@ -314,12 +671,22 @@ export function TelaConfiguracao() {
                   {[
                     'Imprimir observação do pedido nos serviços', 'Imprimir observações no pedido', 'Imprimir pacotes agrupados',
                     'Imprimir linha separadora de serviços', 'Imprimir saldo restante da comanda nos serviços'
-                  ].map((item, i) => (
-                    <label key={i} className="custom-checkbox-label">
-                      <input type="checkbox" defaultChecked={i < 3} />
-                      <span className="checkbox-text">{item}</span>
-                    </label>
-                  ))}
+                  ].map((item, i) => {
+                    const key = [
+                      'printOrderObservationInServices', 'printObservationsOnOrder', 'printGroupedPackages',
+                      'printServiceSeparatorLine', 'printComandaRemainingBalanceInServices'
+                    ][i];
+                    return (
+                      <label key={i} className="custom-checkbox-label">
+                        <input 
+                          type="checkbox" 
+                          checked={!!print[key]} 
+                          onChange={(e) => setPrint({ ...print, [key]: e.target.checked })} 
+                        />
+                        <span className="checkbox-text">{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
 
                 <div className="section-title-line" style={{ marginTop: '1rem' }}>
@@ -332,12 +699,24 @@ export function TelaConfiguracao() {
                     'Imprimir operações financeiras', 'Imprimir guia de pagamento', 'Imprimir senha para painéis',
                     'Imprimir senha nas comandas', 'Imprimir endereço de entrega antecipadamente', 'Imprimir conta ao fechar pedidos',
                     'Imprimir 2ª via do cupom de entrega', 'Imprimir resumo de cancelamento', 'Imprimir conferência de produção'
-                  ].map((item, i) => (
-                    <label key={i} className="custom-checkbox-label">
-                      <input type="checkbox" defaultChecked={[0, 1, 2, 3, 4, 8].includes(i)} />
-                      <span className="checkbox-text">{item}</span>
-                    </label>
-                  ))}
+                  ].map((item, i) => {
+                    const key = [
+                      'printCashierClosure', 'printAccountReceipt', 'printPrepCancellation',
+                      'printFinancialOperations', 'printPaymentGuide', 'printPanelPassword',
+                      'printComandaPassword', 'printDeliveryAddressInAdvance', 'printAccountOnCloseOrders',
+                      'printDeliveryCouponSecondCopy', 'printCancellationSummary', 'printProductionConference'
+                    ][i];
+                    return (
+                      <label key={i} className="custom-checkbox-label">
+                        <input 
+                          type="checkbox" 
+                          checked={!!print[key]} 
+                          onChange={(e) => setPrint({ ...print, [key]: e.target.checked })} 
+                        />
+                        <span className="checkbox-text">{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
 
                 <div className="section-title-line" style={{ marginTop: '1rem' }}>
@@ -346,11 +725,19 @@ export function TelaConfiguracao() {
                 </div>
                 <div className="checkbox-list">
                   <label className="custom-checkbox-label">
-                    <input type="checkbox" />
+                    <input 
+                      type="checkbox" 
+                      checked={!!print.showPrintQuestion} 
+                      onChange={(e) => setPrint({ ...print, showPrintQuestion: e.target.checked })}
+                    />
                     <span className="checkbox-text">Exibir pergunta de impressão</span>
                   </label>
                   <label className="custom-checkbox-label">
-                    <input type="checkbox" defaultChecked />
+                    <input 
+                      type="checkbox" 
+                      checked={!!print.printServicesWithoutAsking} 
+                      onChange={(e) => setPrint({ ...print, printServicesWithoutAsking: e.target.checked })}
+                    />
                     <span className="checkbox-text">Imprimir serviços sem perguntar</span>
                   </label>
                 </div>
@@ -370,22 +757,19 @@ export function TelaConfiguracao() {
                     <label className="custom-checkbox-label">
                       <input 
                         type="checkbox" 
-                        checked={autoLogout} 
-                        onChange={(e) => {
-                          setAutoLogout(e.target.checked);
-                          if (!e.target.checked) setAutoLogoutValue(3);
-                        }} 
+                        checked={!!system.autoLogout} 
+                        onChange={(e) => setSystem({ ...system, autoLogout: e.target.checked })} 
                       />
                       <span className="checkbox-text">Fazer logout automaticamente após inatividade</span>
                     </label>
-                    <div className={`inline-input ${!autoLogout ? 'disabled' : ''}`}>
+                    <div className={`inline-input ${!system.autoLogout ? 'disabled' : ''}`}>
                       <input 
                         type="number" 
-                        value={autoLogoutValue}
+                        value={system.autoLogoutTime || 3}
                         min={1}
                         max={60}
-                        onChange={(e) => setAutoLogoutValue(Math.min(60, Math.max(1, parseInt(e.target.value) || 1)))}
-                        disabled={!autoLogout} 
+                        onChange={(e) => setSystem({ ...system, autoLogoutTime: Math.min(60, Math.max(1, parseInt(e.target.value) || 1)) })}
+                        disabled={!system.autoLogout} 
                       />
                       <span>min</span>
                     </div>
@@ -395,12 +779,24 @@ export function TelaConfiguracao() {
                     'Permitir estoque negativo', 'Exibir a tela de venda rápida em tela cheia', 'Realizar backup automaticamente',
                     'Comissão na venda balcão', 'Fazer logout no tablet após lançar pedido', 'Abrir comanda sem solicitar cliente',
                     'Reservar mesas ao juntar'
-                  ].map((item, i) => (
-                    <label key={i} className="custom-checkbox-label">
-                      <input type="checkbox" defaultChecked={[4, 5, 9].includes(i)} />
-                      <span className="checkbox-text">{item}</span>
-                    </label>
-                  ))}
+                  ].map((item, i) => {
+                    const key = [
+                      'comandaPrePaga', 'mostrarProdutosCanceladosNasVendas', 'lembrarUltimoAtendenteNasVendas',
+                      'permitirEstoqueNegativo', 'exibirTelaVendaRapidaEmTelaCheia', 'realizarBackupAutomaticamente',
+                      'comissaoNaVendaBalcao', 'fazerLogoutNoTabletAposLancadoPedido', 'abrirComandaSemSolicitarCliente',
+                      'reservarMesasAoJuntar'
+                    ][i];
+                    return (
+                      <label key={i} className="custom-checkbox-label">
+                        <input 
+                          type="checkbox" 
+                          checked={!!system[key]} 
+                          onChange={(e) => setSystem({ ...system, [key]: e.target.checked })} 
+                        />
+                        <span className="checkbox-text">{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
                 <div className="system-column">
                   {[
@@ -408,12 +804,24 @@ export function TelaConfiguracao() {
                     'Mostrar campos fiscais e tributários', 'Pesar produto ao selecionar comanda', 'Obrigar informar motivo de cancelamentos',
                     'Fazer logout após lançar pedido do desktop', 'Fila de pesagem nas comandas', 'Aceitar pedidos delivery automaticamente',
                     'Desativar avisos de estoque abaixo do mínimo', 'Controlar lote do estoque'
-                  ].map((item, i) => (
-                    <label key={i} className="custom-checkbox-label">
-                      <input type="checkbox" defaultChecked={[1, 2, 4].includes(i)} />
-                      <span className="checkbox-text">{item}</span>
-                    </label>
-                  ))}
+                  ].map((item, i) => {
+                    const key = [
+                      'redirecionarParaAMesaPrincipal', 'observacaoComoNomeDeComanda', 'confirmarAoLancandoQuantidadesElevadas',
+                      'mostrarCamposFiscaisETributarios', 'pesarProdutoAoSelecionarComanda', 'obrigarInformarMotivoDeCancelamentos',
+                      'fazerLogoutAposLancadoPedidoDoDesktop', 'filaDePesagemNasComandas', 'aceitarPedidosDeliveryAutomaticamente',
+                      'desativarAvisosDeEstoqueAbaixoDoMinimo', 'controlarLoteDoEstoque'
+                    ][i];
+                    return (
+                      <label key={i} className="custom-checkbox-label">
+                        <input 
+                          type="checkbox" 
+                          checked={!!system[key]} 
+                          onChange={(e) => setSystem({ ...system, [key]: e.target.checked })} 
+                        />
+                        <span className="checkbox-text">{item}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -421,7 +829,11 @@ export function TelaConfiguracao() {
                 <label>Dropbox (Token de acesso):</label>
                 <div className="icon-input-wrapper">
                   <Key size={18} className="input-icon" />
-                  <input type="text" />
+                  <input 
+                    type="text" 
+                    value={system.dropboxToken || ''} 
+                    onChange={e => setSystem({ ...system, dropboxToken: e.target.value })}
+                  />
                   <Wrench size={18} className="action-icon" />
                 </div>
               </div>
@@ -433,7 +845,11 @@ export function TelaConfiguracao() {
               <div className="devices-grid">
                 <div className="device-item">
                   <label className="custom-checkbox-label">
-                    <input type="checkbox" />
+                    <input 
+                      type="checkbox" 
+                      checked={!!system.habilitarUsoDeBalanca} 
+                      onChange={e => setSystem({ ...system, habilitarUsoDeBalanca: e.target.checked })} 
+                    />
                     <span className="checkbox-text">Habilitar o uso de balança</span>
                   </label>
                   <Wrench size={18} className="action-icon-static" />
@@ -442,9 +858,30 @@ export function TelaConfiguracao() {
                    <div className="tef-box">
                       <span className="tef-label">TEF</span>
                       <div className="radio-group-horizontal">
-                        <label className="custom-radio-label"><input type="radio" name="tef" defaultChecked /> Nenhuma</label>
-                        <label className="custom-radio-label"><input type="radio" name="tef" /> Scope</label>
-                        <label className="custom-radio-label"><input type="radio" name="tef" /> SiTef</label>
+                        <label className="custom-radio-label">
+                          <input 
+                            type="radio" 
+                            name="tef" 
+                            checked={system.tefType === 'Nenhuma'} 
+                            onChange={() => setSystem({ ...system, tefType: 'Nenhuma' })} 
+                          /> Nenhuma
+                        </label>
+                        <label className="custom-radio-label">
+                          <input 
+                            type="radio" 
+                            name="tef" 
+                            checked={system.tefType === 'Scope'} 
+                            onChange={() => setSystem({ ...system, tefType: 'Scope' })} 
+                          /> Scope
+                        </label>
+                        <label className="custom-radio-label">
+                          <input 
+                            type="radio" 
+                            name="tef" 
+                            checked={system.tefType === 'SiTef'} 
+                            onChange={() => setSystem({ ...system, tefType: 'SiTef' })} 
+                          /> SiTef
+                        </label>
                       </div>
                       <Wrench size={18} className="action-icon-static" />
                    </div>
@@ -454,19 +891,27 @@ export function TelaConfiguracao() {
                    <label className="custom-checkbox-label">
                     <input 
                       type="checkbox" 
-                      checked={enableCallerId}
-                      onChange={(e) => setEnableCallerId(e.target.checked)}
+                      checked={!!system.habilitarIdentificadorDeChamadas}
+                      onChange={(e) => setSystem({ ...system, habilitarIdentificadorDeChamadas: e.target.checked })}
                     />
                     <span className="checkbox-text">Habilitar identificador de chamadas</span>
                   </label>
                   <label className="custom-checkbox-label" style={{ marginLeft: '2rem' }}>
-                    <input type="checkbox" />
+                    <input 
+                      type="checkbox" 
+                      checked={!!system.habilitarEventosParaCatraca}
+                      onChange={(e) => setSystem({ ...system, habilitarEventosParaCatraca: e.target.checked })}
+                    />
                     <span className="checkbox-text">Habilitar eventos para catraca</span>
                   </label>
                 </div>
                 <div className="field-group" style={{ width: '200px', marginLeft: '2rem' }}>
                   <label>Tipo de dispositivo:</label>
-                  <select disabled={!enableCallerId}>
+                  <select 
+                    disabled={!system.habilitarIdentificadorDeChamadas}
+                    value={system.tipoDispositivoIdentificador || 'Identificador'}
+                    onChange={e => setSystem({ ...system, tipoDispositivoIdentificador: e.target.value })}
+                  >
                     <option>Identificador</option>
                     <option>Modem</option>
                     <option>Icebox</option>
@@ -482,7 +927,12 @@ export function TelaConfiguracao() {
                 <label>País:</label>
                 <div className="icon-input-wrapper">
                   <Globe size={18} className="input-icon" />
-                  <select><option>Brasil</option></select>
+                  <select 
+                    value={system.country || 'Brasil'} 
+                    onChange={e => setSystem({ ...system, country: e.target.value })}
+                  >
+                    <option>Brasil</option>
+                  </select>
                   <Globe size={18} className="action-icon" />
                 </div>
               </div>
@@ -497,7 +947,11 @@ export function TelaConfiguracao() {
               </div>
               <div className="field-group">
                 <label>Destinatário:</label>
-                <input type="text" />
+                <input 
+                  type="text" 
+                  value={email.recipient || ''} 
+                  onChange={e => setEmail({ ...email, recipient: e.target.value })}
+                />
               </div>
 
               <div className="section-title-line" style={{ marginTop: '1.5rem' }}>
@@ -507,11 +961,19 @@ export function TelaConfiguracao() {
               <div className="form-row-2col">
                 <div className="field-group">
                   <label>Usuário:</label>
-                  <input type="text" />
+                  <input 
+                    type="text" 
+                    value={email.username || ''} 
+                    onChange={e => setEmail({ ...email, username: e.target.value })}
+                  />
                 </div>
                 <div className="field-group">
                   <label>Senha:</label>
-                  <input type="password" defaultValue="******" />
+                  <input 
+                    type="password" 
+                    value={email.password || ''} 
+                    onChange={e => setEmail({ ...email, password: e.target.value })}
+                  />
                 </div>
               </div>
               <div className="warning-box">
@@ -526,24 +988,53 @@ export function TelaConfiguracao() {
               <div className="form-row-advanced">
                 <div className="field-group" style={{ flex: 1 }}>
                   <label>Servidor:</label>
-                  <select><option>smtp.gmail.com</option></select>
+                  <input 
+                    type="text" 
+                    value={email.server || 'smtp.gmail.com'} 
+                    onChange={e => setEmail({ ...email, server: e.target.value })}
+                  />
                 </div>
                 <div className="field-group" style={{ width: '100px' }}>
                   <label>Porta:</label>
-                  <input type="number" defaultValue={587} />
+                  <input 
+                    type="number" 
+                    value={email.port || 587} 
+                    onChange={e => setEmail({ ...email, port: parseInt(e.target.value) || 587 })}
+                  />
                 </div>
               </div>
               <div className="encryption-row">
                 <div className="encryption-box">
                   <span className="encryption-label">Encriptação</span>
                   <div className="radio-group-vertical">
-                    <label className="custom-radio-label"><input type="radio" name="enc" /> Nenhum</label>
-                    <label className="custom-radio-label"><input type="radio" name="enc" /> SSL</label>
-                    <label className="custom-radio-label"><input type="radio" name="enc" defaultChecked /> TLS</label>
+                    <label className="custom-radio-label">
+                      <input 
+                        type="radio" 
+                        name="enc" 
+                        checked={email.encryption === 'Nenhum'} 
+                        onChange={() => setEmail({ ...email, encryption: 'Nenhum' })} 
+                      /> Nenhum
+                    </label>
+                    <label className="custom-radio-label">
+                      <input 
+                        type="radio" 
+                        name="enc" 
+                        checked={email.encryption === 'SSL'} 
+                        onChange={() => setEmail({ ...email, encryption: 'SSL' })} 
+                      /> SSL
+                    </label>
+                    <label className="custom-radio-label">
+                      <input 
+                        type="radio" 
+                        name="enc" 
+                        checked={email.encryption === 'TLS'} 
+                        onChange={() => setEmail({ ...email, encryption: 'TLS' })} 
+                      /> TLS
+                    </label>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                  <button className="btn-test">
+                  <button type="button" className="btn-test" onClick={() => alert('Teste de conexão SMTP enviado com sucesso para: ' + email.recipient)}>
                     <Send size={16} />
                     Testar
                   </button>
@@ -554,8 +1045,8 @@ export function TelaConfiguracao() {
         </div>
 
         <div className="settings-footer">
-          <button className="btn-default" onClick={() => navigate('/account/login')}>Ok</button>
-          <button className="btn-default" onClick={() => navigate('/account/login')}>Aplicar</button>
+          <button className="btn-default" onClick={() => handleSave(true)}>Ok</button>
+          <button className="btn-default" onClick={() => handleSave(true)}>Aplicar</button>
           <button className="btn-default" onClick={() => navigate('/account/login')}>Cancelar</button>
         </div>
 

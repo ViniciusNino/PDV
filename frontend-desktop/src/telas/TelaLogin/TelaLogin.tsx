@@ -34,11 +34,11 @@ export function TelaLogin() {
         if (!res.ok) throw new Error("Erro na resposta do servidor");
         return res.json();
       })
-      .then(data => {
+      .then((data: { name: string; username: string; role: string }[]) => {
         setUsers(data);
         if (data.length > 0) {
           // Garante o "Admin" como padrão se ele existir na lista
-          const adminExists = data.find((u: any) => u.username.toLowerCase() === 'admin');
+          const adminExists = data.find((u) => u.username.toLowerCase() === 'admin');
           setUsername(adminExists ? adminExists.username : data[0].username);
         }
       })
@@ -72,10 +72,27 @@ export function TelaLogin() {
       }
     })
     .then(data => {
-      setIsLoading(false);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data));
-      navigate('/setup');
+      
+      // Verifica se a empresa já está configurada
+      return fetch('http://localhost:5121/api/settings/check', {
+        headers: {
+          'Authorization': `Bearer ${data.token}`
+        }
+      });
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Erro ao verificar configurações da empresa.");
+      return res.json();
+    })
+    .then(hasCompany => {
+      setIsLoading(false);
+      if (hasCompany) {
+        navigate('/account/login'); // Vai para a Tela 3
+      } else {
+        navigate('/setup'); // Vai para a Tela 2
+      }
     })
     .catch(err => {
       setIsLoading(false);
@@ -126,6 +143,7 @@ export function TelaLogin() {
             <div className="input-row">
               <label htmlFor="password">Senha:</label>
               <div className="input-wrapper">
+                <Lock size={18} className="input-icon" />
                 <input 
                   id="password"
                   type="password" 

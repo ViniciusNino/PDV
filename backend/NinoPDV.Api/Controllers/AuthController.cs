@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using NinoPDV.Api.Data;
 using NinoPDV.Api.DTOs;
 using NinoPDV.Api.Models;
+using NinoPDV.Api.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,11 +18,13 @@ public class AuthController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
+    private readonly IEmailService _emailService;
 
-    public AuthController(AppDbContext context, IConfiguration config)
+    public AuthController(AppDbContext context, IConfiguration config, IEmailService emailService)
     {
         _context = context;
         _config = config;
+        _emailService = emailService;
     }
 
     [HttpPost("login")]
@@ -82,6 +85,128 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(user);
+    }
+
+    [HttpPost("register-cloud")]
+    public async Task<ActionResult> RegisterCloud(RegisterCloudRequest request)
+    {
+        // 1. Validar e-mail único
+        if (await _context.Users.AnyAsync(u => u.Email != null && u.Email.ToLower() == request.Email.ToLower()))
+        {
+            return BadRequest("Este endereço de e-mail já está associado a uma conta.");
+        }
+
+        // 2. Validar username único (utilizando e-mail como username base)
+        var username = request.Email;
+        if (await _context.Users.AnyAsync(u => u.Username.ToLower() == username.ToLower()))
+        {
+            username = $"{username}_{Guid.NewGuid().ToString().Substring(0, 4)}";
+        }
+
+        // 3. Gerar código de 6 dígitos
+        var random = new Random();
+        var code = random.Next(100000, 999999).ToString();
+
+        // 4. Criar o usuário inativo
+        var user = new User
+        {
+            Name = request.Name,
+            Username = username,
+            Email = request.Email,
+            Phone = request.Phone,
+            Gender = request.Gender,
+            PasswordHash = BC.HashPassword(request.Password),
+            Role = "Admin", // Por padrão é Admin
+            IsActive = false, // Só fica ativo pós confirmação de e-mail
+            IsEmailVerified = false,
+            EmailVerificationCode = code,
+            EmailVerificationCodeExpires = DateTime.UtcNow.AddMinutes(10)
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        // 5. Enviar e-mail com o código
+        await _emailService.SendVerificationCodeAsync(request.Email, code);
+
+        return Ok(new { Message = "Código de verificação enviado para o e-mail cadastrado." });
+    }
+
+    [HttpPost("verify-email")]
+    public async Task<ActionResult<LoginResponse>> VerifyEmail(VerifyEmailRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == request.Email.ToLower());
+
+        if (user == null)
+        {
+            return NotFound("Usuário não encontrado.");
+        }
+
+        if (user.IsEmailVerified)
+        {
+            return BadRequest("Este e-mail já foi verificado anteriormente.");
+        }
+
+        if (user.EmailVerificationCode != request.Code)
+        {
+            return BadRequest("Código de verificação incorreto.");
+        }
+
+        if (user.EmailVerificationCodeExpires < DateTime.UtcNow)
+        {
+            return BadRequest("O código de verificação expirou. Por favor, solicite um novo código.");
+        }
+
+        // Ativa e valida o usuário
+        user.IsActive = true;
+        user.IsEmailVerified = true;
+        user.EmailVerificationCode = null;
+        user.EmailVerificationCodeExpires = null;
+
+        await _context.SaveChangesAsync();
+
+        // Gera o token JWT para o login automático
+        var token = GenerateJwtToken(user);
+
+        return Ok(new LoginResponse(
+            Token: token,
+            Username: user.Username,
+            Name: user.Name,
+            Role: user.Role,
+            CloudAccountId: user.CloudAccountId
+        ));
+    }
+
+    [HttpPost("resend-code")]
+    public async Task<ActionResult> ResendCode(ResendCodeRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == request.Email.ToLower());
+
+        if (user == null)
+        {
+            return NotFound("Usuário não encontrado.");
+        }
+
+        if (user.IsEmailVerified)
+        {
+            return BadRequest("Este e-mail já está verificado.");
+        }
+
+        // Gera novo código
+        var random = new Random();
+        var code = random.Next(100000, 999999).ToString();
+
+        user.EmailVerificationCode = code;
+        user.EmailVerificationCodeExpires = DateTime.UtcNow.AddMinutes(10);
+
+        await _context.SaveChangesAsync();
+
+        // Envia o novo código
+        await _emailService.SendVerificationCodeAsync(request.Email, code);
+
+        return Ok(new { Message = "Novo código de verificação enviado para o e-mail." });
     }
 
     [HttpPost("oauth")]

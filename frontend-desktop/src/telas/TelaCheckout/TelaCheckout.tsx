@@ -8,10 +8,9 @@ import {
   Folder, Map, Briefcase, Building, Coins, Building2, HelpCircle, MonitorSpeaker, RefreshCw,
   ChevronRight, ArrowRightLeft
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import './TelaCheckout.css';
 
-const menusData: Record<string, { label: string; shortcut?: string; icon: any; hasSub?: boolean }[]> = {
+const menusData: Record<string, { label: string; shortcut?: string; icon: React.ComponentType<{ size?: number }> | null; hasSub?: boolean }[]> = {
   Arquivo: [
     { label: 'Login...', shortcut: 'Ctrl+L', icon: Key },
     { label: 'Fechar', shortcut: 'Ctrl+W', icon: X },
@@ -110,7 +109,6 @@ const menusData: Record<string, { label: string; shortcut?: string; icon: any; h
 };
 
 export function TelaCheckout() {
-  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
   const [activeToolbarItem, setActiveToolbarItem] = React.useState<string>('PDV');
 

@@ -14,6 +14,10 @@ namespace NinoPDV.Api.Data
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleItem> SaleItems { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<PrintSetting> PrintSettings { get; set; }
+        public DbSet<SystemSetting> SystemSettings { get; set; }
+        public DbSet<EmailSetting> EmailSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +34,27 @@ namespace NinoPDV.Api.Data
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
+
+            // Company -> PrintSetting Relationship (1-to-1)
+            modelBuilder.Entity<Company>()
+                .HasOne(c => c.PrintSetting)
+                .WithOne(p => p.Company)
+                .HasForeignKey<PrintSetting>(p => p.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Company -> SystemSetting Relationship (1-to-1)
+            modelBuilder.Entity<Company>()
+                .HasOne(c => c.SystemSetting)
+                .WithOne(s => s.Company)
+                .HasForeignKey<SystemSetting>(s => s.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Company -> EmailSetting Relationship (1-to-1)
+            modelBuilder.Entity<Company>()
+                .HasOne(c => c.EmailSetting)
+                .WithOne(e => e.Company)
+                .HasForeignKey<EmailSetting>(e => e.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public override int SaveChanges()

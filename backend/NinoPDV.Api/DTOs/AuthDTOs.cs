@@ -17,6 +17,23 @@ public record RegisterRequest(
     string Role = "Admin"
 );
 
+public record RegisterCloudRequest(
+    string Name,
+    string Email,
+    string Phone,
+    string Gender,
+    string Password
+);
+
+public record VerifyEmailRequest(
+    string Email,
+    string Code
+);
+
+public record ResendCodeRequest(
+    string Email
+);
+
 public record OAuthLoginRequest(
     string Provider, // e.g. "Facebook"
     string ProviderId,

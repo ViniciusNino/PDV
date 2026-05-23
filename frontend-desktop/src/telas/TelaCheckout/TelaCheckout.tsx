@@ -229,7 +229,12 @@ export function TelaCheckout() {
             <button 
               key={item.id}
               className={`toolbar-btn ${activeToolbarItem === item.id ? 'active' : ''}`}
-              onClick={() => setActiveToolbarItem(item.id)}
+              onClick={() => {
+                setActiveToolbarItem(item.id);
+                if (item.id === 'Produtos') {
+                  setIsProductsModalOpen(true);
+                }
+              }}
             >
               <item.icon size={24} />
               <span>{item.id}</span>

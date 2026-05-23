@@ -62,6 +62,7 @@ namespace NinoPDV.Api.DTOs
         public string? ImageBase64 { get; set; }
         public string? Barcode { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsVisible { get; set; } = true;
         
         [Required]
         public Guid CategoryId { get; set; }

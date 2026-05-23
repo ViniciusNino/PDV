@@ -18,6 +18,7 @@ namespace NinoPDV.Api.Models
         
         public string? Barcode { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsVisible { get; set; } = true;
         
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = null!;

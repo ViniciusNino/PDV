@@ -44,6 +44,7 @@ namespace NinoPDV.Api.Controllers
                 ImageBase64 = p.ImageBase64,
                 Barcode = p.Barcode,
                 IsActive = p.IsActive,
+                IsVisible = p.IsVisible,
                 CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
                 CreatedAt = p.CreatedAt,
@@ -84,6 +85,7 @@ namespace NinoPDV.Api.Controllers
                 ImageBase64 = product.ImageBase64,
                 Barcode = product.Barcode,
                 IsActive = product.IsActive,
+                IsVisible = product.IsVisible,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category.Name,
                 CreatedAt = product.CreatedAt,
@@ -133,6 +135,7 @@ namespace NinoPDV.Api.Controllers
                 ImageBase64 = request.ImageBase64,
                 Barcode = request.Barcode,
                 IsActive = request.IsActive,
+                IsVisible = request.IsVisible,
                 CategoryId = request.CategoryId
             };
 
@@ -195,6 +198,7 @@ namespace NinoPDV.Api.Controllers
             product.ImageBase64 = request.ImageBase64;
             product.Barcode = request.Barcode;
             product.IsActive = request.IsActive;
+            product.IsVisible = request.IsVisible;
 
             // Update Prices (Full replace is fine since they have no nested dependencies)
             _context.ProductPrices.RemoveRange(product.Prices);

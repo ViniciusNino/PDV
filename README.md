@@ -40,3 +40,7 @@
 2. **Login Offline:** A API local valida o hash da senha contra o banco local e emite um Token JWT local.
 3. **Persistência de Sessão:** O cache local de credenciais é atualizado sempre que o sistema recupera a conexão.
 4. **Segurança Local:** As Roles/Permissões são verificadas localmente para autorizar operações críticas (ex: cancelamentos) sem internet.
+
+## Como Executar o Projeto
+
+Para instruções completas de como configurar dependências, rodar o banco de dados PostgreSQL e iniciar o backend e os frontends pela primeira vez, consulte o guia passo a passo em [COMO_RODAR.md](file:///d:/Nino%20Programas/PDV/COMO_RODAR.md).

@@ -13,6 +13,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [productsList, setProductsList] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     categoryId: '',
@@ -24,6 +25,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     isFractionable: false,
     barcode: '',
     isActive: true,
+    isVisible: true,
     imageBase64: '',
     prices: [
       { channel: 0, price: '' }, // Balcao
@@ -47,6 +49,16 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     }>
   });
 
+  const fetchProducts = React.useCallback(() => {
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:5121/api/products', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setProductsList(data))
+      .catch(console.error);
+  }, []);
+
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     fetch('http://localhost:5121/api/categories', {
@@ -56,13 +68,124 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
       .then(data => setCategories(data))
       .catch(console.error);
 
-    fetch('http://localhost:5121/api/products', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setProductsList(data))
-      .catch(console.error);
-  }, []);
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const handleEditStart = async (prodId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`http://localhost:5121/api/products/${prodId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Erro ao carregar detalhes do produto.");
+      const prod = await res.json();
+      
+      setEditingId(prod.id);
+      setFormData({
+        name: prod.name || '',
+        categoryId: prod.categoryId || '',
+        description: prod.description || '',
+        type: prod.type ?? 0,
+        basePrice: prod.basePrice?.toString() || '',
+        costPrice: prod.costPrice?.toString() || '',
+        unit: prod.unit || 'UN',
+        isFractionable: prod.isFractionable || false,
+        barcode: prod.barcode || '',
+        isActive: prod.isActive ?? true,
+        isVisible: prod.isVisible ?? true,
+        imageBase64: prod.imageBase64 || '',
+        prices: [
+          { channel: 0, price: prod.prices?.find((p: any) => p.channel === 0)?.price?.toString() || '' },
+          { channel: 1, price: prod.prices?.find((p: any) => p.channel === 1)?.price?.toString() || '' },
+          { channel: 2, price: prod.prices?.find((p: any) => p.channel === 2)?.price?.toString() || '' }
+        ],
+        ingredients: prod.ingredients?.map((i: any) => {
+          const matchedProd = productsList.find(p => p.id === i.ingredientProductId);
+          return {
+            ingredientProductId: i.ingredientProductId,
+            quantity: i.quantity?.toString() || '0',
+            name: matchedProd ? matchedProd.name : "Ingrediente Desconhecido"
+          };
+        }) || [],
+        comboItems: prod.comboItems?.map((c: any) => {
+          const matchedProd = productsList.find(p => p.id === c.childProductId);
+          return {
+            childProductId: c.childProductId,
+            quantity: c.quantity?.toString() || '0',
+            fixedPrice: c.fixedPrice?.toString() || '',
+            name: matchedProd ? matchedProd.name : "Produto Desconhecido"
+          };
+        }) || [],
+        modifierGroups: prod.modifierGroups?.map((mg: any) => ({
+          uiId: mg.id || Math.random().toString(36).substr(2, 9),
+          name: mg.name,
+          minSelections: mg.minSelections,
+          maxSelections: mg.maxSelections,
+          priceRule: mg.priceRule,
+          options: mg.options?.map((o: any) => ({
+            name: o.name,
+            additionalPrice: o.additionalPrice?.toString() || '0',
+            maxQuantity: o.maxQuantity,
+            productId: o.productId
+          })) || []
+        })) || []
+      });
+      setActiveTab('geral');
+    } catch (err: any) {
+      alert("Erro ao carregar produto para edição: " + err.message);
+    }
+  };
+
+  const handleNewProduct = () => {
+    setEditingId(null);
+    setFormData({
+      name: '',
+      categoryId: '',
+      description: '',
+      type: 0,
+      basePrice: '',
+      costPrice: '',
+      unit: 'UN',
+      isFractionable: false,
+      barcode: '',
+      isActive: true,
+      isVisible: true,
+      imageBase64: '',
+      prices: [
+        { channel: 0, price: '' },
+        { channel: 1, price: '' },
+        { channel: 2, price: '' }
+      ],
+      ingredients: [],
+      comboItems: [],
+      modifierGroups: []
+    });
+  };
+
+  const handleDeleteProduct = async (id: string, name: string) => {
+    if (!window.confirm(`Tem certeza que deseja excluir permanentemente o produto "${name}"?`)) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`http://localhost:5121/api/products/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      alert("Produto excluído com sucesso!");
+      fetchProducts();
+      if (editingId === id) {
+        handleNewProduct();
+      }
+    } catch (err: any) {
+      alert("Erro ao excluir produto: " + err.message);
+    }
+  };
 
   const handleSave = async () => {
     if (!formData.name || !formData.categoryId) {
@@ -107,8 +230,13 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
         }))
       };
 
-      const res = await fetch('http://localhost:5121/api/products', {
-        method: 'POST',
+      const url = editingId 
+        ? `http://localhost:5121/api/products/${editingId}`
+        : 'http://localhost:5121/api/products';
+      const method = editingId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -121,8 +249,9 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
         throw new Error(err);
       }
 
-      alert("Produto salvo com sucesso!");
-      onClose();
+      alert(editingId ? "Produto atualizado com sucesso!" : "Produto salvo com sucesso!");
+      fetchProducts();
+      handleNewProduct();
     } catch (err: any) {
       alert("Erro ao salvar produto: " + err.message);
     }
@@ -132,14 +261,36 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validação de tipo de arquivo
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      alert("Tipo de arquivo inválido. Apenas imagens nos formatos PNG, JPG, JPEG e WEBP são permitidas.");
+      return;
+    }
+
+    // Validação de tamanho (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('A imagem deve ter no máximo 2MB.');
+      alert('A imagem é muito grande. O limite máximo permitido é de 2MB. Otimize a imagem ou envie um arquivo de menor resolução.');
       return;
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData(prev => ({ ...prev, imageBase64: reader.result as string }));
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // Validação de dimensões limites (máximo 2500x2500px)
+        const MAX_WIDTH = 2500;
+        const MAX_HEIGHT = 2500;
+        if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+          alert(`As dimensões da imagem são muito grandes (${img.width}x${img.height}px). O limite sugerido para o sistema é de até ${MAX_WIDTH}x${MAX_HEIGHT}px. Por favor, envie uma imagem com dimensões menores.`);
+          return;
+        }
+        setFormData(prev => ({ ...prev, imageBase64: event.target?.result as string }));
+      };
+      img.onerror = () => {
+        alert("Erro ao decodificar a imagem. O arquivo pode estar corrompido.");
+      };
+      img.src = event.target?.result as string;
     };
     reader.readAsDataURL(file);
   };
@@ -151,6 +302,11 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     { id: 'combos', label: 'Combos', icon: Grip },
     { id: 'pacotes', label: 'Pacotes / Opcionais', icon: Layers }
   ];
+
+  const filteredProducts = productsList.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.categoryName && p.categoryName.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
     <div className="prod-modal-overlay animate-fade-in" onClick={onClose}>
@@ -175,14 +331,57 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
              <div style={{ padding: '1rem', borderBottom: '1px solid var(--border-strong)' }}>
                <div style={{ position: 'relative' }}>
                  <Search size={16} style={{ position: 'absolute', top: '50%', left: '0.75rem', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                 <input type="text" placeholder="Buscar produto..." style={{ width: '100%', padding: '0.5rem 1rem 0.5rem 2.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)' }} />
+                 <input 
+                   type="text" 
+                   placeholder="Buscar produto..." 
+                   value={searchTerm}
+                   onChange={e => setSearchTerm(e.target.value)}
+                   style={{ width: '100%', padding: '0.5rem 1rem 0.5rem 2.25rem', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)' }} 
+                 />
                </div>
-               <button className="prod-btn prod-btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={() => setEditingId(null)}>
+               <button className="prod-btn prod-btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={handleNewProduct}>
                  <Plus size={16} /> Novo Produto
                </button>
              </div>
              <div style={{ padding: '1rem', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <p style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.85rem', marginTop: '2rem' }}>A lista completa de produtos renderizará aqui.</p>
+                {filteredProducts.length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.85rem', marginTop: '2rem' }}>Nenhum produto encontrado.</p>
+                ) : (
+                  filteredProducts.map((prod) => (
+                    <div 
+                      key={prod.id} 
+                      className={`prod-item-row ${editingId === prod.id ? 'active' : ''}`}
+                      onClick={() => handleEditStart(prod.id)}
+                    >
+                      <div className="prod-item-thumb">
+                        {prod.imageBase64 ? (
+                          <img src={prod.imageBase64} alt={prod.name} />
+                        ) : (
+                          <Package size={16} style={{ color: 'var(--text-muted)' }} />
+                        )}
+                      </div>
+                      <div className="prod-item-details">
+                        <span className="prod-item-name">{prod.name}</span>
+                        <div className="prod-item-sub">
+                          <span className="prod-item-price">R$ {parseFloat(prod.basePrice || 0).toFixed(2)}</span>
+                          <span className="prod-item-category">• {prod.categoryName}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.25rem' }}>
+                          {!prod.isActive && <span className="prod-status-tag tag-inactive">Inativo</span>}
+                          {!prod.isVisible && <span className="prod-status-tag tag-invisible">Invisível</span>}
+                        </div>
+                      </div>
+                      <div className="prod-item-actions" onClick={(e) => e.stopPropagation()}>
+                        <button className="action-btn edit-btn" onClick={() => handleEditStart(prod.id)} title="Editar">
+                          <Pencil size={12} />
+                        </button>
+                        <button className="action-btn delete-btn" onClick={() => handleDeleteProduct(prod.id, prod.name)} title="Excluir">
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
              </div>
           </div>
 
@@ -213,7 +412,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                     {/* Imagem do Produto */}
                     <div className="prod-form-group" style={{ gridColumn: 'span 2' }}>
                       <label>Imagem do Produto</label>
-                      <div className="cat-image-upload-area" onClick={() => document.getElementById('prod-img')?.click()} style={{ height: '140px' }}>
+                      <div className="cat-image-upload-area" onClick={() => document.getElementById('prod-img')?.click()} style={{ width: '150px', height: '150px', borderRadius: 'var(--radius-md)' }}>
                         <input type="file" id="prod-img" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
                         {formData.imageBase64 ? (
                           <div className="cat-image-preview">
@@ -227,6 +426,9 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                           </div>
                         )}
                       </div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>
+                        Dimensão recomendada: proporção 1:1 (quadrada), ex: 400x400px. Limite máximo: 2MB e resolução de até 2500x2500px.
+                      </span>
                     </div>
 
                     {/* Nome e Categoria */}
@@ -286,7 +488,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                     </div>
 
                     {/* Checkboxes e Extras */}
-                    <div className="prod-form-group" style={{ gridColumn: 'span 2', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                    <div className="prod-form-group" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-start' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', margin: 0 }}>
                         <input 
                           type="checkbox" 
@@ -304,6 +506,15 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                           style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
                         />
                         Produto Ativo no Sistema
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', margin: 0 }}>
+                        <input 
+                          type="checkbox" 
+                          checked={formData.isVisible} 
+                          onChange={e => setFormData({...formData, isVisible: e.target.checked})}
+                          style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
+                        />
+                        Visível (Exibir este produto no painel de vendas)
                       </label>
                     </div>
                   </div>

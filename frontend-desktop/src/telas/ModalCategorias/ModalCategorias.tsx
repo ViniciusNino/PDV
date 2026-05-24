@@ -371,7 +371,7 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                       const hasSubs = categories.some(c => c.parentCategoryId === parentCategory.id);
                       const isExpanded = expandedParents.has(parentCategory.id);
                       
-                      const renderRow = (category: Category, isSub: boolean) => {
+                      const renderRow = (category: Category, isSub: boolean, subIndex?: number, parentSeq?: number) => {
                         let rowClasses = editingId === category.id ? 'row-editing ' : '';
                         if (draggedId === category.id) rowClasses += 'dragging-row ';
                         if (dragOverId === category.id && draggedId !== null) {
@@ -390,30 +390,34 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                             onDragEnd={handleDragEnd}
                             onDrop={(e) => handleDrop(e, category.id)}
                           >
-                            <td className="cat-name-cell" style={isSub ? { paddingLeft: '2rem', display: 'flex', alignItems: 'center', gap: '0.25rem' } : { display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <td className="cat-name-cell" style={isSub ? { paddingLeft: '1.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem' } : { display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                               {!isSub && hasSubs && (
                                 <button 
                                   className="order-btn" 
-                                  style={{ padding: '2px', border: 'none', background: 'transparent' }} 
+                                  style={{ padding: '2px', border: 'none', background: 'transparent', width: '18px', display: 'flex', justifyContent: 'center' }} 
                                   onClick={() => toggleExpand(parentCategory.id)}
                                 >
                                   {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                                 </button>
                               )}
-                              {!isSub && !hasSubs && <span style={{ width: '18px' }}></span>}
-                              {isSub && <span style={{ color: 'var(--primary)', marginRight: '4px' }}>└</span>}
-                              <GripVertical size={14} className="cat-drag-handle" style={{ cursor: 'grab', marginRight: '6px' }} />
+                              {!isSub && !hasSubs && <span style={{ width: '18px', display: 'inline-block' }}></span>}
+                              {isSub && <span style={{ color: 'var(--primary)', marginRight: '4px', fontSize: '12px' }}>└</span>}
+                              <GripVertical size={14} className="cat-drag-handle" style={{ cursor: 'grab', marginRight: '6px', flexShrink: 0 }} />
                               <div className="cat-item-thumb">
                                 {category.imageBase64 ? (
                                   <img src={category.imageBase64} alt={category.name} />
                                 ) : (
                                   <Folder size={14} style={{ color: 'var(--text-muted)' }} />
-                                )}
+                                ) }
                               </div>
-                              {category.name}
+                              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{category.name}</span>
                             </td>
                             <td className="cat-desc-cell">{category.description || '-'}</td>
-                            <td className="cat-order-cell">{(category as any).sequence}</td>
+                            <td className="cat-order-cell">
+                              {isSub && subIndex !== undefined && parentSeq !== undefined
+                                ? `${parentSeq}.${subIndex}`
+                                : category.sequence}
+                            </td>
                             <td className="cat-actions-cell">
                               <div className="action-buttons">
                                 <button 
@@ -439,7 +443,10 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                       return (
                         <React.Fragment key={parentCategory.id}>
                           {renderRow(parentCategory, false)}
-                          {isExpanded && categories.filter(c => c.parentCategoryId === parentCategory.id).map(sub => renderRow(sub, true))}
+                          {isExpanded && categories
+                            .filter(c => c.parentCategoryId === parentCategory.id)
+                            .map((sub, index) => renderRow(sub, true, index + 1, parentCategory.sequence))
+                          }
                         </React.Fragment>
                       );
                   })}

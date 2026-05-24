@@ -17,8 +17,11 @@ namespace NinoPDV.Api.Models
         public string? ImageBase64 { get; set; }
         
         public string? Barcode { get; set; }
+        public string? Code { get; set; }
+        public string? Abbreviation { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsVisible { get; set; } = true;
+        public string? PrintTarget { get; set; }
         
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = null!;

@@ -10,5 +10,6 @@ namespace NinoPDV.Api.Models
 
         public SalesChannel Channel { get; set; }
         public decimal Price { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 }

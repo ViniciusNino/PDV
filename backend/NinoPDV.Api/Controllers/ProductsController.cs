@@ -43,6 +43,9 @@ namespace NinoPDV.Api.Controllers
                 IsFractionable = p.IsFractionable,
                 ImageBase64 = p.ImageBase64,
                 Barcode = p.Barcode,
+                Code = p.Code,
+                Abbreviation = p.Abbreviation,
+                PrintTarget = p.PrintTarget,
                 IsActive = p.IsActive,
                 IsVisible = p.IsVisible,
                 CategoryId = p.CategoryId,
@@ -84,14 +87,17 @@ namespace NinoPDV.Api.Controllers
                 IsFractionable = product.IsFractionable,
                 ImageBase64 = product.ImageBase64,
                 Barcode = product.Barcode,
+                Code = product.Code,
+                Abbreviation = product.Abbreviation,
+                PrintTarget = product.PrintTarget,
                 IsActive = product.IsActive,
                 IsVisible = product.IsVisible,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category.Name,
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
-                Prices = product.Prices.Select(p => new ProductPriceDTO { Channel = p.Channel, Price = p.Price }).ToList(),
-                Ingredients = product.Ingredients.Select(i => new ProductCompositionDTO { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity }).ToList(),
+                Prices = product.Prices.Select(p => new ProductPriceDTO { Channel = p.Channel, Price = p.Price, IsVisible = p.IsVisible }).ToList(),
+                Ingredients = product.Ingredients.Select(i => new ProductCompositionDTO { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity, Type = i.Type, AdditionalPrice = i.AdditionalPrice, IsActive = i.IsActive }).ToList(),
                 ComboItems = product.ComboItems.Select(c => new ProductComboDTO { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice }).ToList(),
                 ModifierGroups = product.ModifierGroups.Select(mg => new ModifierGroupDTO
                 {
@@ -134,14 +140,17 @@ namespace NinoPDV.Api.Controllers
                 IsFractionable = request.IsFractionable,
                 ImageBase64 = request.ImageBase64,
                 Barcode = request.Barcode,
+                Code = request.Code,
+                Abbreviation = request.Abbreviation,
+                PrintTarget = request.PrintTarget,
                 IsActive = request.IsActive,
                 IsVisible = request.IsVisible,
                 CategoryId = request.CategoryId
             };
 
             // Map sub-collections
-            product.Prices = request.Prices.Select(p => new ProductPrice { Channel = p.Channel, Price = p.Price }).ToList();
-            product.Ingredients = request.Ingredients.Select(i => new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity }).ToList();
+            product.Prices = request.Prices.Select(p => new ProductPrice { Channel = p.Channel, Price = p.Price, IsVisible = p.IsVisible }).ToList();
+            product.Ingredients = request.Ingredients.Select(i => new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity, Type = i.Type, AdditionalPrice = i.AdditionalPrice, IsActive = i.IsActive }).ToList();
             product.ComboItems = request.ComboItems.Select(c => new ProductCombo { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice }).ToList();
             
             product.ModifierGroups = request.ModifierGroups.Select(mg => new ModifierGroup
@@ -197,6 +206,9 @@ namespace NinoPDV.Api.Controllers
             product.IsFractionable = request.IsFractionable;
             product.ImageBase64 = request.ImageBase64;
             product.Barcode = request.Barcode;
+            product.Code = request.Code;
+            product.Abbreviation = request.Abbreviation;
+            product.PrintTarget = request.PrintTarget;
             product.IsActive = request.IsActive;
             product.IsVisible = request.IsVisible;
 
@@ -204,7 +216,7 @@ namespace NinoPDV.Api.Controllers
             product.Prices.Clear();
             foreach (var p in request.Prices)
             {
-                var newPrice = new ProductPrice { Channel = p.Channel, Price = p.Price };
+                var newPrice = new ProductPrice { Channel = p.Channel, Price = p.Price, IsVisible = p.IsVisible };
                 product.Prices.Add(newPrice);
                 _context.Entry(newPrice).State = EntityState.Added;
             }
@@ -213,7 +225,7 @@ namespace NinoPDV.Api.Controllers
             product.Ingredients.Clear();
             foreach (var i in request.Ingredients)
             {
-                var newComposition = new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity };
+                var newComposition = new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity, Type = i.Type, AdditionalPrice = i.AdditionalPrice, IsActive = i.IsActive };
                 product.Ingredients.Add(newComposition);
                 _context.Entry(newComposition).State = EntityState.Added;
             }

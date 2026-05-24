@@ -14,5 +14,10 @@ namespace NinoPDV.Api.Models
 
         // A quantidade do ingrediente consumida
         public decimal Quantity { get; set; }
+
+        // Novos campos para suportar Composição, Opcional e Adicional
+        public Enums.CompositionType Type { get; set; } = Enums.CompositionType.Fundamental;
+        public decimal AdditionalPrice { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
     }
 }

@@ -9,12 +9,16 @@ namespace NinoPDV.Api.DTOs
     {
         public SalesChannel Channel { get; set; }
         public decimal Price { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 
     public class ProductCompositionDTO
     {
         public Guid IngredientProductId { get; set; }
         public decimal Quantity { get; set; }
+        public CompositionType Type { get; set; } = CompositionType.Fundamental;
+        public decimal AdditionalPrice { get; set; } = 0;
+        public bool IsActive { get; set; } = true;
     }
 
     public class ProductComboDTO
@@ -61,8 +65,11 @@ namespace NinoPDV.Api.DTOs
         public bool IsFractionable { get; set; }
         public string? ImageBase64 { get; set; }
         public string? Barcode { get; set; }
+        public string? Code { get; set; }
+        public string? Abbreviation { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsVisible { get; set; } = true;
+        public string? PrintTarget { get; set; }
         
         [Required]
         public Guid CategoryId { get; set; }

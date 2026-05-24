@@ -42,3 +42,9 @@ Thumbs.db
 # Executables
 *.exe
 
+# Media and Large Files
+*.mp4
+*.avi
+*.mkv
+*.mov
+

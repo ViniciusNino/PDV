@@ -402,27 +402,96 @@
   transform: translateX(-50%) translateY(-4px);
 }
 
-/* Alertas discretos para salvar/erros de produtos */
+/* Alertas discretos para salvar/erros de produtos (Toast Flutuante) */
 .prod-alert {
-  margin: 10px 1.5rem 0 1.5rem;
-  padding: 0.75rem 1rem;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  padding: 0.75rem 1.25rem;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   gap: 0.75rem;
   font-size: 0.9rem;
   line-height: 1.4;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  margin: 0;
+  max-width: 320px;
+  animation: slideIn 0.25s ease-out;
 }
 
 .prod-alert-danger {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(24, 28, 47, 0.95);
   border-left: 4px solid #ef4444;
+  border-top: 1px solid rgba(239, 68, 68, 0.2);
+  border-right: 1px solid rgba(239, 68, 68, 0.2);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
   color: #f87171;
 }
 
 .prod-alert-success {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(24, 28, 47, 0.95);
   border-left: 4px solid #10b981;
+  border-top: 1px solid rgba(16, 185, 129, 0.2);
+  border-right: 1px solid rgba(16, 185, 129, 0.2);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
   color: #34d399;
+}
+
+/* Seletor de Quantidade Customizado */
+.quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-base);
+  overflow: hidden;
+  height: 36px;
+}
+
+.qty-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  width: 32px;
+  height: 100%;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast);
+  user-select: none;
+}
+
+.qty-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.qty-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.qty-btn-minus {
+  border-right: 1px solid var(--border-subtle);
+}
+
+.qty-btn-plus {
+  border-left: 1px solid var(--border-subtle);
+}
+
+.qty-input {
+  width: 50px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
 }
 

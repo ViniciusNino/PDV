@@ -484,6 +484,9 @@ namespace NinoPDV.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("text");
+
                     b.Property<string>("Barcode")
                         .HasColumnType("text");
 
@@ -492,6 +495,9 @@ namespace NinoPDV.Api.Migrations
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
 
                     b.Property<decimal>("CostPrice")
                         .HasColumnType("numeric");
@@ -519,6 +525,9 @@ namespace NinoPDV.Api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrintTarget")
                         .HasColumnType("text");
 
                     b.Property<int>("Type")
@@ -586,11 +595,17 @@ namespace NinoPDV.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("AdditionalPrice")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("IngredientProductId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsSynced")
                         .HasColumnType("boolean");
@@ -600,6 +615,9 @@ namespace NinoPDV.Api.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -629,6 +647,9 @@ namespace NinoPDV.Api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSynced")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsVisible")
                         .HasColumnType("boolean");
 
                     b.Property<decimal>("Price")

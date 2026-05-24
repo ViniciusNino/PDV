@@ -9,15 +9,12 @@ export function TelaAcesseConta() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Fluxo sugerido pelo usuário: após logar, abre o carregamento (setup) e configurações
-    navigate('/setup');
+    navigate('/checkout');
   };
 
   const handleFacebookLogin = () => {
-    // Simulação do fluxo de OAuth
     console.log("Iniciando fluxo de login com Facebook...");
-    // Aqui chamaria a API /api/auth/oauth 
-    navigate('/setup');
+    navigate('/checkout');
   };
 
   React.useEffect(() => {

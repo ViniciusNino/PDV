@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  X, Package, Search, Plus, Save, Settings, Tag, LayoutList, Grip, Layers, UploadCloud, Pencil, Image as ImageIcon, MonitorPlay, LayoutGrid, Truck, Trash2, Edit2, ArrowDown, ArrowUp
+  X, Package, Search, Plus, Save, Settings, Tag, LayoutList, Grip, Layers, UploadCloud, Pencil, MonitorPlay, LayoutGrid, Truck, Trash2
 } from 'lucide-react';
 import './ModalProdutos.css';
 

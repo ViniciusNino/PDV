@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Core Colors - Premium Dark Theme */
-  --bg-base: #0f111a;
-  --bg-surface: #1a1d2d;
-  --bg-surface-hover: #24283b;
+  /* Core Colors - Amber Bistro Dark Theme (Padrão Inicial) */
+  --bg-base: #0f0f12;          /* Preto obsidiana */
+  --bg-surface: #1e1e24;       /* Cinza carvão quente */
+  --bg-surface-hover: #2d2d35;
   
-  --primary: #6366f1; /* Indigo */
-  --primary-hover: #4f46e5;
-  --primary-glow: rgba(99, 102, 241, 0.4);
+  --primary: #ff6b1a;          /* Laranja luminoso */
+  --primary-hover: #ff5a00;
+  --primary-glow: rgba(255, 107, 26, 0.4);
   
-  --accent: #10b981; /* Emerald for success/checkout */
+  --accent: #10b981;           /* Emerald para sucesso/checkout */
   --accent-hover: #059669;
   
   --danger: #ef4444;
   --danger-hover: #dc2626;
 
   /* Typography */
-  --text-primary: #f8fafc;
+  --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #475569;
 
   /* Borders & Shadows */
   --border-subtle: rgba(255, 255, 255, 0.05);
@@ -39,6 +39,178 @@
   --transition-normal: 0.3s ease;
 }
 
+/* ==========================================================================
+   TEMAS EXPLICITOS
+   ========================================================================== */
+
+/* 1. AMBER BISTRO (Padrão) */
+[data-theme="amber-light"] {
+  --bg-base: #FAF8F6;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F3EFEA;
+  --primary: #FF5A00;
+  --primary-hover: #E04F00;
+  --primary-glow: rgba(255, 90, 0, 0.2);
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --danger: #EF4444;
+  --danger-hover: #DC2626;
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --border-subtle: rgba(26, 26, 26, 0.05);
+  --border-strong: rgba(26, 26, 26, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(255, 90, 0, 0.15);
+}
+[data-theme="amber-dark"] {
+  --bg-base: #0F0F12;
+  --bg-surface: #1E1E24;
+  --bg-surface-hover: #2D2D35;
+  --primary: #FF6B1A;
+  --primary-hover: #FF5A00;
+  --primary-glow: rgba(255, 107, 26, 0.4);
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --danger: #F87171;
+  --danger-hover: #EF4444;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #475569;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--primary-glow);
+}
+
+/* 2. MODERN EMERALD */
+[data-theme="emerald-light"] {
+  --bg-base: #F8F9FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F1F3F5;
+  --primary: #00B159;
+  --primary-hover: #009E4F;
+  --primary-glow: rgba(0, 177, 89, 0.2);
+  --accent: #1084F5;
+  --accent-hover: #0E70D2;
+  --danger: #E63946;
+  --danger-hover: #CC323E;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #ADB5BD;
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --border-strong: rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(0, 177, 89, 0.15);
+}
+[data-theme="emerald-dark"] {
+  --bg-base: #121214;
+  --bg-surface: #1A1A1E;
+  --bg-surface-hover: #26262B;
+  --primary: #00C868;
+  --primary-hover: #00B159;
+  --primary-glow: rgba(0, 200, 104, 0.4);
+  --accent: #3897FC;
+  --accent-hover: #1084F5;
+  --danger: #FF4D5B;
+  --danger-hover: #E63946;
+  --text-primary: #F8F9FA;
+  --text-secondary: #A0A5B5;
+  --text-muted: #686D7D;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--primary-glow);
+}
+
+/* 3. INDIGO MINIMALIST */
+[data-theme="indigo-light"] {
+  --bg-base: #F9FAFB;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F3F4F6;
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --primary-glow: rgba(79, 70, 229, 0.15);
+  --accent: #06B6D4;
+  --accent-hover: #0891B2;
+  --danger: #DC2626;
+  --danger-hover: #B91C1C;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
+  --border-subtle: rgba(17, 24, 39, 0.05);
+  --border-strong: rgba(17, 24, 39, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.15);
+}
+[data-theme="indigo-dark"] {
+  --bg-base: #0B0F19;
+  --bg-surface: #151B2C;
+  --bg-surface-hover: #222D44;
+  --primary: #6366F1;
+  --primary-hover: #4F46E5;
+  --primary-glow: rgba(99, 102, 241, 0.4);
+  --accent: #22D3EE;
+  --accent-hover: #06B6D4;
+  --danger: #F87171;
+  --danger-hover: #EF4444;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #4B5563;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--primary-glow);
+}
+
+/* 4. NORDIC GLACIAL */
+[data-theme="nordic-light"] {
+  --bg-base: #F0F4F8;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #E2E8F0;
+  --primary: #0B69A3;
+  --primary-hover: #095482;
+  --primary-glow: rgba(11, 105, 163, 0.2);
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --danger: #D32F2F;
+  --danger-hover: #B71C1C;
+  --text-primary: #102A43;
+  --text-secondary: #486581;
+  --text-muted: #829AB1;
+  --border-subtle: rgba(16, 42, 67, 0.06);
+  --border-strong: rgba(16, 42, 67, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-glow: 0 0 15px rgba(11, 105, 163, 0.15);
+}
+[data-theme="nordic-dark"] {
+  --bg-base: #101F30;
+  --bg-surface: #1B2D42;
+  --bg-surface-hover: #2C3E55;
+  --primary: #47A3F3;
+  --primary-hover: #0B69A3;
+  --primary-glow: rgba(71, 163, 243, 0.4);
+  --accent: #34D399;
+  --accent-hover: #10B981;
+  --danger: #E57373;
+  --danger-hover: #EF5350;
+  --text-primary: #F0F4F8;
+  --text-secondary: #829AB1;
+  --text-muted: #486581;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--primary-glow);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -55,6 +227,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 #root {

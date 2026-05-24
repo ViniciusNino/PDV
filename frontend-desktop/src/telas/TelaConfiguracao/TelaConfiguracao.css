@@ -202,7 +202,11 @@
 }
 
 .date-input {
-  color-scheme: dark; /* Garante que o ícone do calendário e o seletor fiquem visíveis no tema escuro */
+  color-scheme: dark;
+}
+
+[data-theme$="-light"] .date-input {
+  color-scheme: light;
 }
 
 .money-input-wrapper, .search-input-wrapper {
@@ -717,9 +721,90 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+
+/* ==========================================================================
+   AJUSTES CONDICIONAIS PARA TEMA CLARO
+   ========================================================================== */
+[data-theme$="-light"] .spinner {
+  border-color: rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary);
+}
+
+[data-theme$="-light"] .tef-box,
+[data-theme$="-light"] .encryption-box {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme$="-light"] .image-upload-area {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme$="-light"] .tabs-main,
+[data-theme$="-light"] .search-modal-header,
+[data-theme$="-light"] .table-header {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* ==========================================================================
+   ESTILOS PARA TELA CONFIGURAÇÃO COMO MODAL FLUTUANTE
+   ========================================================================== */
+.settings-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.settings-modal-wrapper {
+  width: 850px;
+  max-width: 90%;
+  height: 700px;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+}
+
+.settings-modal-wrapper .settings-card {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.settings-modal-card {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Ajustes de animação */
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+

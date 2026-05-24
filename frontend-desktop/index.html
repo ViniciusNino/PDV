@@ -5,6 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>frontend-desktop</title>
+    <script>
+      (function() {
+        const mode = localStorage.getItem('nino-theme-mode') || 'dark';
+        const palette = localStorage.getItem('nino-theme-palette') || 'amber';
+        document.documentElement.setAttribute('data-theme', `${palette}-${mode}`);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

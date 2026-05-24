@@ -30,22 +30,22 @@ app.whenReady().then(createWindow);
 
 // Gerenciamento de janelas via IPC
 ipcMain.on('set-window-size', (event, { width, height, resizable, maximizable, minimizable, centered }) => {
-  const win = BrowserWindow.getFocusedWindow();
+  const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
   if (win) {
-    win.setSize(width, height);
     win.setResizable(resizable);
     win.setMaximizable(maximizable);
+    win.setSize(width, height);
     win.setMinimizable(minimizable !== undefined ? minimizable : true);
     if (centered) win.center();
   }
 });
 
 ipcMain.on('maximize-window', () => {
-  const win = BrowserWindow.getFocusedWindow();
+  const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
   if (win) {
-    win.maximize();
     win.setResizable(true);
     win.setMaximizable(true);
+    win.maximize();
   }
 });
 

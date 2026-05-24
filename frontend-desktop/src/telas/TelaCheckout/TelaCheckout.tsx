@@ -1,120 +1,119 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { 
-  ShoppingCart, LayoutGrid, ClipboardList, MonitorPlay, Receipt, UtensilsCrossed, 
-  PackageSearch, PackageOpen, Truck, MessageCircle, Cloud, Printer, User, Laptop,
-  Key, X, History, Save, Power, Server, Settings as SettingsIcon, Eraser, List,
-  Monitor, PenTool, Globe, BarChart, ListOrdered, Package, Users, Calendar, 
-  Activity, DollarSign, Scale, TrendingUp, FileText, Info, CreditCard, MapPin, Wallet,
-  Folder, Map, Briefcase, Building, Coins, Building2, HelpCircle, MonitorSpeaker, RefreshCw,
-  ChevronRight, ArrowRightLeft
+  MessageCircle, Cloud, Printer, User, Laptop, ChevronRight
 } from 'lucide-react';
 import './TelaCheckout.css';
 import { ModalCategorias } from '../ModalCategorias/ModalCategorias';
 import { ModalProdutos } from '../ModalProdutos/ModalProdutos';
+import { TelaConfiguracao } from '../TelaConfiguracao/TelaConfiguracao';
 
-const menusData: Record<string, { label: string; shortcut?: string; icon: React.ComponentType<{ size?: number }> | null; hasSub?: boolean }[]> = {
+const menusData: Record<string, { label: string; shortcut?: string; icon: string | null; hasSub?: boolean }[]> = {
   Arquivo: [
-    { label: 'Login...', shortcut: 'Ctrl+L', icon: Key },
-    { label: 'Fechar', shortcut: 'Ctrl+W', icon: X },
-    { label: 'Restaurar...', icon: History },
-    { label: 'Cópia de segurança...', icon: Save },
-    { label: 'Sair', icon: Power }
+    { label: 'Login...', shortcut: 'Ctrl+L', icon: '🔑' },
+    { label: 'Fechar', shortcut: 'Ctrl+W', icon: '❌' },
+    { label: 'Restaurar...', icon: '🔄' },
+    { label: 'Cópia de segurança...', icon: '💾' },
+    { label: 'Sair', icon: '🚪' }
   ],
   Financeiro: [
-    { label: 'Selecionar caixa...', icon: Monitor },
-    { label: 'Abrir caixa...', shortcut: 'Ctrl+Home', icon: Save },
-    { label: 'Fechar caixa...', shortcut: 'Ctrl+End', icon: X },
-    { label: 'Inserir dinheiro...', icon: Coins },
-    { label: 'Registrar despesa...', shortcut: 'Ctrl+Ins', icon: Receipt },
-    { label: 'Realizar sangria...', icon: DollarSign },
-    { label: 'Realizar repasse...', icon: ArrowRightLeft },
-    { label: 'Receitas e despesas', icon: FileText }
+    { label: 'Selecionar caixa...', icon: '🖥️' },
+    { label: 'Abrir caixa...', shortcut: 'Ctrl+Home', icon: '🔓' },
+    { label: 'Fechar caixa...', shortcut: 'Ctrl+End', icon: '🔒' },
+    { label: 'Inserir dinheiro...', icon: '🪙' },
+    { label: 'Registrar despesa...', shortcut: 'Ctrl+Ins', icon: '💸' },
+    { label: 'Realizar sangria...', icon: '💰' },
+    { label: 'Realizar repasse...', icon: '🔃' },
+    { label: 'Receitas e despesas', icon: '📊' }
   ],
   Visualizar: [
-    { label: 'Tela cheia', icon: Monitor },
-    { label: 'Barra de ferramentas', icon: null, hasSub: true },
-    { label: 'Ícones modernos', icon: null },
-    { label: 'Linguagem', icon: Globe, hasSub: true },
-    { label: 'Gerenciamento local', icon: SettingsIcon },
-    { label: 'Site Delivery', icon: Truck }
+    { label: 'Tela cheia', icon: '📺' },
+    { label: 'Barra de ferramentas', icon: '🛠️', hasSub: true },
+    { label: 'Ícones modernos', icon: '✨' },
+    { label: 'Linguagem', icon: '🌐', hasSub: true },
+    { label: 'Gerenciamento local', icon: '⚙️' },
+    { label: 'Site Delivery', icon: '🛵' }
   ],
   Vendas: [
-    { label: 'Mesas', shortcut: 'F3', icon: LayoutGrid },
-    { label: 'Comandas', shortcut: 'F11', icon: ClipboardList },
-    { label: 'Balcão', shortcut: 'F4', icon: MonitorPlay },
-    { label: 'Entrega', shortcut: 'F8', icon: Truck },
-    { label: 'Venda rápida...', shortcut: 'F12', icon: ShoppingCart },
-    { label: 'Fila de pedidos', shortcut: 'Ctrl+O', icon: List }
+    { label: 'Mesas', shortcut: 'F3', icon: '🍽️' },
+    { label: 'Comandas', shortcut: 'F11', icon: '📋' },
+    { label: 'Balcão', shortcut: 'F4', icon: '🥤' },
+    { label: 'Entrega', shortcut: 'F8', icon: '🛵' },
+    { label: 'Venda rápida...', shortcut: 'F12', icon: '🛒' },
+    { label: 'Fila de pedidos', shortcut: 'Ctrl+O', icon: '⏳' }
   ],
   Relatórios: [
-    { label: 'Relatório de vendas', icon: BarChart },
-    { label: 'Relatório de pedidos', icon: ListOrdered },
-    { label: 'Vendas por produto', icon: Package },
-    { label: 'Vendas por vendedor', icon: User },
-    { label: 'Vendas por cliente', icon: Users },
-    { label: 'Vendas por período', icon: Calendar },
-    { label: 'Movimentação do caixa', icon: Activity },
-    { label: 'Pagamento de contas', icon: DollarSign },
-    { label: 'Balanço de contas', icon: Scale },
-    { label: 'Fluxo de caixa', icon: TrendingUp },
-    { label: 'Relatório de cheques', icon: FileText },
-    { label: 'Entregas por entregador', icon: Truck },
-    { label: 'Movimentação de estoque', icon: PackageOpen },
-    { label: 'Relatório de produtos', icon: Info },
-    { label: 'Relatório de funcionários', icon: Users },
-    { label: 'Relatório de clientes', icon: Users },
-    { label: 'Créditos de clientes', icon: CreditCard },
-    { label: 'Relatório de bairros', icon: MapPin },
-    { label: 'Relatório de carteiras', icon: Wallet }
+    { label: 'Relatório de vendas', icon: '📈' },
+    { label: 'Relatório de pedidos', icon: '📋' },
+    { label: 'Vendas por produto', icon: '📦' },
+    { label: 'Vendas por vendedor', icon: '👤' },
+    { label: 'Vendas por cliente', icon: '👥' },
+    { label: 'Vendas por período', icon: '📅' },
+    { label: 'Movimentação do caixa', icon: '📊' },
+    { label: 'Pagamento de contas', icon: '💳' },
+    { label: 'Balanço de contas', icon: '⚖️' },
+    { label: 'Fluxo de caixa', icon: '💸' },
+    { label: 'Relatório de cheques', icon: '📝' },
+    { label: 'Entregas por entregador', icon: '🛵' },
+    { label: 'Movimentação de estoque', icon: '📦' },
+    { label: 'Relatório de produtos', icon: 'ℹ️' },
+    { label: 'Relatório de funcionários', icon: '👥' },
+    { label: 'Relatório de clientes', icon: '👥' },
+    { label: 'Créditos de clientes', icon: '💳' },
+    { label: 'Relatório de bairros', icon: '📍' },
+    { label: 'Relatório de carteiras', icon: '👛' }
   ],
   Cadastro: [
-    { label: 'Produtos', icon: Package },
-    { label: 'Estoque...', icon: PackageOpen },
-    { label: 'Categorias', icon: Folder },
-    { label: 'Fornecedores', icon: Truck },
-    { label: 'Clientes', icon: Users },
-    { label: 'Mesas', icon: LayoutGrid },
-    { label: 'Comandas', icon: ClipboardList },
-    { label: 'Países', icon: Globe },
-    { label: 'Estados', icon: Map },
-    { label: 'Cidades', icon: MapPin },
-    { label: 'Bairros', icon: MapPin },
-    { label: 'Funcionários', icon: Users },
-    { label: 'Funções', icon: Briefcase },
-    { label: 'Contas', icon: Receipt },
-    { label: 'Serviços', icon: PenTool },
-    { label: 'Créditos', icon: CreditCard },
-    { label: 'Formas de pagamento', icon: DollarSign },
-    { label: 'Cartões', icon: CreditCard },
-    { label: 'Bancos', icon: Building },
-    { label: 'Carteiras', icon: Wallet },
-    { label: 'Moedas', icon: Coins },
-    { label: 'Caixas', icon: Monitor },
-    { label: 'Patrimônio', icon: Building2 }
+    { label: 'Produtos', icon: '🍔' },
+    { label: 'Estoque...', icon: '📦' },
+    { label: 'Categorias', icon: '📁' },
+    { label: 'Fornecedores', icon: '🚚' },
+    { label: 'Clientes', icon: '👥' },
+    { label: 'Mesas', icon: '🍽️' },
+    { label: 'Comandas', icon: '📋' },
+    { label: 'Países', icon: '🌐' },
+    { label: 'Estados', icon: '🗺️' },
+    { label: 'Cidades', icon: '🏙️' },
+    { label: 'Bairros', icon: '📍' },
+    { label: 'Funcionários', icon: '👥' },
+    { label: 'Funções', icon: '💼' },
+    { label: 'Contas', icon: '🧾' },
+    { label: 'Serviços', icon: '🛠️' },
+    { label: 'Créditos', icon: '💳' },
+    { label: 'Formas de pagamento', icon: '💵' },
+    { label: 'Cartões', icon: '💳' },
+    { label: 'Bancos', icon: '🏦' },
+    { label: 'Carteiras', icon: '👛' },
+    { label: 'Moedas', icon: '🪙' },
+    { label: 'Caixas', icon: '🖥️' },
+    { label: 'Patrimônio', icon: '🏢' }
   ],
   Configurações: [
-    { label: 'Impressoras...', icon: Printer },
-    { label: 'Computadores e Tablets', icon: Laptop },
-    { label: 'Meu IP...', icon: Globe },
-    { label: 'Conectar ao servidor...', icon: Server },
-    { label: 'Empresa e Sistema...', icon: SettingsIcon },
-    { label: 'Limpar vendas...', icon: Eraser },
-    { label: 'Auditoria', icon: List }
+    { label: 'Impressoras...', icon: '🖨️' },
+    { label: 'Computadores e Tablets', icon: '💻' },
+    { label: 'Meu IP...', icon: '🌐' },
+    { label: 'Conectar ao servidor...', icon: '🔌' },
+    { label: 'Empresa e Sistema...', icon: '⚙️' },
+    { label: 'Limpar vendas...', icon: '🧹' },
+    { label: 'Auditoria', icon: '🔎' }
   ],
   Ajuda: [
-    { label: 'NinoPDV', shortcut: 'F1', icon: HelpCircle },
-    { label: 'Registro...', icon: Key },
-    { label: 'Suporte remoto', icon: MonitorSpeaker },
-    { label: 'Atualizar', icon: RefreshCw },
-    { label: 'Sobre...', icon: Info }
+    { label: 'NinoPDV', shortcut: 'F1', icon: '❓' },
+    { label: 'Registro...', icon: '🔑' },
+    { label: 'Suporte remoto', icon: '🎧' },
+    { label: 'Atualizar', icon: '🔄' },
+    { label: 'Sobre...', icon: 'ℹ️' }
   ]
 };
 
 export function TelaCheckout() {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState<string | null>(null);
   const [activeToolbarItem, setActiveToolbarItem] = React.useState<string>('PDV');
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = React.useState(false);
   const [isProductsModalOpen, setIsProductsModalOpen] = React.useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
 
   const toggleMenu = (menuName: string) => {
     setActiveMenu(prev => prev === menuName ? null : menuName);
@@ -131,6 +130,9 @@ export function TelaCheckout() {
     }
     if (menuName === 'Cadastro' && label === 'Produtos') {
       setIsProductsModalOpen(true);
+    }
+    if (menuName === 'Configurações' && label === 'Empresa e Sistema...') {
+      navigate('/setup');
     }
   };
   
@@ -174,8 +176,8 @@ export function TelaCheckout() {
                       handleDropdownItemClick(menuName, item.label);
                     }}
                   >
-                    <span className="icon">
-                      {item.icon && React.createElement(item.icon, { size: 14 })}
+                    <span className="icon-emoji">
+                      {item.icon || ''}
                     </span>
                     <span className="dropdown-label">{item.label}</span>
                     {item.shortcut && <span className="dropdown-shortcut">{item.shortcut}</span>}
@@ -192,39 +194,43 @@ export function TelaCheckout() {
       <header className="checkout-topbar">
         <div className="toolbar-menu">
           {[
-            { id: 'Mesas', icon: LayoutGrid },
-            { id: 'Comandas', icon: ClipboardList },
-            { id: 'Balcão', icon: MonitorPlay },
-            { id: 'PDV', icon: ShoppingCart }
+            { id: 'Mesas', icon3d: '/icons/3d/mesas.png' },
+            { id: 'Comandas', icon3d: '/icons/3d/comandas.png' },
+            { id: 'Balcão', icon3d: '/icons/3d/balcao.png' },
+            { id: 'PDV', icon3d: '/icons/3d/pdv.png' }
           ].map(item => (
             <button 
               key={item.id}
               className={`toolbar-btn ${activeToolbarItem === item.id ? 'active' : ''}`}
               onClick={() => setActiveToolbarItem(item.id)}
             >
-              <item.icon size={24} />
+              <div className="toolbar-icon-wrapper">
+                <img src={item.icon3d} alt={item.id} className="toolbar-icon-3d" />
+              </div>
               <span>{item.id}</span>
             </button>
           ))}
           <div className="toolbar-divider"></div>
           {[
-            { id: 'Contas', icon: Receipt },
-            { id: 'Contas+', icon: UtensilsCrossed }
+            { id: 'Contas', icon3d: '/icons/3d/contas.png' },
+            { id: 'Contas+', icon3d: '/icons/3d/contasm.png' }
           ].map(item => (
             <button 
               key={item.id}
               className={`toolbar-btn ${activeToolbarItem === item.id ? 'active' : ''}`}
               onClick={() => setActiveToolbarItem(item.id)}
             >
-              <item.icon size={24} />
+              <div className="toolbar-icon-wrapper">
+                <img src={item.icon3d} alt={item.id} className="toolbar-icon-3d" />
+              </div>
               <span>{item.id}</span>
             </button>
           ))}
           <div className="toolbar-divider"></div>
           {[
-            { id: 'Produtos', icon: PackageSearch },
-            { id: 'Estoque', icon: PackageOpen },
-            { id: 'Delivery', icon: Truck }
+            { id: 'Produtos', icon3d: '/icons/3d/produtos.png' },
+            { id: 'Estoque', icon3d: '/icons/3d/estoque.png' },
+            { id: 'Delivery', icon3d: '/icons/3d/delivery.png' }
           ].map(item => (
             <button 
               key={item.id}
@@ -236,7 +242,9 @@ export function TelaCheckout() {
                 }
               }}
             >
-              <item.icon size={24} />
+              <div className="toolbar-icon-wrapper">
+                <img src={item.icon3d} alt={item.id} className="toolbar-icon-3d" />
+              </div>
               <span>{item.id}</span>
             </button>
           ))}
@@ -270,6 +278,9 @@ export function TelaCheckout() {
       )}
       {isProductsModalOpen && (
         <ModalProdutos onClose={() => setIsProductsModalOpen(false)} />
+      )}
+      {isSettingsModalOpen && (
+        <TelaConfiguracao isModal={true} onClose={() => setIsSettingsModalOpen(false)} />
       )}
     </div>
   );

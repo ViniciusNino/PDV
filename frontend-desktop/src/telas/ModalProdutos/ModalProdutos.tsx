@@ -21,6 +21,13 @@ const parseCurrencyToFloat = (value: string | number): number => {
   return parseFloat(clean) || 0;
 };
 
+const formatQuantityDecimal = (value: string): string => {
+  const cleanValue = value.replace(/\D/g, '');
+  if (!cleanValue) return '0,000';
+  const numberValue = parseFloat(cleanValue) / 1000;
+  return numberValue.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+};
+
 interface QuantitySelectorProps {
   value: string | number;
   onChange: (val: string) => void;
@@ -220,9 +227,13 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
         ],
         ingredients: prod.ingredients?.map((i: any) => {
           const matchedProd = productsList.find(p => p.id === i.ingredientProductId);
+          const unit = matchedProd ? matchedProd.unit : 'UN';
+          const qtyStr = (unit === 'KG' || unit === 'LT')
+            ? formatQuantityDecimal((i.quantity * 1000).toFixed(0))
+            : i.quantity?.toString() || '0';
           return {
             ingredientProductId: i.ingredientProductId,
-            quantity: i.quantity?.toString() || '0',
+            quantity: qtyStr,
             type: i.type ?? 0,
             additionalPrice: i.additionalPrice ? formatCurrency((i.additionalPrice * 100).toFixed(0)) : '',
             isActive: i.isActive ?? true,
@@ -337,7 +348,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
         })),
         ingredients: formData.ingredients.map(i => ({
           ingredientProductId: i.ingredientProductId,
-          quantity: parseFloat(i.quantity) || 0,
+          quantity: parseCurrencyToFloat(i.quantity),
           type: i.type,
           additionalPrice: parseCurrencyToFloat(i.additionalPrice),
           isActive: i.isActive
@@ -821,10 +832,20 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                   {/* Linha 1: Select de Ingrediente e Input de Quantidade */}
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end', width: '100%' }}>
                     <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Selecione o item do produto</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Selecione o item do product</span>
                       <select
                         value={selectedIngredientId}
-                        onChange={e => setSelectedIngredientId(e.target.value)}
+                        onChange={e => {
+                          const id = e.target.value;
+                          setSelectedIngredientId(id);
+                          const matched = productsList.find(p => p.id === id);
+                          const unit = matched?.unit || 'UN';
+                          if (unit === 'KG' || unit === 'LT') {
+                            setIngredientQty('0,000');
+                          } else {
+                            setIngredientQty('1');
+                          }
+                        }}
                         className="prod-select"
                         style={{ width: '100%' }}
                       >
@@ -844,17 +865,11 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                           value={ingredientQty}
                           onChange={e => {
                             const unit = productsList.find(p => p.id === selectedIngredientId)?.unit || 'UN';
-                            let val = e.target.value;
-                            if (unit === 'UN') {
-                              val = val.replace(/\D/g, '');
+                            if (unit === 'KG' || unit === 'LT') {
+                              setIngredientQty(formatQuantityDecimal(e.target.value));
                             } else {
-                              val = val.replace(/[^0-9.,]/g, '').replace(',', '.');
-                              const parts = val.split('.');
-                              if (parts.length > 2) {
-                                val = parts[0] + '.' + parts.slice(1).join('');
-                              }
+                              setIngredientQty(e.target.value.replace(/\D/g, ''));
                             }
-                            setIngredientQty(val);
                           }}
                           className="prod-input"
                           style={{ width: '90px', height: '38px', padding: '0.5rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right' }}
@@ -994,14 +1009,10 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                                     value={ing.quantity}
                                     onChange={(e) => {
                                       let val = e.target.value;
-                                      if (unit === 'UN') {
-                                        val = val.replace(/\D/g, '');
+                                      if (unit === 'KG' || unit === 'LT') {
+                                        val = formatQuantityDecimal(val);
                                       } else {
-                                        val = val.replace(/[^0-9.,]/g, '').replace(',', '.');
-                                        const parts = val.split('.');
-                                        if (parts.length > 2) {
-                                          val = parts[0] + '.' + parts.slice(1).join('');
-                                        }
+                                        val = val.replace(/\D/g, '');
                                       }
                                       const newIngs = [...formData.ingredients];
                                       newIngs[originalIdx].quantity = val;

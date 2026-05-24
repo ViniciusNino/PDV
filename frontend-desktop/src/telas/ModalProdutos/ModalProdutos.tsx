@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
 import { 
-  X, Package, Search, Plus, Save, Settings, Tag, LayoutList, Grip, Layers, UploadCloud, Pencil, MonitorPlay, LayoutGrid, Truck, Trash2
+  X, Package, Search, Plus, Save, Settings, Tag, LayoutList, Grip, Layers, UploadCloud, Pencil, MonitorPlay, LayoutGrid, Truck, Trash2, HelpCircle, AlertCircle
 } from 'lucide-react';
 import './ModalProdutos.css';
 
 interface ModalProdutosProps {
   onClose: () => void;
+  isWindowMode?: boolean;
 }
 
-export function ModalProdutos({ onClose }: ModalProdutosProps) {
+export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosProps) {
   const [activeTab, setActiveTab] = useState<string>('geral');
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  // Limpa mensagens após alguns segundos
+  React.useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(''), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  React.useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [productsList, setProductsList] = useState<any[]>([]);
@@ -41,6 +59,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
       maxSelections: number;
       priceRule: number;
       options: Array<{
+        id?: string;
         name: string;
         additionalPrice: string;
         maxQuantity: number;
@@ -123,6 +142,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
           maxSelections: mg.maxSelections,
           priceRule: mg.priceRule,
           options: mg.options?.map((o: any) => ({
+            id: o.id,
             name: o.name,
             additionalPrice: o.additionalPrice?.toString() || '0',
             maxQuantity: o.maxQuantity,
@@ -132,7 +152,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
       });
       setActiveTab('geral');
     } catch (err: any) {
-      alert("Erro ao carregar produto para edição: " + err.message);
+      setError("Erro ao carregar produto para edição: " + err.message);
     }
   };
 
@@ -177,19 +197,19 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
         throw new Error(err);
       }
 
-      alert("Produto excluído com sucesso!");
+      setSuccessMessage("Produto excluído com sucesso!");
       fetchProducts();
       if (editingId === id) {
         handleNewProduct();
       }
     } catch (err: any) {
-      alert("Erro ao excluir produto: " + err.message);
+      setError("Erro ao excluir produto: " + err.message);
     }
   };
 
   const handleSave = async () => {
     if (!formData.name || !formData.categoryId) {
-      alert("Nome e Categoria são obrigatórios.");
+      setError("Nome e Categoria são obrigatórios.");
       return;
     }
 
@@ -215,12 +235,14 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
           fixedPrice: c.fixedPrice ? parseFloat(c.fixedPrice) : null
         })),
         modifierGroups: formData.modifierGroups.map(g => ({
+          id: g.uiId && g.uiId.includes('-') ? g.uiId : null,
           name: g.name,
           minSelections: g.minSelections,
           maxSelections: g.maxSelections,
           priceRule: g.priceRule,
           sequence: 0,
           options: g.options.map((o, idx) => ({
+            id: o.id && o.id.includes('-') ? o.id : null,
             name: o.name,
             additionalPrice: parseFloat(o.additionalPrice) || 0,
             maxQuantity: o.maxQuantity,
@@ -249,11 +271,11 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
         throw new Error(err);
       }
 
-      alert(editingId ? "Produto atualizado com sucesso!" : "Produto salvo com sucesso!");
+      setSuccessMessage(editingId ? "Produto atualizado com sucesso!" : "Produto salvo com sucesso!");
       fetchProducts();
       handleNewProduct();
     } catch (err: any) {
-      alert("Erro ao salvar produto: " + err.message);
+      setError("Erro ao salvar produto: " + err.message);
     }
   };
 
@@ -264,13 +286,13 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     // Validação de tipo de arquivo
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      alert("Tipo de arquivo inválido. Apenas imagens nos formatos PNG, JPG, JPEG e WEBP são permitidas.");
+      setError("Tipo de arquivo inválido. Apenas imagens nos formatos PNG, JPG, JPEG e WEBP são permitidas.");
       return;
     }
 
     // Validação de tamanho (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('A imagem é muito grande. O limite máximo permitido é de 2MB. Otimize a imagem ou envie um arquivo de menor resolução.');
+      setError('A imagem é muito grande. O limite máximo permitido é de 2MB. Otimize a imagem ou envie um arquivo de menor resolução.');
       return;
     }
 
@@ -282,13 +304,13 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
         const MAX_WIDTH = 2500;
         const MAX_HEIGHT = 2500;
         if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
-          alert(`As dimensões da imagem são muito grandes (${img.width}x${img.height}px). O limite sugerido para o sistema é de até ${MAX_WIDTH}x${MAX_HEIGHT}px. Por favor, envie uma imagem com dimensões menores.`);
+          setError(`As dimensões da imagem são muito grandes (${img.width}x${img.height}px). O limite sugerido para o sistema é de até ${MAX_WIDTH}x${MAX_HEIGHT}px. Por favor, envie uma imagem com dimensões menores.`);
           return;
         }
         setFormData(prev => ({ ...prev, imageBase64: event.target?.result as string }));
       };
       img.onerror = () => {
-        alert("Erro ao decodificar a imagem. O arquivo pode estar corrompido.");
+        setError("Erro ao decodificar a imagem. O arquivo pode estar corrompido.");
       };
       img.src = event.target?.result as string;
     };
@@ -308,20 +330,35 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
     (p.categoryName && p.categoryName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  return (
-    <div className="prod-modal-overlay animate-fade-in" onClick={onClose}>
-      <div className="prod-modal-card glass-panel" onClick={(e) => e.stopPropagation()}>
+  const cardBody = (
+    <div className="prod-modal-card glass-panel" onClick={(e) => e.stopPropagation()} style={isWindowMode ? { width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', borderRadius: 0, border: 'none' } : {}}>
         
         {/* Header */}
-        <header className="prod-modal-header">
-          <div className="prod-header-title">
-            <Package size={20} className="text-primary" />
-            <span>Gerenciamento de Produtos</span>
+        {!isWindowMode && (
+          <header className="prod-modal-header">
+            <div className="prod-header-title">
+              <Package size={20} className="text-primary" />
+              <span>Gerenciamento de Produtos</span>
+            </div>
+            <button className="prod-btn-close" onClick={onClose}>
+              <X size={18} />
+            </button>
+          </header>
+        )}
+
+        {/* Mensagens de Notificação */}
+        {error && (
+          <div className="prod-alert prod-alert-danger animate-slide-in">
+            <AlertCircle size={16} />
+            <span>{error}</span>
           </div>
-          <button className="prod-btn-close" onClick={onClose}>
-            <X size={18} />
-          </button>
-        </header>
+        )}
+        {successMessage && (
+          <div className="prod-alert prod-alert-success animate-slide-in">
+            <AlertCircle size={16} />
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         {/* Body */}
         <div className="prod-modal-body">
@@ -411,7 +448,15 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                     
                     {/* Imagem do Produto */}
                     <div className="prod-form-group" style={{ gridColumn: 'span 2' }}>
-                      <label>Imagem do Produto</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <label style={{ margin: 0 }}>Imagem do Produto</label>
+                        <div className="prod-tooltip-container">
+                          <HelpCircle size={14} className="prod-help-icon" style={{ cursor: 'help', color: 'var(--text-muted)' }} />
+                          <div className="prod-tooltip">
+                            Dimensão recomendada: proporção 1:1 (quadrada), ex: 400x400px. Limite máximo: 2MB e resolução de até 2500x2500px.
+                          </div>
+                        </div>
+                      </div>
                       <div className="cat-image-upload-area" onClick={() => document.getElementById('prod-img')?.click()} style={{ width: '150px', height: '150px', borderRadius: 'var(--radius-md)' }}>
                         <input type="file" id="prod-img" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
                         {formData.imageBase64 ? (
@@ -426,9 +471,6 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
                           </div>
                         )}
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>
-                        Dimensão recomendada: proporção 1:1 (quadrada), ex: 400x400px. Limite máximo: 2MB e resolução de até 2500x2500px.
-                      </span>
                     </div>
 
                     {/* Nome e Categoria */}
@@ -859,7 +901,7 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
             </div>
 
             {/* Ações de Salvar Globais do Modal */}
-            <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'flex-end', gap: '1rem', background: 'rgba(30, 41, 59, 0.5)' }}>
+            <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'flex-end', gap: '1rem', background: 'var(--bg-surface-hover)' }}>
                <button className="prod-btn prod-btn-secondary" onClick={onClose}>Cancelar</button>
                <button className="prod-btn prod-btn-primary" onClick={handleSave}><Save size={16} /> Salvar Produto Completo</button>
             </div>
@@ -867,6 +909,15 @@ export function ModalProdutos({ onClose }: ModalProdutosProps) {
 
         </div>
       </div>
-    </div>
+  );
+
+  return (
+    isWindowMode ? (
+      cardBody
+    ) : (
+      <div className="prod-modal-overlay animate-fade-in" onClick={onClose}>
+        {cardBody}
+      </div>
+    )
   );
 }

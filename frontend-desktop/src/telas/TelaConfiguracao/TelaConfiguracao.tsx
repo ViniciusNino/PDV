@@ -6,9 +6,10 @@ import './TelaConfiguracao.css';
 interface TelaConfiguracaoProps {
   isModal?: boolean;
   onClose?: () => void;
+  isWindowMode?: boolean;
 }
 
-export function TelaConfiguracao({ isModal = false, onClose }: TelaConfiguracaoProps) {
+export function TelaConfiguracao({ isModal = false, onClose, isWindowMode = false }: TelaConfiguracaoProps) {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -283,7 +284,7 @@ export function TelaConfiguracao({ isModal = false, onClose }: TelaConfiguracaoP
   };
 
   const handleCancel = () => {
-    if (isModal && onClose) {
+    if (onClose) {
       onClose();
     } else {
       navigate('/account/login');
@@ -362,7 +363,7 @@ export function TelaConfiguracao({ isModal = false, onClose }: TelaConfiguracaoP
         document.documentElement.setAttribute('data-theme', `${themePalette}-${themeMode}`);
 
         if (shouldNavigate) {
-          if (isModal && onClose) {
+          if (onClose) {
             onClose();
           } else {
             navigate('/account/login');
@@ -413,15 +414,17 @@ export function TelaConfiguracao({ isModal = false, onClose }: TelaConfiguracaoP
   const cardBody = (
     <div className={`settings-card glass-panel ${isModal ? 'settings-modal-card' : 'animate-fade-in'}`}>
 
-      <div className="settings-header">
-        <div className="header-info">
-          <Settings size={24} />
-          <h1>Configurações da Empresa e Sistema</h1>
+      {!isWindowMode && (
+        <div className="settings-header">
+          <div className="header-info">
+            <Settings size={24} />
+            <h1>Configurações da Empresa e Sistema</h1>
+          </div>
+          <button className="btn-close-settings" onClick={handleCancel}>
+            <X size={24} />
+          </button>
         </div>
-        <button className="btn-close-settings" onClick={handleCancel}>
-          <X size={24} />
-        </button>
-      </div>
+      )}
 
       <div className="tabs-main">
         {['Empresa', 'Impressão', 'Sistema', 'E-mail'].map(tab => (

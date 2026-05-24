@@ -16,9 +16,10 @@ interface Category {
 
 interface ModalCategoriasProps {
   onClose: () => void;
+  isWindowMode?: boolean;
 }
 
-export function ModalCategorias({ onClose }: ModalCategoriasProps) {
+export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategoriasProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -293,7 +294,6 @@ export function ModalCategorias({ onClose }: ModalCategoriasProps) {
       fetchCategories(); // Recarrega se falhou
     }
   };
-
   const handleDragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
     setDraggedId(null);
     setDragOverId(null);
@@ -302,11 +302,11 @@ export function ModalCategorias({ onClose }: ModalCategoriasProps) {
     }
   };
 
-  return (
-    <div className="cat-modal-overlay animate-fade-in" onClick={onClose}>
-      <div className="cat-modal-card glass-panel" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header do Modal */}
+  const cardBody = (
+    <div className="cat-modal-card glass-panel" onClick={(e) => e.stopPropagation()} style={isWindowMode ? { width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', borderRadius: 0, border: 'none' } : {}}>
+      
+      {/* Header do Modal */}
+      {!isWindowMode && (
         <header className="cat-modal-header">
           <div className="cat-header-title">
             <Folder size={20} className="cat-folder-icon" />
@@ -316,272 +316,267 @@ export function ModalCategorias({ onClose }: ModalCategoriasProps) {
             <X size={18} />
           </button>
         </header>
+      )}
 
-        {/* Mensagens de Notificação */}
-        {error && (
-          <div className="cat-alert cat-alert-danger animate-slide-in">
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
-        {successMessage && (
-          <div className="cat-alert cat-alert-success animate-slide-in">
-            <AlertCircle size={16} />
-            <span>{successMessage}</span>
-          </div>
-        )}
+      {/* Mensagens de Notificação */}
+      {error && (
+        <div className="cat-alert cat-alert-danger animate-slide-in">
+          <AlertCircle size={16} />
+          <span>{error}</span>
+        </div>
+      )}
+      {successMessage && (
+        <div className="cat-alert cat-alert-success animate-slide-in">
+          <AlertCircle size={16} />
+          <span>{successMessage}</span>
+        </div>
+      )}
 
-        {/* Corpo do Modal (Layout em 2 Colunas) */}
-        <div className="cat-modal-body">
-          
-          {/* Coluna Esquerda: Listagem */}
-          <div className="cat-list-column">
-            <div className="cat-section-header">
-              <span className="cat-section-title">Categorias Cadastradas</span>
-              <span className="cat-counter">Total: {categories.length}</span>
+      {/* Corpo do Modal (Layout em 2 Colunas) */}
+      <div className="cat-modal-body">
+        
+        {/* Coluna Esquerda: Listagem */}
+        <div className="cat-list-column">
+          <div className="cat-section-header">
+            <span className="cat-section-title">Categorias Cadastradas</span>
+            <span className="cat-counter">Total: {categories.length}</span>
+          </div>
+
+          {isLoading ? (
+            <div className="cat-loading-state">
+              <Loader2 size={32} className="cat-spinner" />
+              <span>Carregando categorias...</span>
             </div>
-
-            {isLoading ? (
-              <div className="cat-loading-state">
-                <Loader2 size={32} className="cat-spinner" />
-                <span>Carregando categorias...</span>
-              </div>
-            ) : categories.length === 0 ? (
-              <div className="cat-empty-state">
-                <Folder size={48} className="cat-empty-icon" />
-                <p>Nenhuma categoria cadastrada.</p>
-                <span>Utilize o formulário ao lado para adicionar a primeira categoria do cardápio!</span>
-              </div>
-            ) : (
-              <div className="cat-table-wrapper">
-                <table className="cat-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '40%' }}>Nome</th>
-                      <th style={{ width: '35%' }}>Descrição</th>
-                      <th style={{ width: '12%', textAlign: 'center' }}>Posição</th>
-                      <th style={{ width: '13%', textAlign: 'center' }}>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categories
-                      .filter(c => !c.parentCategoryId)
-                      .map((parentCategory) => {
-                        const hasSubs = categories.some(c => c.parentCategoryId === parentCategory.id);
-                        const isExpanded = expandedParents.has(parentCategory.id);
-                        
-                        const renderRow = (category: Category, isSub: boolean) => {
-                          let rowClasses = editingId === category.id ? 'row-editing ' : '';
-                          if (draggedId === category.id) rowClasses += 'dragging-row ';
-                          if (dragOverId === category.id && draggedId !== null) {
-                            const dIdx = categories.findIndex(c => c.id === draggedId);
-                            const oIdx = categories.findIndex(c => c.id === category.id);
-                            rowClasses += dIdx < oIdx ? 'drop-target-bottom ' : 'drop-target-top ';
-                          }
-                          
-                          return (
-                            <tr 
-                              key={category.id} 
-                              className={rowClasses.trim()}
-                              draggable
-                              onDragStart={(e) => handleDragStart(e, category.id)}
-                              onDragOver={(e) => handleDragOver(e, category.id)}
-                              onDrop={(e) => handleDrop(e, category.id)}
-                              onDragEnd={handleDragEnd}
-                              onDragEnter={(e) => { e.preventDefault(); setDragOverId(category.id); }}
-                            >
-                              <td className="cat-name-cell">
-                                <div className="cat-name-flex" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: isSub ? '1.5rem' : '0' }}>
-                                  {!isSub && (
-                                    <div style={{ width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                      {hasSubs && (
-                                        <button 
-                                          type="button"
-                                          onClick={(e) => { e.stopPropagation(); toggleExpand(category.id); }}
-                                          style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0, display: 'flex', transition: 'color 0.2s' }}
-                                          title={isExpanded ? "Recolher subcategorias" : "Expandir subcategorias"}
-                                        >
-                                          {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                                        </button>
-                                      )}
-                                    </div>
-                                  )}
-                                  {isSub && (
-                                    <span style={{ color: 'var(--text-muted)' }}>↳</span>
-                                  )}
-                                  <div className="cat-thumb-wrapper" style={{ width: '32px', height: '32px', borderRadius: '4px', overflow: 'hidden', background: 'var(--bg-tertiary)', flexShrink: 0 }}>
-                                    {category.imageBase64 ? (
-                                      <img src={category.imageBase64} alt="Categoria" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    ) : (
-                                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <ImageIcon size={16} className="text-muted" />
-                                      </div>
-                                    )}
-                                  </div>
-                                  <span className="cat-name-text">{category.name}</span>
-                                </div>
-                              </td>
-                              <td className="cat-desc-cell">{category.description || '-'}</td>
-                              <td className="cat-order-cell">
-                                <div className="order-actions" style={{ cursor: 'grab' }} title="Arraste para reordenar">
-                                  <GripVertical size={20} className="cat-drag-handle" />
-                                </div>
-                              </td>
-                              <td className="cat-actions-cell">
-                                <div className="action-buttons">
-                                  <button 
-                                    className="action-btn edit-btn" 
-                                    onClick={() => handleEditStart(category)}
-                                    title="Editar"
-                                  >
-                                    <Pencil size={14} />
-                                  </button>
-                                  <button 
-                                    className="action-btn delete-btn" 
-                                    onClick={() => handleDeleteTrigger(category.id, category.name)}
-                                    title="Excluir"
-                                  >
-                                    <Trash2 size={14} />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        };
+          ) : categories.length === 0 ? (
+            <div className="cat-empty-state">
+              <Folder size={48} className="cat-empty-icon" />
+              <p>Nenhuma categoria cadastrada.</p>
+              <span>Utilize o formulário ao lado para adicionar a primeira categoria do cardápio!</span>
+            </div>
+          ) : (
+            <div className="cat-table-wrapper">
+              <table className="cat-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '40%' }}>Nome</th>
+                    <th style={{ width: '35%' }}>Descrição</th>
+                    <th style={{ width: '12%', textAlign: 'center' }}>Posição</th>
+                    <th style={{ width: '13%', textAlign: 'center' }}>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories
+                    .filter(c => !c.parentCategoryId)
+                    .map((parentCategory) => {
+                      const hasSubs = categories.some(c => c.parentCategoryId === parentCategory.id);
+                      const isExpanded = expandedParents.has(parentCategory.id);
+                      
+                      const renderRow = (category: Category, isSub: boolean) => {
+                        let rowClasses = editingId === category.id ? 'row-editing ' : '';
+                        if (draggedId === category.id) rowClasses += 'dragging-row ';
+                        if (dragOverId === category.id && draggedId !== null) {
+                          const dIdx = categories.findIndex(c => c.id === draggedId);
+                          const oIdx = categories.findIndex(c => c.id === category.id);
+                          rowClasses += dIdx < oIdx ? 'drop-target-bottom ' : 'drop-target-top ';
+                        }
 
                         return (
-                          <React.Fragment key={parentCategory.id}>
-                            {renderRow(parentCategory, false)}
-                            {isExpanded && categories.filter(c => c.parentCategoryId === parentCategory.id).map(sub => renderRow(sub, true))}
-                          </React.Fragment>
+                          <tr 
+                            key={category.id} 
+                            className={rowClasses || undefined}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, category.id)}
+                            onDragOver={(e) => handleDragOver(e, category.id)}
+                            onDragEnd={handleDragEnd}
+                            onDrop={(e) => handleDrop(e, category.id)}
+                          >
+                            <td className="cat-name-cell" style={isSub ? { paddingLeft: '2rem', display: 'flex', alignItems: 'center', gap: '0.25rem' } : { display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              {!isSub && hasSubs && (
+                                <button 
+                                  className="order-btn" 
+                                  style={{ padding: '2px', border: 'none', background: 'transparent' }} 
+                                  onClick={() => toggleExpand(parentCategory.id)}
+                                >
+                                  {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                </button>
+                              )}
+                              {!isSub && !hasSubs && <span style={{ width: '18px' }}></span>}
+                              {isSub && <span style={{ color: 'var(--primary)', marginRight: '4px' }}>└</span>}
+                              <GripVertical size={14} className="cat-drag-handle" style={{ cursor: 'grab', marginRight: '6px' }} />
+                              <div className="cat-item-thumb">
+                                {category.imageBase64 ? (
+                                  <img src={category.imageBase64} alt={category.name} />
+                                ) : (
+                                  <Folder size={14} style={{ color: 'var(--text-muted)' }} />
+                                )}
+                              </div>
+                              {category.name}
+                            </td>
+                            <td className="cat-desc-cell">{category.description || '-'}</td>
+                            <td className="cat-order-cell">{(category as any).sequence}</td>
+                            <td className="cat-actions-cell">
+                              <div className="action-buttons">
+                                <button 
+                                  className="action-btn edit-btn" 
+                                  onClick={() => handleEditStart(category)}
+                                  title="Editar"
+                                >
+                                  <Pencil size={14} />
+                                </button>
+                                <button 
+                                  className="action-btn delete-btn" 
+                                  onClick={() => handleDeleteTrigger(category.id, category.name)}
+                                  title="Excluir"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
                         );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                      };
 
-          {/* Coluna Direita: Formulário de Inclusão/Edição */}
-          <div className="cat-form-column">
-            <div className="cat-section-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span className="cat-section-title">
-                {editingId ? 'Editar Categoria' : 'Nova Categoria'}
-              </span>
-              <div className="cat-tooltip-container">
-                <HelpCircle size={16} className="cat-help-icon" />
-                <div className="cat-tooltip">
-                  As categorias definem como os produtos são agrupados no cardápio de vendas do PDV. A posição das categorias reflete a ordem em que aparecem no painel rápido.
-                </div>
+                      return (
+                        <React.Fragment key={parentCategory.id}>
+                          {renderRow(parentCategory, false)}
+                          {isExpanded && categories.filter(c => c.parentCategoryId === parentCategory.id).map(sub => renderRow(sub, true))}
+                        </React.Fragment>
+                      );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Coluna Direita: Formulário de Inclusão/Edição */}
+        <div className="cat-form-column">
+          <div className="cat-section-header" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span className="cat-section-title">
+              {editingId ? 'Editar Categoria' : 'Nova Categoria'}
+            </span>
+            <div className="cat-tooltip-container">
+              <HelpCircle size={16} className="cat-help-icon" />
+              <div className="cat-tooltip">
+                As categorias definem como os produtos são agrupados no cardápio de vendas do PDV. A posição das categorias reflete a ordem em que aparecem no painel rápido.
               </div>
             </div>
-
-            <form onSubmit={handleSubmit} className="cat-form">
-              <div className="cat-form-group">
-                <label>Imagem da Categoria (Opcional)</label>
-                <div className="cat-image-upload-area" onClick={() => document.getElementById('cat-image-input')?.click()}>
-                  <input 
-                    type="file" 
-                    id="cat-image-input" 
-                    accept="image/*" 
-                    onChange={handleImageUpload} 
-                    style={{ display: 'none' }}
-                  />
-                  {imageBase64 ? (
-                    <div className="cat-image-preview">
-                      <img src={imageBase64} alt="Preview" />
-                      <div className="cat-image-overlay">
-                        <Pencil size={20} />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="cat-image-placeholder">
-                      <UploadCloud size={28} />
-                      <span>Clique para enviar foto</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="cat-form-group">
-                <label htmlFor="cat-parent">Categoria Principal (Opcional)</label>
-                <select 
-                  id="cat-parent"
-                  value={parentCategoryId}
-                  onChange={(e) => setParentCategoryId(e.target.value)}
-                  disabled={isSaving}
-                  className="cat-select"
-                >
-                  <option value="">Nenhuma (Categoria Principal)</option>
-                  {categories.filter(c => c.id !== editingId && !c.parentCategoryId).map(parent => (
-                    <option key={parent.id} value={parent.id}>
-                      {parent.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="cat-form-group">
-                <label htmlFor="cat-name">Nome da Categoria *</label>
-                <input 
-                  type="text" 
-                  id="cat-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ex: Bebidas, Pizzas, Sobremesas"
-                  maxLength={50}
-                  required
-                  disabled={isSaving}
-                  autoComplete="off"
-                />
-              </div>
-
-              <div className="cat-form-group">
-                <label htmlFor="cat-desc">Descrição (Opcional)</label>
-                <textarea 
-                  id="cat-desc"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Breve descrição dos itens pertencentes a esta categoria"
-                  maxLength={200}
-                  rows={4}
-                  disabled={isSaving}
-                />
-              </div>
-
-              <div className="cat-form-actions">
-                {editingId && (
-                  <button 
-                    type="button" 
-                    className="cat-btn cat-btn-secondary"
-                    onClick={handleEditCancel}
-                    disabled={isSaving}
-                  >
-                    Cancelar
-                  </button>
-                )}
-                <button 
-                  type="submit" 
-                  className="cat-btn cat-btn-primary"
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <>
-                      <Loader2 size={16} className="cat-spinner" />
-                      <span>Salvando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save size={16} />
-                      <span>Salvar Categoria</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-
-
           </div>
+
+          <form onSubmit={handleSubmit} className="cat-form">
+            <div className="cat-form-group">
+              <label>Nome da Categoria <span style={{ color: '#ff4a4a' }}>*</span>:</label>
+              <input 
+                type="text" 
+                value={name} 
+                onChange={(e) => setName(e.target.value)} 
+                placeholder="Ex: Bebidas, Sobremesas"
+                disabled={isSaving}
+              />
+            </div>
+
+            <div className="cat-form-group">
+              <label>Descrição:</label>
+              <textarea 
+                value={description} 
+                onChange={(e) => setDescription(e.target.value)} 
+                placeholder="Uma breve descrição da categoria..."
+                rows={3}
+                disabled={isSaving}
+              />
+            </div>
+
+            <div className="cat-form-group">
+              <label>Categoria Pai (Opcional):</label>
+              <select 
+                value={parentCategoryId} 
+                onChange={(e) => setParentCategoryId(e.target.value)}
+                disabled={isSaving || editingId !== null}
+                className="cat-select"
+              >
+                <option value="">Nenhuma (Categoria Principal)</option>
+                {categories
+                  .filter(c => !c.parentCategoryId && c.id !== editingId)
+                  .map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))
+                }
+              </select>
+            </div>
+
+            <div className="cat-form-group">
+              <label>Imagem da Categoria:</label>
+              <div 
+                className="cat-image-upload-area"
+                onClick={() => document.getElementById('cat-image-input')?.click()}
+                style={{ width: '150px', height: '150px', borderRadius: 'var(--radius-md)' }}
+              >
+                <input 
+                  type="file" 
+                  id="cat-image-input" 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  style={{ display: 'none' }}
+                  disabled={isSaving}
+                />
+                
+                {imageBase64 ? (
+                  <div className="cat-image-preview">
+                    <img src={imageBase64} alt="Preview" />
+                    <div className="cat-image-overlay">
+                      <Pencil size={20} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="cat-image-placeholder">
+                    <UploadCloud size={28} />
+                    <span>Clique para enviar foto</span>
+                  </div>
+                )}
+              </div>
+              {imageBase64 && (
+                <button 
+                  type="button" 
+                  className="cat-btn cat-btn-secondary" 
+                  style={{ marginTop: '0.5rem', width: '150px', padding: '4px', fontSize: '0.8rem' }}
+                  onClick={(e) => { e.stopPropagation(); setImageBase64(''); }}
+                  disabled={isSaving}
+                >
+                  Excluir Imagem
+                </button>
+              )}
+            </div>
+
+            <div className="cat-form-actions">
+              {editingId && (
+                <button 
+                  type="button" 
+                  className="cat-btn cat-btn-secondary"
+                  onClick={handleEditCancel}
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </button>
+              )}
+              <button 
+                type="submit" 
+                className="cat-btn cat-btn-primary"
+                disabled={isSaving}
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 size={16} className="cat-spinner" />
+                    <span>Salvando...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span>Salvar Categoria</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
 
         </div>
 
@@ -621,5 +616,15 @@ export function ModalCategorias({ onClose }: ModalCategoriasProps) {
         </div>
       )}
     </div>
+  );
+
+  return (
+    isWindowMode ? (
+      cardBody
+    ) : (
+      <div className="cat-modal-overlay animate-fade-in" onClick={onClose}>
+        {cardBody}
+      </div>
+    )
   );
 }

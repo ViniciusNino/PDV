@@ -200,17 +200,32 @@ namespace NinoPDV.Api.Controllers
             product.IsActive = request.IsActive;
             product.IsVisible = request.IsVisible;
 
-            // Update Prices (Full replace is fine since they have no nested dependencies)
-            _context.ProductPrices.RemoveRange(product.Prices);
-            product.Prices = request.Prices.Select(p => new ProductPrice { Channel = p.Channel, Price = p.Price }).ToList();
+            // Update Prices (Using Clear/Add pattern to prevent ChangeTracker conflicts)
+            product.Prices.Clear();
+            foreach (var p in request.Prices)
+            {
+                var newPrice = new ProductPrice { Channel = p.Channel, Price = p.Price };
+                product.Prices.Add(newPrice);
+                _context.Entry(newPrice).State = EntityState.Added;
+            }
 
-            // Update Ingredients (Full replace)
-            _context.ProductCompositions.RemoveRange(product.Ingredients);
-            product.Ingredients = request.Ingredients.Select(i => new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity }).ToList();
+            // Update Ingredients (Using Clear/Add pattern)
+            product.Ingredients.Clear();
+            foreach (var i in request.Ingredients)
+            {
+                var newComposition = new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity };
+                product.Ingredients.Add(newComposition);
+                _context.Entry(newComposition).State = EntityState.Added;
+            }
 
-            // Update ComboItems (Full replace)
-            _context.ProductCombos.RemoveRange(product.ComboItems);
-            product.ComboItems = request.ComboItems.Select(c => new ProductCombo { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice }).ToList();
+            // Update ComboItems (Using Clear/Add pattern)
+            product.ComboItems.Clear();
+            foreach (var c in request.ComboItems)
+            {
+                var newCombo = new ProductCombo { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice };
+                product.ComboItems.Add(newCombo);
+                _context.Entry(newCombo).State = EntityState.Added;
+            }
 
             // Update Modifier Groups (Diff logic to prevent breaking foreign keys if used elsewhere)
             var existingGroups = product.ModifierGroups.ToList();
@@ -218,6 +233,10 @@ namespace NinoPDV.Api.Controllers
 
             // Remove deleted groups
             var groupsToRemove = existingGroups.Where(mg => !newGroupIds.Contains(mg.Id)).ToList();
+            foreach (var group in groupsToRemove)
+            {
+                _context.ModifierOptions.RemoveRange(group.Options);
+            }
             _context.ModifierGroups.RemoveRange(groupsToRemove);
 
             foreach (var reqMg in request.ModifierGroups)
@@ -252,21 +271,23 @@ namespace NinoPDV.Api.Controllers
                         }
                         else
                         {
-                            existingGroup.Options.Add(new ModifierOption
+                            var newOption = new ModifierOption
                             {
                                 Name = reqOpt.Name,
                                 ProductId = reqOpt.ProductId,
                                 AdditionalPrice = reqOpt.AdditionalPrice,
                                 MaxQuantity = reqOpt.MaxQuantity,
                                 Sequence = reqOpt.Sequence
-                            });
+                            };
+                            existingGroup.Options.Add(newOption);
+                            _context.Entry(newOption).State = EntityState.Added;
                         }
                     }
                 }
                 else
                 {
                     // Add new group
-                    product.ModifierGroups.Add(new ModifierGroup
+                    var newGroup = new ModifierGroup
                     {
                         Name = reqMg.Name,
                         MinSelections = reqMg.MinSelections,
@@ -281,7 +302,9 @@ namespace NinoPDV.Api.Controllers
                             MaxQuantity = o.MaxQuantity,
                             Sequence = o.Sequence
                         }).ToList()
-                    });
+                    };
+                    product.ModifierGroups.Add(newGroup);
+                    _context.Entry(newGroup).State = EntityState.Added;
                 }
             }
 

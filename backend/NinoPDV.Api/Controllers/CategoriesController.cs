@@ -61,9 +61,13 @@ namespace NinoPDV.Api.Controllers
                 return BadRequest("Já existe uma categoria com este nome.");
             }
 
-            // Calcula o maior Sequence existente para colocar no final
-            var maxSeq = await _context.Categories.AnyAsync()
-                ? await _context.Categories.MaxAsync(c => c.Sequence)
+            // Calcula o maior Sequence existente para colocar no final dentro do mesmo nível (principal ou subcategoria)
+            var maxSeq = await _context.Categories
+                .Where(c => c.ParentCategoryId == request.ParentCategoryId)
+                .AnyAsync()
+                ? await _context.Categories
+                    .Where(c => c.ParentCategoryId == request.ParentCategoryId)
+                    .MaxAsync(c => c.Sequence)
                 : -1;
 
             if (request.ParentCategoryId.HasValue)
@@ -180,19 +184,18 @@ namespace NinoPDV.Api.Controllers
         [HttpPut("reorder")]
         public async Task<IActionResult> ReorderCategories(ReorderCategoriesRequest request)
         {
-            if (request.OrderedIds == null || request.OrderedIds.Count == 0)
+            if (request.Items == null || request.Items.Count == 0)
             {
-                return BadRequest("Lista de IDs de ordenação inválida.");
+                return BadRequest("Lista de itens de ordenação inválida.");
             }
 
-            // Atualiza sequencialmente cada categoria no banco
-            for (int i = 0; i < request.OrderedIds.Count; i++)
+            // Atualiza a propriedade Sequence no banco para cada item enviado
+            foreach (var item in request.Items)
             {
-                var id = request.OrderedIds[i];
-                var category = await _context.Categories.FindAsync(id);
+                var category = await _context.Categories.FindAsync(item.Id);
                 if (category != null)
                 {
-                    category.Sequence = i;
+                    category.Sequence = item.Sequence;
                     category.UpdatedAt = DateTime.UtcNow;
                 }
             }

@@ -249,7 +249,15 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (draggedId === null || draggedId === id) return;
-    setDragOverId(id);
+    
+    // Só permite o drop se pertencerem ao mesmo nível (ambos principais ou subcategorias do mesmo pai)
+    const draggedCat = categories.find(c => c.id === draggedId);
+    const targetCat = categories.find(c => c.id === id);
+    if (draggedCat && targetCat && draggedCat.parentCategoryId === targetCat.parentCategoryId) {
+      setDragOverId(id);
+    } else {
+      setDragOverId(null);
+    }
   };
 
   const handleDrop = async (e: React.DragEvent<HTMLTableRowElement>, dropId: string) => {
@@ -260,30 +268,54 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
       return;
     }
 
-    const updatedCategories = [...categories];
-    const draggedIndex = updatedCategories.findIndex(c => c.id === draggedId);
-    const dropIndex = updatedCategories.findIndex(c => c.id === dropId);
+    const draggedCat = categories.find(c => c.id === draggedId);
+    const dropCat = categories.find(c => c.id === dropId);
+    
+    if (!draggedCat || !dropCat || draggedCat.parentCategoryId !== dropCat.parentCategoryId) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+
+    // 1. Filtrar as categorias do mesmo nível e ordená-las pela sequência atual
+    const sameLevelCats = categories
+      .filter(c => c.parentCategoryId === draggedCat.parentCategoryId)
+      .sort((a, b) => a.sequence - b.sequence);
+    
+    // 2. Reordenar na lista do mesmo nível
+    const draggedIndex = sameLevelCats.findIndex(c => c.id === draggedId);
+    const dropIndex = sameLevelCats.findIndex(c => c.id === dropId);
     
     if (draggedIndex === -1 || dropIndex === -1) return;
-
-    const draggedItem = updatedCategories[draggedIndex];
-    updatedCategories.splice(draggedIndex, 1);
-    updatedCategories.splice(dropIndex, 0, draggedItem);
     
+    const [draggedItem] = sameLevelCats.splice(draggedIndex, 1);
+    sameLevelCats.splice(dropIndex, 0, draggedItem);
+    
+    // 3. Atualizar as sequências consecutivas (0, 1, 2...) para o mesmo nível
+    sameLevelCats.forEach((c, idx) => {
+      c.sequence = idx;
+    });
+
+    // 4. Mesclar de volta na lista global de categorias
+    const updatedCategories = categories.map(c => {
+      const matched = sameLevelCats.find(slc => slc.id === c.id);
+      return matched ? matched : c;
+    });
+
     setCategories(updatedCategories);
     setDraggedId(null);
     setDragOverId(null);
 
-    // Salva ordem no banco
+    // 5. Salvar a nova ordenação no banco de dados com o formato { id, sequence }
     try {
-      const orderedIds = updatedCategories.map(c => c.id);
+      const items = updatedCategories.map(c => ({ id: c.id, sequence: c.sequence }));
       const response = await fetch('http://localhost:5121/api/categories/reorder', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ orderedIds })
+        body: JSON.stringify({ items })
       });
 
       if (!response.ok) {
@@ -367,6 +399,7 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                 <tbody>
                   {categories
                     .filter(c => !c.parentCategoryId)
+                    .sort((a, b) => a.sequence - b.sequence)
                     .map((parentCategory) => {
                       const hasSubs = categories.some(c => c.parentCategoryId === parentCategory.id);
                       const isExpanded = expandedParents.has(parentCategory.id);
@@ -412,7 +445,7 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                               </div>
                               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{category.name}</span>
                             </td>
-                            <td className="cat-desc-cell">{category.description || '-'}</td>
+                            <td className="cat-desc-cell" title={category.description || undefined}>{category.description || '-'}</td>
                             <td className="cat-order-cell">
                               {isSub && subIndex !== undefined && parentSeq !== undefined
                                 ? `${parentSeq}.${subIndex}`
@@ -445,6 +478,7 @@ export function ModalCategorias({ onClose, isWindowMode = false }: ModalCategori
                           {renderRow(parentCategory, false)}
                           {isExpanded && categories
                             .filter(c => c.parentCategoryId === parentCategory.id)
+                            .sort((a, b) => a.sequence - b.sequence)
                             .map((sub, index) => renderRow(sub, true, index + 1, parentCategory.sequence))
                           }
                         </React.Fragment>

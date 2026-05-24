@@ -28,6 +28,23 @@ const formatQuantityDecimal = (value: string): string => {
   return numberValue.toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 };
 
+const getNextProductCode = (products: any[]): string => {
+  if (!products || products.length === 0) return '1';
+  
+  const numericCodes = products
+    .map(p => {
+      const codeStr = (p.code || '').trim();
+      const parsed = parseInt(codeStr, 10);
+      return !isNaN(parsed) && /^\d+$/.test(codeStr) ? parsed : null;
+    })
+    .filter((c): c is number => c !== null);
+    
+  if (numericCodes.length === 0) return '1';
+  
+  const maxCode = Math.max(...numericCodes);
+  return (maxCode + 1).toString();
+};
+
 interface QuantitySelectorProps {
   value: string | number;
   onChange: (val: string) => void;
@@ -172,11 +189,14 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
 
   const fetchProducts = React.useCallback(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:5121/api/products', {
+    return fetch('http://localhost:5121/api/products', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => setProductsList(data))
+      .then(data => {
+        setProductsList(data);
+        return data;
+      })
       .catch(console.error);
   }, []);
 
@@ -189,7 +209,14 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       .then(data => setCategories(data))
       .catch(console.error);
 
-    fetchProducts();
+    fetchProducts().then(data => {
+      if (data) {
+        setFormData(prev => ({
+          ...prev,
+          code: getNextProductCode(data)
+        }));
+      }
+    });
   }, [fetchProducts]);
 
   const handleEditStart = async (prodId: string) => {
@@ -270,9 +297,10 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
     }
   };
 
-  const handleNewProduct = () => {
+  const handleNewProduct = (listOverride?: any[]) => {
     setEditingId(null);
     setActiveTab('geral');
+    const currentList = listOverride || productsList;
     setFormData({
       name: '',
       categoryId: '',
@@ -283,7 +311,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       unit: 'UN',
       isFractionable: false,
       barcode: '',
-      code: '',
+      code: getNextProductCode(currentList),
       abbreviation: '',
       isActive: true,
       isVisible: true,
@@ -318,10 +346,11 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       }
 
       setSuccessMessage("Produto excluído com sucesso!");
-      fetchProducts();
-      if (editingId === id) {
-        handleNewProduct();
-      }
+      fetchProducts().then(data => {
+        if (editingId === id) {
+          handleNewProduct(data);
+        }
+      });
     } catch (err: any) {
       setError("Erro ao excluir produto: " + err.message);
     }
@@ -396,8 +425,9 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       }
 
       setSuccessMessage(editingId ? "Produto atualizado com sucesso!" : "Produto salvo com sucesso!");
-      fetchProducts();
-      handleNewProduct();
+      fetchProducts().then(data => {
+        handleNewProduct(data);
+      });
     } catch (err: any) {
       setError("Erro ao salvar produto: " + err.message);
     }

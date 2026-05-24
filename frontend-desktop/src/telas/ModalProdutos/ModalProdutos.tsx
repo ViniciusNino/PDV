@@ -842,7 +842,20 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                         <input
                           type="text"
                           value={ingredientQty}
-                          onChange={e => setIngredientQty(e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.'))}
+                          onChange={e => {
+                            const unit = productsList.find(p => p.id === selectedIngredientId)?.unit || 'UN';
+                            let val = e.target.value;
+                            if (unit === 'UN') {
+                              val = val.replace(/\D/g, '');
+                            } else {
+                              val = val.replace(/[^0-9.,]/g, '').replace(',', '.');
+                              const parts = val.split('.');
+                              if (parts.length > 2) {
+                                val = parts[0] + '.' + parts.slice(1).join('');
+                              }
+                            }
+                            setIngredientQty(val);
+                          }}
                           className="prod-input"
                           style={{ width: '90px', height: '38px', padding: '0.5rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right' }}
                         />
@@ -977,13 +990,21 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                               <td style={{ padding: '0.5rem 1rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                                   <input
-                                    type="number"
-                                    step="any"
-                                    min="0.001"
+                                    type="text"
                                     value={ing.quantity}
                                     onChange={(e) => {
+                                      let val = e.target.value;
+                                      if (unit === 'UN') {
+                                        val = val.replace(/\D/g, '');
+                                      } else {
+                                        val = val.replace(/[^0-9.,]/g, '').replace(',', '.');
+                                        const parts = val.split('.');
+                                        if (parts.length > 2) {
+                                          val = parts[0] + '.' + parts.slice(1).join('');
+                                        }
+                                      }
                                       const newIngs = [...formData.ingredients];
-                                      newIngs[originalIdx].quantity = e.target.value;
+                                      newIngs[originalIdx].quantity = val;
                                       setFormData({ ...formData, ingredients: newIngs });
                                     }}
                                     className="prod-input"

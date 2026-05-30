@@ -495,3 +495,11 @@
   outline: none;
 }
 
+/* Hover e estilos adicionais para a tabela de etapas de pacotes */
+.package-row-hover:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+.package-row-hover:active {
+  background: rgba(249, 115, 22, 0.12) !important;
+}
+

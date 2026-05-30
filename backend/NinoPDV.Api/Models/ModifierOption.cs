@@ -16,8 +16,20 @@ namespace NinoPDV.Api.Models
         // Preço adicional que esta opção cobra
         public decimal AdditionalPrice { get; set; }
         
+        public decimal BasePrice { get; set; }
+        public decimal TotalPrice { get; set; }
+        public int MinQuantity { get; set; } = 0;
+        
         // Quantidade máxima que o cliente pode selecionar da mesma opção (Ex: 2x bacon)
         public int MaxQuantity { get; set; } = 1;
+
+        public bool IsPreSelected { get; set; } // Opção inicia marcada
+        public bool IsVisible { get; set; } = true;
+        public string Abbreviation { get; set; } = string.Empty;
+
+        // Associação com qualquer opção de etapas anteriores
+        public Guid? ParentOptionId { get; set; }
+        public ModifierOption? ParentOption { get; set; }
 
         public int Sequence { get; set; }
     }

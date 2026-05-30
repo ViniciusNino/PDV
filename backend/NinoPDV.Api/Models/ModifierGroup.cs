@@ -16,8 +16,10 @@ namespace NinoPDV.Api.Models
         
         public PricingRule PriceRule { get; set; } = PricingRule.HighestPrice;
 
-        // Para ordenar visualmente as etapas
         public int Sequence { get; set; }
+
+        public bool IsPropType { get; set; } // Propriedade vs Produto
+        public bool CanBeFractioned { get; set; } // Permite fracionar (ex: meio a meio)
 
         public ICollection<ModifierOption> Options { get; set; } = new List<ModifierOption>();
     }

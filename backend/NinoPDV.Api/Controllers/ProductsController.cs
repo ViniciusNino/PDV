@@ -51,7 +51,16 @@ namespace NinoPDV.Api.Controllers
                 CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
                 CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
+                UpdatedAt = p.UpdatedAt,
+                PreparationTime = p.PreparationTime,
+                ControlStock = p.ControlStock,
+                StockSectorId = p.StockSectorId,
+                MinStock = p.MinStock,
+                MaxStock = p.MaxStock,
+                StockContent = p.StockContent,
+                IsDivisible = p.IsDivisible,
+                IsPerishable = p.IsPerishable,
+                IsAutoWeight = p.IsAutoWeight
             }).ToList();
 
             return Ok(dtos);
@@ -65,6 +74,7 @@ namespace NinoPDV.Api.Controllers
                 .Include(p => p.Prices)
                 .Include(p => p.Ingredients)
                 .Include(p => p.ComboItems)
+                .Include(p => p.Promotions)
                 .Include(p => p.ModifierGroups)
                     .ThenInclude(mg => mg.Options)
                 .AsNoTracking()
@@ -96,9 +106,28 @@ namespace NinoPDV.Api.Controllers
                 CategoryName = product.Category.Name,
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
+                PreparationTime = product.PreparationTime,
+                ControlStock = product.ControlStock,
+                StockSectorId = product.StockSectorId,
+                MinStock = product.MinStock,
+                MaxStock = product.MaxStock,
+                StockContent = product.StockContent,
+                IsDivisible = product.IsDivisible,
+                IsPerishable = product.IsPerishable,
+                IsAutoWeight = product.IsAutoWeight,
                 Prices = product.Prices.Select(p => new ProductPriceDTO { Channel = p.Channel, Price = p.Price, IsVisible = p.IsVisible }).ToList(),
                 Ingredients = product.Ingredients.Select(i => new ProductCompositionDTO { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity, Type = i.Type, AdditionalPrice = i.AdditionalPrice, IsActive = i.IsActive }).ToList(),
                 ComboItems = product.ComboItems.Select(c => new ProductComboDTO { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice }).ToList(),
+                Promotions = product.Promotions.Select(promo => new ProductPromotionDTO
+                {
+                    Id = promo.Id,
+                    DayStart = promo.DayStart,
+                    HourStart = promo.HourStart,
+                    DayEnd = promo.DayEnd,
+                    HourEnd = promo.HourEnd,
+                    Price = promo.Price,
+                    IsSaleForbidden = promo.IsSaleForbidden
+                }).ToList(),
                 ModifierGroups = product.ModifierGroups.Select(mg => new ModifierGroupDTO
                 {
                     Id = mg.Id,
@@ -107,14 +136,23 @@ namespace NinoPDV.Api.Controllers
                     MaxSelections = mg.MaxSelections,
                     PriceRule = mg.PriceRule,
                     Sequence = mg.Sequence,
+                    IsPropType = mg.IsPropType,
+                    CanBeFractioned = mg.CanBeFractioned,
                     Options = mg.Options.Select(o => new ModifierOptionDTO
                     {
                         Id = o.Id,
                         ProductId = o.ProductId,
                         Name = o.Name,
                         AdditionalPrice = o.AdditionalPrice,
+                        BasePrice = o.BasePrice,
+                        TotalPrice = o.TotalPrice,
+                        MinQuantity = o.MinQuantity,
                         MaxQuantity = o.MaxQuantity,
-                        Sequence = o.Sequence
+                        Sequence = o.Sequence,
+                        IsPreSelected = o.IsPreSelected,
+                        IsVisible = o.IsVisible,
+                        Abbreviation = o.Abbreviation,
+                        ParentOptionId = o.ParentOptionId
                     }).ToList()
                 }).ToList()
             };
@@ -145,29 +183,62 @@ namespace NinoPDV.Api.Controllers
                 PrintTarget = request.PrintTarget,
                 IsActive = request.IsActive,
                 IsVisible = request.IsVisible,
-                CategoryId = request.CategoryId
+                CategoryId = request.CategoryId,
+                PreparationTime = request.PreparationTime,
+                ControlStock = request.ControlStock,
+                StockSectorId = request.StockSectorId,
+                MinStock = request.MinStock,
+                MaxStock = request.MaxStock,
+                StockContent = request.StockContent,
+                IsDivisible = request.IsDivisible,
+                IsPerishable = request.IsPerishable,
+                IsAutoWeight = request.IsAutoWeight
             };
 
             // Map sub-collections
             product.Prices = request.Prices.Select(p => new ProductPrice { Channel = p.Channel, Price = p.Price, IsVisible = p.IsVisible }).ToList();
             product.Ingredients = request.Ingredients.Select(i => new ProductComposition { IngredientProductId = i.IngredientProductId, Quantity = i.Quantity, Type = i.Type, AdditionalPrice = i.AdditionalPrice, IsActive = i.IsActive }).ToList();
             product.ComboItems = request.ComboItems.Select(c => new ProductCombo { ChildProductId = c.ChildProductId, Quantity = c.Quantity, FixedPrice = c.FixedPrice }).ToList();
-            
-            product.ModifierGroups = request.ModifierGroups.Select(mg => new ModifierGroup
+            product.Promotions = request.Promotions.Select(promo => new ProductPromotion
             {
-                Name = mg.Name,
-                MinSelections = mg.MinSelections,
-                MaxSelections = mg.MaxSelections,
-                PriceRule = mg.PriceRule,
-                Sequence = mg.Sequence,
-                Options = mg.Options.Select(o => new ModifierOption
+                Id = promo.Id ?? Guid.NewGuid(),
+                DayStart = promo.DayStart,
+                HourStart = promo.HourStart,
+                DayEnd = promo.DayEnd,
+                HourEnd = promo.HourEnd,
+                Price = promo.Price,
+                IsSaleForbidden = promo.IsSaleForbidden
+            }).ToList();
+            
+            product.ModifierGroups = request.ModifierGroups.Select(mg => {
+                var group = new ModifierGroup
                 {
+                    Id = mg.Id ?? Guid.NewGuid(),
+                    Name = mg.Name,
+                    MinSelections = mg.MinSelections,
+                    MaxSelections = mg.MaxSelections,
+                    PriceRule = mg.PriceRule,
+                    Sequence = mg.Sequence,
+                    IsPropType = mg.IsPropType,
+                    CanBeFractioned = mg.CanBeFractioned
+                };
+                group.Options = mg.Options.Select(o => new ModifierOption
+                {
+                    Id = o.Id ?? Guid.NewGuid(),
                     ProductId = o.ProductId,
                     Name = o.Name,
                     AdditionalPrice = o.AdditionalPrice,
+                    BasePrice = o.BasePrice,
+                    TotalPrice = o.TotalPrice,
+                    MinQuantity = o.MinQuantity,
                     MaxQuantity = o.MaxQuantity,
-                    Sequence = o.Sequence
-                }).ToList()
+                    Sequence = o.Sequence,
+                    IsPreSelected = o.IsPreSelected,
+                    IsVisible = o.IsVisible,
+                    Abbreviation = o.Abbreviation,
+                    ParentOptionId = o.ParentOptionId
+                }).ToList();
+                return group;
             }).ToList();
 
             _context.Products.Add(product);
@@ -183,6 +254,7 @@ namespace NinoPDV.Api.Controllers
                 .Include(p => p.Prices)
                 .Include(p => p.Ingredients)
                 .Include(p => p.ComboItems)
+                .Include(p => p.Promotions)
                 .Include(p => p.ModifierGroups)
                     .ThenInclude(mg => mg.Options)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -211,6 +283,15 @@ namespace NinoPDV.Api.Controllers
             product.PrintTarget = request.PrintTarget;
             product.IsActive = request.IsActive;
             product.IsVisible = request.IsVisible;
+            product.PreparationTime = request.PreparationTime;
+            product.ControlStock = request.ControlStock;
+            product.StockSectorId = request.StockSectorId;
+            product.MinStock = request.MinStock;
+            product.MaxStock = request.MaxStock;
+            product.StockContent = request.StockContent;
+            product.IsDivisible = request.IsDivisible;
+            product.IsPerishable = request.IsPerishable;
+            product.IsAutoWeight = request.IsAutoWeight;
 
             // Update Prices (Using Clear/Add pattern to prevent ChangeTracker conflicts)
             product.Prices.Clear();
@@ -239,6 +320,24 @@ namespace NinoPDV.Api.Controllers
                 _context.Entry(newCombo).State = EntityState.Added;
             }
 
+            // Update Promotions
+            product.Promotions.Clear();
+            foreach (var promo in request.Promotions)
+            {
+                var newPromo = new ProductPromotion
+                {
+                    Id = promo.Id ?? Guid.NewGuid(),
+                    DayStart = promo.DayStart,
+                    HourStart = promo.HourStart,
+                    DayEnd = promo.DayEnd,
+                    HourEnd = promo.HourEnd,
+                    Price = promo.Price,
+                    IsSaleForbidden = promo.IsSaleForbidden
+                };
+                product.Promotions.Add(newPromo);
+                _context.Entry(newPromo).State = EntityState.Added;
+            }
+
             // Update Modifier Groups (Diff logic to prevent breaking foreign keys if used elsewhere)
             var existingGroups = product.ModifierGroups.ToList();
             var newGroupIds = request.ModifierGroups.Where(mg => mg.Id.HasValue).Select(mg => mg.Id.Value).ToList();
@@ -250,7 +349,6 @@ namespace NinoPDV.Api.Controllers
                 _context.ModifierOptions.RemoveRange(group.Options);
             }
             _context.ModifierGroups.RemoveRange(groupsToRemove);
-
             foreach (var reqMg in request.ModifierGroups)
             {
                 if (reqMg.Id.HasValue && existingGroups.Any(mg => mg.Id == reqMg.Id))
@@ -262,6 +360,8 @@ namespace NinoPDV.Api.Controllers
                     existingGroup.MaxSelections = reqMg.MaxSelections;
                     existingGroup.PriceRule = reqMg.PriceRule;
                     existingGroup.Sequence = reqMg.Sequence;
+                    existingGroup.IsPropType = reqMg.IsPropType;
+                    existingGroup.CanBeFractioned = reqMg.CanBeFractioned;
 
                     // Update options for this group
                     var existingOptions = existingGroup.Options.ToList();
@@ -278,18 +378,33 @@ namespace NinoPDV.Api.Controllers
                             existingOpt.Name = reqOpt.Name;
                             existingOpt.ProductId = reqOpt.ProductId;
                             existingOpt.AdditionalPrice = reqOpt.AdditionalPrice;
+                            existingOpt.BasePrice = reqOpt.BasePrice;
+                            existingOpt.TotalPrice = reqOpt.TotalPrice;
+                            existingOpt.MinQuantity = reqOpt.MinQuantity;
                             existingOpt.MaxQuantity = reqOpt.MaxQuantity;
                             existingOpt.Sequence = reqOpt.Sequence;
+                            existingOpt.IsPreSelected = reqOpt.IsPreSelected;
+                            existingOpt.IsVisible = reqOpt.IsVisible;
+                            existingOpt.Abbreviation = reqOpt.Abbreviation;
+                            existingOpt.ParentOptionId = reqOpt.ParentOptionId;
                         }
                         else
                         {
                             var newOption = new ModifierOption
                             {
+                                Id = reqOpt.Id ?? Guid.NewGuid(),
                                 Name = reqOpt.Name,
                                 ProductId = reqOpt.ProductId,
                                 AdditionalPrice = reqOpt.AdditionalPrice,
+                                BasePrice = reqOpt.BasePrice,
+                                TotalPrice = reqOpt.TotalPrice,
+                                MinQuantity = reqOpt.MinQuantity,
                                 MaxQuantity = reqOpt.MaxQuantity,
-                                Sequence = reqOpt.Sequence
+                                Sequence = reqOpt.Sequence,
+                                IsPreSelected = reqOpt.IsPreSelected,
+                                IsVisible = reqOpt.IsVisible,
+                                Abbreviation = reqOpt.Abbreviation,
+                                ParentOptionId = reqOpt.ParentOptionId
                             };
                             existingGroup.Options.Add(newOption);
                             _context.Entry(newOption).State = EntityState.Added;
@@ -301,18 +416,29 @@ namespace NinoPDV.Api.Controllers
                     // Add new group
                     var newGroup = new ModifierGroup
                     {
+                        Id = reqMg.Id ?? Guid.NewGuid(),
                         Name = reqMg.Name,
                         MinSelections = reqMg.MinSelections,
                         MaxSelections = reqMg.MaxSelections,
                         PriceRule = reqMg.PriceRule,
                         Sequence = reqMg.Sequence,
+                        IsPropType = reqMg.IsPropType,
+                        CanBeFractioned = reqMg.CanBeFractioned,
                         Options = reqMg.Options.Select(o => new ModifierOption
                         {
+                            Id = o.Id ?? Guid.NewGuid(),
                             Name = o.Name,
                             ProductId = o.ProductId,
                             AdditionalPrice = o.AdditionalPrice,
+                            BasePrice = o.BasePrice,
+                            TotalPrice = o.TotalPrice,
+                            MinQuantity = o.MinQuantity,
                             MaxQuantity = o.MaxQuantity,
-                            Sequence = o.Sequence
+                            Sequence = o.Sequence,
+                            IsPreSelected = o.IsPreSelected,
+                            IsVisible = o.IsVisible,
+                            Abbreviation = o.Abbreviation,
+                            ParentOptionId = o.ParentOptionId
                         }).ToList()
                     };
                     product.ModifierGroups.Add(newGroup);

@@ -24,6 +24,8 @@ namespace NinoPDV.Api.Data
         public DbSet<ProductCombo> ProductCombos { get; set; }
         public DbSet<ModifierGroup> ModifierGroups { get; set; }
         public DbSet<ModifierOption> ModifierOptions { get; set; }
+        public DbSet<StockSector> StockSectors { get; set; }
+        public DbSet<ProductPromotion> ProductPromotions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -122,6 +124,27 @@ namespace NinoPDV.Api.Data
                 .WithMany()
                 .HasForeignKey(mo => mo.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // ModifierOption -> ModifierOption (Associação reflexiva para etapas anteriores)
+            modelBuilder.Entity<ModifierOption>()
+                .HasOne(mo => mo.ParentOption)
+                .WithMany()
+                .HasForeignKey(mo => mo.ParentOptionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Product -> StockSector (1-para-muitos, opcional)
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.StockSector)
+                .WithMany()
+                .HasForeignKey(p => p.StockSectorId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Product -> ProductPromotion (1-para-muitos, cascata)
+            modelBuilder.Entity<ProductPromotion>()
+                .HasOne(pp => pp.Product)
+                .WithMany(p => p.Promotions)
+                .HasForeignKey(pp => pp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public override int SaveChanges()

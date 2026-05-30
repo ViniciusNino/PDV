@@ -10,12 +10,13 @@
 /* Menu Bar */
 .menu-bar {
   display: flex;
+  position: relative;
   background-color: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   padding: 0.25rem 0.75rem;
   width: 100%;
   gap: 0.5rem;
-  z-index: 11;
+  z-index: 9999;
 }
 
 .menu-item {

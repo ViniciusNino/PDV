@@ -34,8 +34,15 @@ namespace NinoPDV.Api.DTOs
         public Guid? ProductId { get; set; }
         public string Name { get; set; } = string.Empty;
         public decimal AdditionalPrice { get; set; }
+        public decimal BasePrice { get; set; }
+        public decimal TotalPrice { get; set; }
+        public int MinQuantity { get; set; }
         public int MaxQuantity { get; set; } = 1;
         public int Sequence { get; set; }
+        public bool IsPreSelected { get; set; }
+        public bool IsVisible { get; set; }
+        public string Abbreviation { get; set; } = string.Empty;
+        public Guid? ParentOptionId { get; set; }
     }
 
     public class ModifierGroupDTO
@@ -47,8 +54,29 @@ namespace NinoPDV.Api.DTOs
         public int MaxSelections { get; set; }
         public PricingRule PriceRule { get; set; }
         public int Sequence { get; set; }
+        public bool IsPropType { get; set; }
+        public bool CanBeFractioned { get; set; }
         
         public List<ModifierOptionDTO> Options { get; set; } = new();
+    }
+
+    public class StockSectorDTO
+    {
+        public Guid? Id { get; set; }
+        [Required]
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+    }
+
+    public class ProductPromotionDTO
+    {
+        public Guid? Id { get; set; }
+        public string DayStart { get; set; } = string.Empty;
+        public int HourStart { get; set; }
+        public string DayEnd { get; set; } = string.Empty;
+        public int HourEnd { get; set; }
+        public decimal Price { get; set; }
+        public bool IsSaleForbidden { get; set; }
     }
 
     public class ProductRequestDTO
@@ -71,6 +99,17 @@ namespace NinoPDV.Api.DTOs
         public bool IsVisible { get; set; } = true;
         public string? PrintTarget { get; set; }
         
+        // Novos campos de preparo, estoque e promoções no DTO
+        public int PreparationTime { get; set; }
+        public bool ControlStock { get; set; }
+        public Guid? StockSectorId { get; set; }
+        public decimal MinStock { get; set; }
+        public decimal MaxStock { get; set; }
+        public decimal StockContent { get; set; }
+        public bool IsDivisible { get; set; }
+        public bool IsPerishable { get; set; }
+        public bool IsAutoWeight { get; set; }
+        
         [Required]
         public Guid CategoryId { get; set; }
 
@@ -78,6 +117,7 @@ namespace NinoPDV.Api.DTOs
         public List<ProductCompositionDTO> Ingredients { get; set; } = new();
         public List<ProductComboDTO> ComboItems { get; set; } = new();
         public List<ModifierGroupDTO> ModifierGroups { get; set; } = new();
+        public List<ProductPromotionDTO> Promotions { get; set; } = new();
     }
     
     public class ProductResponseDTO : ProductRequestDTO

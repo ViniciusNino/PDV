@@ -7,6 +7,7 @@ import './TelaCheckout.css';
 import { ModalCategorias } from '../ModalCategorias/ModalCategorias';
 import { ModalProdutos } from '../ModalProdutos/ModalProdutos';
 import { TelaConfiguracao } from '../TelaConfiguracao/TelaConfiguracao';
+import { TelaBalcao } from '../TelaBalcao/TelaBalcao';
 
 const menusData: Record<string, { label: string; shortcut?: string; icon: string | null; hasSub?: boolean }[]> = {
   Arquivo: [
@@ -565,7 +566,7 @@ export function TelaCheckout() {
       case 'comandas':
         return renderPlaceholderContent('comandas', 'Comandas');
       case 'balcao':
-        return renderPlaceholderContent('balcao', 'Balcão');
+        return <TelaBalcao />;
       case 'contas':
         return renderPlaceholderContent('contas', 'Contas a Pagar/Receber');
       case 'contasm':
@@ -585,7 +586,32 @@ export function TelaCheckout() {
       const { ipcRenderer } = window.require('electron');
       ipcRenderer.send('maximize-window');
     }
-  }, []);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'SELECT');
+      if (isInput) return;
+
+      if (e.key === 'F3') {
+        e.preventDefault();
+        openWindow('mesas', 'Mesas (F3)', '🍽️');
+      } else if (e.key === 'F4') {
+        e.preventDefault();
+        openWindow('balcao', 'Venda para Balcão (F4)', '🥤');
+      } else if (e.key === 'F8') {
+        e.preventDefault();
+        openWindow('delivery', 'Painel de Delivery (F8)', '🛵');
+      } else if (e.key === 'F11') {
+        e.preventDefault();
+        openWindow('comandas', 'Comandas (F11)', '📋');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [windows, nextZIndex]);
 
   return (
     <div className="checkout-container animate-fade-in" onClick={handleClickOutside}>

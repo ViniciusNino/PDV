@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Folder, Pencil, Trash2, GripVertical, 
-  AlertCircle, HelpCircle, Save, Loader2, Image as ImageIcon, UploadCloud, ChevronRight, ChevronDown 
+  AlertCircle, HelpCircle, Save, Loader2, UploadCloud, ChevronRight, ChevronDown 
 } from 'lucide-react';
 import './ModalCategorias.css';
 

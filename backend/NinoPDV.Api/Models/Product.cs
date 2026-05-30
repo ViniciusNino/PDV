@@ -23,6 +23,19 @@ namespace NinoPDV.Api.Models
         public bool IsVisible { get; set; } = true;
         public string? PrintTarget { get; set; }
         
+        // Novos campos de preparo, estoque e promoções
+        public int PreparationTime { get; set; }
+        public bool ControlStock { get; set; }
+        public Guid? StockSectorId { get; set; }
+        public StockSector? StockSector { get; set; }
+        public decimal MinStock { get; set; }
+        public decimal MaxStock { get; set; }
+        public decimal StockContent { get; set; }
+        public bool IsDivisible { get; set; }
+        public bool IsPerishable { get; set; }
+        public bool IsAutoWeight { get; set; }
+        public ICollection<ProductPromotion> Promotions { get; set; } = new List<ProductPromotion>();
+        
         public Guid CategoryId { get; set; }
         public Category Category { get; set; } = null!;
 

@@ -887,6 +887,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       // Sanitizando os dados para a API
       const payload = {
         ...formData,
+        stockSectorId: formData.stockSectorId ? formData.stockSectorId : null,
         basePrice: parseCurrencyToFloat(formData.basePrice),
         costPrice: parseCurrencyToFloat(formData.costPrice),
         prices: formData.prices.map(p => ({

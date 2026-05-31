@@ -5,6 +5,7 @@ using System.Text;
 using NinoPDV.Api.Data;
 using NinoPDV.Api.Utils;
 using NinoPDV.Api.Services;
+using NinoPDV.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IStockSectorRepository, StockSectorRepository>();
+
+// Services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IStockSectorService, StockSectorService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

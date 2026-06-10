@@ -373,16 +373,19 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
     handleCancelEditOption();
   };
 
-  const handleDeleteOption = () => {
-    if (!selectedGroupUiId || !selectedOptionId) return;
-    if (!window.confirm("Tem certeza que deseja excluir esta opção?")) return;
+  const handleDeleteOption = (opt?: any) => {
+    const targetOptionId = opt ? (opt.id || (opt as any).uiId || opt.name) : selectedOptionId;
+    if (!selectedGroupUiId || !targetOptionId) return;
+    const targetOpt = opt || (formData.modifierGroups.find(g => (g.uiId || g.id) === selectedGroupUiId)?.options.find(o => (o.id || (o as any).uiId || o.name) === targetOptionId));
+    const targetName = targetOpt ? targetOpt.name : 'esta opção';
+    if (!window.confirm(`Tem certeza que deseja excluir a opção "${targetName}"?`)) return;
 
     setFormData(prev => {
       const updatedGroups = prev.modifierGroups.map(g => {
         if ((g.uiId || g.id) === selectedGroupUiId) {
           const filteredOptions = g.options.filter(o => {
             const idToCompare = o.id || (o as any).uiId || o.name;
-            return idToCompare !== selectedOptionId;
+            return idToCompare !== targetOptionId;
           });
           return { ...g, options: filteredOptions };
         }
@@ -391,7 +394,9 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
       return { ...prev, modifierGroups: updatedGroups };
     });
 
-    handleCancelEditOption();
+    if (selectedOptionId === targetOptionId) {
+      handleCancelEditOption();
+    }
   };
 
   const handleSelectGroup = (uiId: string) => {
@@ -470,14 +475,19 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
     handleCancelEditGroup();
   };
 
-  const handleDeleteGroup = () => {
-    if (!selectedGroupUiId) return;
-    if (!window.confirm("Tem certeza que deseja excluir esta etapa e todas as suas opções?")) return;
+  const handleDeleteGroup = (group?: any) => {
+    const targetGroupUiId = group ? (group.uiId || group.id) : selectedGroupUiId;
+    if (!targetGroupUiId) return;
+    const targetGroup = group || formData.modifierGroups.find(g => (g.uiId || g.id) === targetGroupUiId);
+    const targetName = targetGroup ? targetGroup.name : 'esta etapa';
+    if (!window.confirm(`Tem certeza que deseja excluir a etapa "${targetName}" e todas as suas opções?`)) return;
     setFormData(prev => {
-      const filtered = prev.modifierGroups.filter(g => (g.uiId || g.id) !== selectedGroupUiId);
+      const filtered = prev.modifierGroups.filter(g => (g.uiId || g.id) !== targetGroupUiId);
       return { ...prev, modifierGroups: filtered };
     });
-    handleCancelEditGroup();
+    if (selectedGroupUiId === targetGroupUiId) {
+      handleCancelEditGroup();
+    }
   };
 
   const fetchSectors = React.useCallback(() => {
@@ -1746,32 +1756,32 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
             )}
 
             {activeTab === 'pacotes' && (
-              <div className="prod-tab-section animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: '100%', overflowY: 'auto' }}>
+              <div className="prod-tab-section animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 
                 {/* 1. PAINEL SUPERIOR - CONFIGURAÇÃO DE ETAPA (CADASTRO E EDIÇÃO) */}
-                <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', gap: '1.5rem', alignItems: 'stretch' }}>
-                  
-                  {/* Inputs (Lado Esquerdo) */}
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Layers size={16} style={{ color: 'var(--primary)' }} />
-                      {isEditingGroup ? 'Editar Etapa do Pacote' : 'Cadastrar Etapa do Pacote'}
-                    </h4>
+                <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Layers size={16} style={{ color: 'var(--primary)' }} />
+                    {isEditingGroup ? 'Editar Etapa do Pacote' : 'Cadastrar Etapa do Pacote'}
+                  </h4>
 
-                    {/* Linha 1 */}
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1, minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Descrição:</span>
-                        <input
-                          type="text"
-                          value={groupName}
-                          onChange={(e) => setGroupName(e.target.value)}
-                          placeholder="Ex: Etapa 1: Tamanho, Etapa 2: Sabores, Etapa 3: Bordas..."
-                          className="prod-input"
-                          style={{ height: '38px', background: 'rgba(0,0,0,0.2)' }}
-                        />
-                      </div>
+                  {/* Linha 1 */}
+                  <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', width: '100%' }}>
+                    {/* Linha 1 Esquerda */}
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Descrição:</span>
+                      <input
+                        type="text"
+                        value={groupName}
+                        onChange={(e) => setGroupName(e.target.value)}
+                        placeholder="Ex: Etapa 1: Tamanho, Etapa 2: Sabores, Etapa 3: Bordas..."
+                        className="prod-input"
+                        style={{ height: '38px', background: 'rgba(0,0,0,0.2)' }}
+                      />
+                    </div>
 
+                    {/* Linha 1 Direita */}
+                    <div style={{ display: 'flex', gap: '1rem', width: '246px' }}>
                       <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Tipo de Seleção:</span>
                         <select
@@ -1800,9 +1810,12 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                         </select>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Linha 2 */}
-                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                  {/* Linha 2 */}
+                  <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', width: '100%' }}>
+                    {/* Linha 2 Esquerda */}
+                    <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
                       <div style={{ width: '140px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Quantidade Mínima:</span>
                         <input
@@ -1811,7 +1824,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                           value={groupMinSelections}
                           onChange={(e) => setGroupMinSelections(Math.max(0, parseInt(e.target.value) || 0))}
                           className="prod-input"
-                          style={{ height: '38px', background: 'rgba(0,0,0,0.2)' }}
+                          style={{ height: '38px', background: 'rgba(0,0,0,0.2)', width: '140px', boxSizing: 'border-box' }}
                         />
                       </div>
 
@@ -1823,50 +1836,31 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                           value={groupMaxSelections}
                           onChange={(e) => setGroupMaxSelections(Math.max(1, parseInt(e.target.value) || 1))}
                           className="prod-input"
-                          style={{ height: '38px', background: 'rgba(0,0,0,0.2)' }}
+                          style={{ height: '38px', background: 'rgba(0,0,0,0.2)', width: '140px', boxSizing: 'border-box' }}
                         />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Divisória Vertical */}
-                  <div style={{ borderLeft: '1px solid var(--border-subtle)', margin: '0 0.5rem' }} />
+                    {/* Linha 2 Direita */}
+                    <div style={{ display: 'flex', gap: '0.5rem', width: '246px', justifyContent: 'flex-end' }}>
+                      <button
+                        className="prod-btn prod-btn-primary"
+                        onClick={(e) => { e.preventDefault(); isEditingGroup ? handleSaveGroup() : handleAddGroup(); }}
+                        style={{ background: 'var(--primary)', width: isEditingGroup ? '110px' : '120px', height: '38px', padding: 0 }}
+                      >
+                        {isEditingGroup ? 'Salvar' : 'Cadastrar'}
+                      </button>
 
-                  {/* Três Botões Verticais (Lado Direito) */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '130px', justifyContent: 'center' }}>
-                    <button
-                      className="prod-btn prod-btn-primary"
-                      onClick={(e) => { e.preventDefault(); isEditingGroup ? handleSaveGroup() : handleAddGroup(); }}
-                      style={{ background: 'var(--primary)', width: '100%' }}
-                    >
-                      {isEditingGroup ? 'Salvar' : 'Cadastrar'}
-                    </button>
-
-                    <button
-                      className="prod-btn prod-btn-secondary"
-                      disabled={!selectedGroupUiId}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (isEditingGroup) {
-                          handleCancelEditGroup();
-                        } else {
-                          const selectedGroup = formData.modifierGroups.find(g => (g.uiId || g.id) === selectedGroupUiId);
-                          if (selectedGroup) handleStartEditGroup(selectedGroup);
-                        }
-                      }}
-                      style={{ width: '100%' }}
-                    >
-                      {isEditingGroup ? 'Cancelar' : 'Editar'}
-                    </button>
-
-                    <button
-                      className="prod-btn prod-btn-secondary"
-                      disabled={!selectedGroupUiId || isEditingGroup}
-                      onClick={(e) => { e.preventDefault(); handleDeleteGroup(); }}
-                      style={{ color: '#ef4444', borderColor: '#ef4444', width: '100%' }}
-                    >
-                      Excluir
-                    </button>
+                      {isEditingGroup && (
+                        <button
+                          className="prod-btn prod-btn-secondary"
+                          onClick={(e) => { e.preventDefault(); handleCancelEditGroup(); }}
+                          style={{ width: '110px', height: '38px', padding: 0 }}
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                 </div>
@@ -1876,7 +1870,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Etapas Cadastradas (Clique simples para selecionar | Duplo clique para editar):</span>
                   <div style={{ borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', overflow: 'hidden', background: 'var(--bg-primary)' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
-                      <thead style={{ background: 'rgba(30, 41, 59, 0.4)', borderBottom: '1px solid var(--border-strong)' }}>
+                      <thead style={{ background: '#1e293b', borderBottom: '1px solid var(--border-strong)' }}>
                         <tr>
                           <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Descrição</th>
                           <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '100px', textAlign: 'center' }}>Múltiplo</th>
@@ -1884,12 +1878,13 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                           <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '120px' }}>Função</th>
                           <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '80px', textAlign: 'center' }}>Mínimo</th>
                           <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '80px', textAlign: 'center' }}>Máximo</th>
+                          <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '90px', textAlign: 'center' }}>Ações</th>
                         </tr>
                       </thead>
                       <tbody>
                         {formData.modifierGroups.length === 0 && (
                           <tr>
-                            <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                            <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                               Nenhuma etapa cadastrada. Preencha os campos acima para cadastrar a primeira etapa.
                             </td>
                           </tr>
@@ -1931,6 +1926,28 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                               <td style={{ padding: '0.6rem 0.75rem' }}>{pricingText}</td>
                               <td style={{ padding: '0.6rem 0.75rem', textAlign: 'center' }}>{group.minSelections}</td>
                               <td style={{ padding: '0.6rem 0.75rem', textAlign: 'center' }}>{group.maxSelections}</td>
+                              <td style={{ padding: '0.25rem 0.75rem', textAlign: 'center', verticalAlign: 'middle' }} onClick={(e) => e.stopPropagation()}>
+                                <div style={{ display: 'flex', gap: '0.35rem', justifyContent: 'center', alignItems: 'center' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleStartEditGroup(group)}
+                                    className="action-btn edit-btn"
+                                    title="Editar Etapa"
+                                    style={{ width: '24px', height: '24px', padding: 0 }}
+                                  >
+                                    <Pencil size={10} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteGroup(group)}
+                                    className="action-btn delete-btn"
+                                    title="Excluir Etapa"
+                                    style={{ width: '24px', height: '24px', padding: 0 }}
+                                  >
+                                    <Trash2 size={10} />
+                                  </button>
+                                </div>
+                              </td>
                             </tr>
                           );
                         })}
@@ -1977,294 +1994,275 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: '350px' }}>
                       
                       {/* PAINEL INFERIOR - CADASTRO/EDIÇÃO DE OPÇÕES */}
-                      <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', gap: '1.5rem', alignItems: 'stretch' }}>
-                        
-                        {/* Inputs (Lado Esquerdo) */}
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                          <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Layers size={16} style={{ color: '#f97316' }} />
-                            {isEditingOption ? `Editar Item da Etapa: ${selectedGroup.name}` : `Cadastrar Item na Etapa: ${selectedGroup.name}`}
-                          </h4>
+                      <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <Layers size={16} style={{ color: '#f97316' }} />
+                          {isEditingOption ? `Editar Item da Etapa: ${selectedGroup.name}` : `Cadastrar Item na Etapa: ${selectedGroup.name}`}
+                        </h4>
 
-                          {/* Linha 1 */}
-                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', width: '100%' }}>
-                            {/* Linha 1 Esquerda (Tipo e Nome do Item) */}
-                            <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-                              <div style={{ width: '130px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Tipo de Item:</span>
-                                <select
-                                  value={optType}
-                                  onChange={(e) => {
-                                    setOptType(e.target.value as 'prod' | 'prop');
-                                    handleCancelEditOption();
-                                  }}
-                                  disabled={selectedGroup.options.length > 0}
-                                  className="prod-select"
-                                  style={{ height: '36px', background: 'rgba(0,0,0,0.2)', padding: '0 0.75rem', width: '130px' }}
-                                >
-                                  <option value="prop">Propriedade</option>
-                                  <option value="prod">Produto</option>
-                                </select>
-                              </div>
+                        {/* Linha 1 */}
+                        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', width: '100%' }}>
+                          {/* Linha 1 Esquerda (Tipo e Nome do Item) */}
+                          <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+                            <div style={{ width: '130px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Tipo de Item:</span>
+                              <select
+                                value={optType}
+                                onChange={(e) => {
+                                  setOptType(e.target.value as 'prod' | 'prop');
+                                  handleCancelEditOption();
+                                }}
+                                disabled={selectedGroup.options.length > 0}
+                                className="prod-select"
+                                style={{ height: '36px', background: 'rgba(0,0,0,0.2)', padding: '0 0.75rem', width: '130px' }}
+                              >
+                                <option value="prop">Propriedade</option>
+                                <option value="prod">Produto</option>
+                              </select>
+                            </div>
 
-                              {/* Campo Condicional baseia-se em optType */}
-                              {optType === 'prod' ? (
-                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', position: 'relative' }}>
-                                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Produto:</span>
-                                  <div style={{ position: 'relative', width: '100%' }}>
-                                    <input
-                                      type="text"
-                                      value={optProductNameInput}
-                                      onChange={(e) => {
-                                        setOptProductNameInput(e.target.value);
-                                        setShowProductSuggestions(true);
-                                      }}
-                                      onFocus={() => setShowProductSuggestions(true)}
-                                      placeholder="Digite para buscar produto..."
-                                      className="prod-input"
-                                      style={{ height: '36px', padding: '0 2.2rem 0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '100%', boxSizing: 'border-box' }}
-                                    />
-                                    <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center' }}>
-                                      <div className="prod-tooltip-container">
-                                        <Search size={16} style={{ color: 'var(--text-muted)', cursor: 'pointer' }} />
-                                        <span className="prod-tooltip" style={{ bottom: '125%', right: '0', left: 'auto', transform: 'none', width: '220px' }}>Procurar produto com dados informados</span>
-                                      </div>
-                                    </div>
-                                    
-                                    {/* Lista suspensa de sugestões */}
-                                    {showProductSuggestions && optProductNameInput.trim() && (
-                                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-strong)', borderRadius: 'var(--radius-sm)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-                                        {productsList
-                                          .filter(p => p.name.toLowerCase().includes(optProductNameInput.toLowerCase()))
-                                          .map(p => (
-                                            <div
-                                              key={p.id}
-                                              onClick={() => {
-                                                setOptProductId(p.id);
-                                                setOptProductNameInput(p.name);
-                                                setShowProductSuggestions(false);
-                                              }}
-                                              style={{ padding: '0.5rem 0.75rem', cursor: 'pointer', borderBottom: '1px solid var(--border-subtle)', fontSize: '0.85rem' }}
-                                              className="package-row-hover"
-                                            >
-                                              {p.name}
-                                            </div>
-                                          ))
-                                        }
-                                        {productsList.filter(p => p.name.toLowerCase().includes(optProductNameInput.toLowerCase())).length === 0 && (
-                                          <div style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Nenhum produto encontrado.</div>
-                                        )}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ) : (
-                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Propriedade:</span>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
-                                    <select
-                                      value={optPropName}
-                                      onChange={(e) => {
-                                        const selectedVal = e.target.value;
-                                        setOptPropName(selectedVal);
-                                        const matchedProp = customProperties.find(p => p.name === selectedVal);
-                                        if (matchedProp && !optAbbreviation) {
-                                          setOptAbbreviation(matchedProp.abbreviation);
-                                        }
-                                      }}
-                                      className="prod-select"
-                                      style={{ height: '36px', background: 'rgba(0,0,0,0.2)', padding: '0 0.75rem', flex: 1 }}
-                                    >
-                                      <option value="">Selecione...</option>
-                                      {customProperties.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
-                                    </select>
-                                    
-                                    {/* Botão de + com tooltip */}
+                            {/* Campo Condicional baseia-se em optType */}
+                            {optType === 'prod' ? (
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem', position: 'relative' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Produto:</span>
+                                <div style={{ position: 'relative', width: '100%' }}>
+                                  <input
+                                    type="text"
+                                    value={optProductNameInput}
+                                    onChange={(e) => {
+                                      setOptProductNameInput(e.target.value);
+                                      setShowProductSuggestions(true);
+                                    }}
+                                    onFocus={() => setShowProductSuggestions(true)}
+                                    placeholder="Digite para buscar produto..."
+                                    className="prod-input"
+                                    style={{ height: '36px', padding: '0 2.2rem 0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '100%', boxSizing: 'border-box' }}
+                                  />
+                                  <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center' }}>
                                     <div className="prod-tooltip-container">
-                                      <div
-                                        onClick={() => {
-                                          setIsPropertyModalOpen(true);
-                                        }}
-                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', borderRadius: '50%', width: '22px', height: '22px', cursor: 'pointer' }}
-                                      >
-                                        <Plus size={14} />
-                                      </div>
-                                      <span className="prod-tooltip" style={{ bottom: '125%', right: '0', left: 'auto', transform: 'none', width: '120px' }}>Clique para cadastrar</span>
+                                      <Search size={16} style={{ color: 'var(--text-muted)', cursor: 'pointer' }} />
+                                      <span className="prod-tooltip" style={{ bottom: '125%', right: '0', left: 'auto', transform: 'none', width: '220px' }}>Procurar produto com dados informados</span>
                                     </div>
                                   </div>
+                                  
+                                  {/* Lista suspensa de sugestões */}
+                                  {showProductSuggestions && optProductNameInput.trim() && (
+                                    <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--bg-surface)', border: '1px solid var(--border-strong)', borderRadius: 'var(--radius-sm)', zIndex: 1000, maxHeight: '200px', overflowY: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+                                      {productsList
+                                        .filter(p => p.name.toLowerCase().includes(optProductNameInput.toLowerCase()))
+                                        .map(p => (
+                                          <div
+                                            key={p.id}
+                                            onClick={() => {
+                                              setOptProductId(p.id);
+                                              setOptProductNameInput(p.name);
+                                              setShowProductSuggestions(false);
+                                            }}
+                                            style={{ padding: '0.5rem 0.75rem', cursor: 'pointer', borderBottom: '1px solid var(--border-subtle)', fontSize: '0.85rem' }}
+                                            className="package-row-hover"
+                                          >
+                                            {p.name}
+                                          </div>
+                                        ))
+                                      }
+                                      {productsList.filter(p => p.name.toLowerCase().includes(optProductNameInput.toLowerCase())).length === 0 && (
+                                        <div style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>Nenhum produto encontrado.</div>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-
-                            {/* Linha 1 Direita (Preços) */}
-                            <div style={{ display: 'flex', gap: '1rem', width: '236px' }}>
-                              <div style={{ width: '110px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Preço Base:</span>
-                                <input
-                                  type="text"
-                                  value={optBasePrice}
-                                  onChange={(e) => setOptBasePrice(formatCurrency(e.target.value))}
-                                  className="prod-input"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right' }}
-                                />
                               </div>
-
-                              <div style={{ width: '110px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total:</span>
-                                <input
-                                  type="text"
-                                  value={optTotalPrice}
-                                  onChange={(e) => setOptTotalPrice(formatCurrency(e.target.value))}
-                                  className="prod-input"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right' }}
-                                />
+                            ) : (
+                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Propriedade:</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+                                  <select
+                                    value={optPropName}
+                                    onChange={(e) => {
+                                      const selectedVal = e.target.value;
+                                      setOptPropName(selectedVal);
+                                      const matchedProp = customProperties.find(p => p.name === selectedVal);
+                                      if (matchedProp && !optAbbreviation) {
+                                        setOptAbbreviation(matchedProp.abbreviation);
+                                      }
+                                    }}
+                                    className="prod-select"
+                                    style={{ height: '36px', background: 'rgba(0,0,0,0.2)', padding: '0 0.75rem', flex: 1 }}
+                                  >
+                                    <option value="">Selecione...</option>
+                                    {customProperties.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                                  </select>
+                                  
+                                  {/* Botão de + com tooltip */}
+                                  <div className="prod-tooltip-container">
+                                    <div
+                                      onClick={() => {
+                                        setIsPropertyModalOpen(true);
+                                      }}
+                                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', borderRadius: '50%', width: '22px', height: '22px', cursor: 'pointer' }}
+                                    >
+                                      <Plus size={14} />
+                                    </div>
+                                    <span className="prod-tooltip" style={{ bottom: '125%', right: '0', left: 'auto', transform: 'none', width: '120px' }}>Clique para cadastrar</span>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
 
-                          {/* Linha 2 */}
-                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', width: '100%' }}>
-                            {/* Linha 2 Esquerda (Associação, Abreviação e Checkboxes) */}
-                            <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
-                              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Associação (Etapa anterior):</span>
-                                <select
-                                  value={optParentOptionId}
-                                  onChange={(e) => setOptParentOptionId(e.target.value)}
-                                  className="prod-select"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '100%' }}
-                                >
-                                  <option value="">Sem Associação (Disponível sempre)</option>
-                                  {parentOptions.map(po => <option key={po.id} value={po.id}>{po.groupName} → {po.name}</option>)}
-                                </select>
-                              </div>
-
-                              <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Abreviação:</span>
-                                <input
-                                  type="text"
-                                  value={optAbbreviation}
-                                  onChange={(e) => setOptAbbreviation(e.target.value)}
-                                  placeholder="Ex: PEQ"
-                                  className="prod-input"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '120px', boxSizing: 'border-box' }}
-                                />
-                              </div>
-
-                              <div style={{ display: 'flex', alignItems: 'center', height: '36px', gap: '0.75rem', userSelect: 'none', marginBottom: '2px' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-primary)', margin: 0 }}>
-                                  <input
-                                    type="checkbox"
-                                    checked={optIsPreSelected}
-                                    onChange={(e) => setOptIsPreSelected(e.target.checked)}
-                                    style={{ width: '16px', height: '16px', accentColor: 'var(--primary)', cursor: 'pointer' }}
-                                  />
-                                  Selecionado
-                                </label>
-
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-primary)', margin: 0 }}>
-                                  <input
-                                    type="checkbox"
-                                    checked={optIsVisible}
-                                    onChange={(e) => setOptIsVisible(e.target.checked)}
-                                    style={{ width: '16px', height: '16px', accentColor: 'var(--primary)', cursor: 'pointer' }}
-                                  />
-                                  Visível
-                                </label>
-                              </div>
+                          {/* Linha 1 Direita (Preços e Quantidades) */}
+                          <div style={{ display: 'flex', gap: '1rem', width: '368px' }}>
+                            <div style={{ width: '80px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Preço Base:</span>
+                              <input
+                                type="text"
+                                value={optBasePrice}
+                                onChange={(e) => setOptBasePrice(formatCurrency(e.target.value))}
+                                className="prod-input"
+                                style={{ height: '36px', padding: '0 0.5rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right', fontSize: '0.85rem' }}
+                              />
                             </div>
 
-                            {/* Linha 2 Direita (Quantidades) */}
-                            <div style={{ display: 'flex', gap: '1rem', width: '236px' }}>
-                              <div style={{ width: '110px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Qtd. Mínima:</span>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  value={optMinQuantity}
-                                  onChange={(e) => setOptMinQuantity(Math.max(0, parseInt(e.target.value) || 0))}
-                                  className="prod-input"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '110px', boxSizing: 'border-box' }}
-                                />
-                              </div>
+                            <div style={{ width: '80px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total:</span>
+                              <input
+                                type="text"
+                                value={optTotalPrice}
+                                onChange={(e) => setOptTotalPrice(formatCurrency(e.target.value))}
+                                className="prod-input"
+                                style={{ height: '36px', padding: '0 0.5rem', background: 'rgba(0,0,0,0.2)', textAlign: 'right', fontSize: '0.85rem' }}
+                              />
+                            </div>
 
-                              <div style={{ width: '110px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Qtd. Máxima:</span>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={optMaxQuantity}
-                                  onChange={(e) => setOptMaxQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                  className="prod-input"
-                                  style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '110px', boxSizing: 'border-box' }}
-                                />
-                              </div>
+                            <div style={{ width: '80px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Qtd. Mínima:</span>
+                              <input
+                                type="number"
+                                min="0"
+                                value={optMinQuantity}
+                                onChange={(e) => setOptMinQuantity(Math.max(0, parseInt(e.target.value) || 0))}
+                                className="prod-input"
+                                style={{ height: '36px', padding: '0 0.5rem', background: 'rgba(0,0,0,0.2)', width: '80px', boxSizing: 'border-box', fontSize: '0.85rem' }}
+                              />
+                            </div>
+
+                            <div style={{ width: '80px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Qtd. Máxima:</span>
+                              <input
+                                type="number"
+                                min="1"
+                                value={optMaxQuantity}
+                                onChange={(e) => setOptMaxQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                className="prod-input"
+                                style={{ height: '36px', padding: '0 0.5rem', background: 'rgba(0,0,0,0.2)', width: '80px', boxSizing: 'border-box', fontSize: '0.85rem' }}
+                              />
                             </div>
                           </div>
                         </div>
 
-                        {/* Divisória Vertical */}
-                        <div style={{ borderLeft: '1px solid var(--border-subtle)', margin: '0 0.5rem' }} />
+                        {/* Linha 2 */}
+                        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', width: '100%' }}>
+                          {/* Linha 2 Esquerda (Abreviação, Associação) */}
+                          <div style={{ flex: 1, display: 'flex', gap: '1rem', alignItems: 'flex-end' }}>
+                            {/* Abreviação */}
+                            <div style={{ width: '130px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Abreviação:</span>
+                              <input
+                                type="text"
+                                value={optAbbreviation}
+                                onChange={(e) => setOptAbbreviation(e.target.value)}
+                                placeholder="Ex: PEQ"
+                                className="prod-input"
+                                style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '130px', boxSizing: 'border-box' }}
+                              />
+                            </div>
 
-                        {/* Três Botões Verticais (Lado Direito) */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '130px', justifyContent: 'center' }}>
-                          <button
-                            className="prod-btn prod-btn-primary"
-                            onClick={(e) => { e.preventDefault(); isEditingOption ? handleSaveOption() : handleAddOption(); }}
-                            style={{ background: 'var(--primary)', width: '100%' }}
-                          >
-                            {isEditingOption ? 'Salvar' : 'Cadastrar'}
-                          </button>
+                            {/* Associação (Etapa anterior) */}
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>Associação (Etapa anterior):</span>
+                              <select
+                                value={optParentOptionId}
+                                onChange={(e) => setOptParentOptionId(e.target.value)}
+                                className="prod-select"
+                                style={{ height: '36px', padding: '0 0.75rem', background: 'rgba(0,0,0,0.2)', width: '100%' }}
+                              >
+                                <option value="">Sem Associação (Disponível sempre)</option>
+                                {parentOptions.map(po => <option key={po.id} value={po.id}>{po.groupName} → {po.name}</option>)}
+                              </select>
+                            </div>
+                          </div>
 
-                          <button
-                            className="prod-btn prod-btn-secondary"
-                            disabled={!selectedOptionId}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (isEditingOption) {
-                                handleCancelEditOption();
-                              } else {
-                                const matchedOpt = selectedGroup.options.find(o => (o.id || (o as any).uiId || o.name) === selectedOptionId);
-                                if (matchedOpt) handleStartEditOption(matchedOpt);
-                              }
-                            }}
-                            style={{ width: '100%' }}
-                          >
-                            {isEditingOption ? 'Cancelar' : 'Editar'}
-                          </button>
+                          {/* Linha 2 Direita (Checkboxes + Botões de Ação) */}
+                          <div style={{ display: 'flex', gap: '0.5rem', width: '368px', justifyContent: 'flex-end', alignItems: 'center', height: '36px' }}>
+                            {/* Checkboxes */}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', userSelect: 'none', marginRight: 'auto' }}>
+                              <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={optIsPreSelected}
+                                  onChange={(e) => setOptIsPreSelected(e.target.checked)}
+                                  style={{ width: '16px', height: '16px', accentColor: 'var(--primary)', cursor: 'pointer' }}
+                                />
+                                Selecionado
+                              </label>
 
-                          <button
-                            className="prod-btn prod-btn-secondary"
-                            disabled={!selectedOptionId || isEditingOption}
-                            onClick={(e) => { e.preventDefault(); handleDeleteOption(); }}
-                            style={{ color: '#ef4444', borderColor: '#ef4444', width: '100%' }}
-                          >
-                            Excluir
-                          </button>
+                              <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={optIsVisible}
+                                  onChange={(e) => setOptIsVisible(e.target.checked)}
+                                  style={{ width: '16px', height: '16px', accentColor: 'var(--primary)', cursor: 'pointer' }}
+                                />
+                                Visível
+                              </label>
+                            </div>
+
+                            {/* Botões */}
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                              <button
+                                className="prod-btn prod-btn-primary"
+                                onClick={(e) => { e.preventDefault(); isEditingOption ? handleSaveOption() : handleAddOption(); }}
+                                style={{ background: 'var(--primary)', width: isEditingOption ? '95px' : '110px', height: '36px', padding: 0 }}
+                              >
+                                {isEditingOption ? 'Salvar' : 'Cadastrar'}
+                              </button>
+
+                              {isEditingOption && (
+                                <button
+                                  className="prod-btn prod-btn-secondary"
+                                  onClick={(e) => { e.preventDefault(); handleCancelEditOption(); }}
+                                  style={{ width: '95px', height: '36px', padding: 0 }}
+                                >
+                                  Cancelar
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
                       </div>
 
                       {/* Lista de Opções da Etapa Selecionada */}
-                      <div style={{ flex: 1, overflowY: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
-                          <thead style={{ background: 'rgba(30, 41, 59, 0.8)', borderBottom: '1px solid var(--border-strong)', position: 'sticky', top: 0, zIndex: 10 }}>
+                      <div style={{ borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', overflowX: 'auto', background: 'var(--bg-primary)' }}>
+                        <table style={{ width: '100%', minWidth: '1100px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                          <thead style={{ background: '#1e293b', borderBottom: '1px solid var(--border-strong)' }}>
                             <tr>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Opção (Descrição)</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '90px' }}>Abreviação</th>
-                              <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Associação (Etapa anterior)</th>
+                              <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '180px' }}>Associação (Etapa anterior)</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '100px', textAlign: 'center' }}>Selecionado</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '80px', textAlign: 'center' }}>Visível</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '110px', textAlign: 'right' }}>Preço Base</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '110px', textAlign: 'right' }}>Total</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '80px', textAlign: 'center' }}>Mín Qtd</th>
                               <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '80px', textAlign: 'center' }}>Máx Qtd</th>
+                              <th style={{ padding: '0.6rem 0.75rem', color: 'var(--text-muted)', fontWeight: 600, width: '90px', textAlign: 'center', position: 'sticky', right: 0, background: '#1e293b', zIndex: 10 }}>Ações</th>
                             </tr>
                           </thead>
                           <tbody>
                             {selectedGroup.options.length === 0 && (
                               <tr>
-                                <td colSpan={9} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                <td colSpan={10} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                                   Nenhuma opção inserida para esta etapa. Adicione opções acima.
                                 </td>
                               </tr>
@@ -2272,7 +2270,7 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                             {selectedGroup.options.map((opt, optIdx) => {
                               const matchedId = opt.id || (opt as any).uiId || opt.name || '';
                               const isSelected = selectedOptionId === matchedId;
-                              
+
                               let parentLabel = 'Sem Associação';
                               if (opt.parentOptionId) {
                                 const po = parentOptions.find(p => p.id === opt.parentOptionId);
@@ -2327,6 +2325,28 @@ export function ModalProdutos({ onClose, isWindowMode = false }: ModalProdutosPr
                                   </td>
                                   <td style={{ padding: '0.5rem 0.75rem', textAlign: 'center' }}>{opt.minQuantity || 0}</td>
                                   <td style={{ padding: '0.5rem 0.75rem', textAlign: 'center' }}>{opt.maxQuantity}</td>
+                                  <td style={{ padding: '0.25rem 0.75rem', textAlign: 'center', verticalAlign: 'middle', position: 'sticky', right: 0, background: 'var(--bg-primary)', zIndex: 1 }} onClick={(e) => e.stopPropagation()}>
+                                    <div style={{ display: 'flex', gap: '0.35rem', justifyContent: 'center', alignItems: 'center' }}>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleStartEditOption(opt)}
+                                        className="action-btn edit-btn"
+                                        title="Editar Opção"
+                                        style={{ width: '24px', height: '24px', padding: 0 }}
+                                      >
+                                        <Pencil size={10} />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteOption(opt)}
+                                        className="action-btn delete-btn"
+                                        title="Excluir Opção"
+                                        style={{ width: '24px', height: '24px', padding: 0 }}
+                                      >
+                                        <Trash2 size={10} />
+                                      </button>
+                                    </div>
+                                  </td>
                                 </tr>
                               );
                             })}

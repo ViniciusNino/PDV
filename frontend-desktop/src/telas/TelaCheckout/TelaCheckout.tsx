@@ -9,7 +9,7 @@ import { ModalProdutos } from '../ModalProdutos/ModalProdutos';
 import { TelaConfiguracao } from '../TelaConfiguracao/TelaConfiguracao';
 import { TelaBalcao } from '../TelaBalcao/TelaBalcao';
 
-const menusData: Record<string, { label: string; shortcut?: string; icon: string | null; hasSub?: boolean }[]> = {
+const menusData: Record<string, { label: string; shortcut?: string; icon: string | null; hasSub?: boolean; dividerAfter?: boolean }[]> = {
   Arquivo: [
     { label: 'Login...', shortcut: 'Ctrl+L', icon: '🔑' },
     { label: 'Fechar', shortcut: 'Ctrl+W', icon: '❌' },
@@ -67,26 +67,26 @@ const menusData: Record<string, { label: string; shortcut?: string; icon: string
   Cadastro: [
     { label: 'Produtos', icon: '🍔' },
     { label: 'Estoque...', icon: '📦' },
-    { label: 'Categorias', icon: '📁' },
+    { label: 'Categorias', icon: '📁', dividerAfter: true },
     { label: 'Fornecedores', icon: '🚚' },
-    { label: 'Clientes', icon: '👥' },
+    { label: 'Clientes', icon: '👥', dividerAfter: true },
     { label: 'Mesas', icon: '🍽️' },
-    { label: 'Comandas', icon: '📋' },
+    { label: 'Comandas', icon: '📋', dividerAfter: true },
     { label: 'Países', icon: '🌐' },
     { label: 'Estados', icon: '🗺️' },
     { label: 'Cidades', icon: '🏙️' },
-    { label: 'Bairros', icon: '📍' },
+    { label: 'Bairros', icon: '📍', dividerAfter: true },
     { label: 'Funcionários', icon: '👥' },
-    { label: 'Funções', icon: '💼' },
+    { label: 'Funções', icon: '💼', dividerAfter: true },
     { label: 'Contas', icon: '🧾' },
     { label: 'Serviços', icon: '🛠️' },
-    { label: 'Créditos', icon: '💳' },
+    { label: 'Créditos', icon: '💳', dividerAfter: true },
     { label: 'Formas de pagamento', icon: '💵' },
     { label: 'Cartões', icon: '💳' },
     { label: 'Bancos', icon: '🏦' },
     { label: 'Carteiras', icon: '👛' },
-    { label: 'Moedas', icon: '🪙' },
-    { label: 'Caixas', icon: '🖥️' },
+    { label: 'Moedas', icon: '🪙', dividerAfter: true },
+    { label: 'Caixas', icon: '🖥️', dividerAfter: true },
     { label: 'Patrimônio', icon: '🏢' }
   ],
   Configurações: [
@@ -637,21 +637,23 @@ export function TelaCheckout() {
             {activeMenu === menuName && (
               <div className="dropdown-menu">
                 {menusData[menuName].map((item, idx) => (
-                  <button 
-                    key={idx} 
-                    className="dropdown-item"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDropdownItemClick(menuName, item.label);
-                    }}
-                  >
-                    <span className="icon-emoji">
-                      {item.icon || ''}
-                    </span>
-                    <span className="dropdown-label">{item.label}</span>
-                    {item.shortcut && <span className="dropdown-shortcut">{item.shortcut}</span>}
-                    {item.hasSub && <ChevronRight size={14} className="dropdown-submenu-arrow" />}
-                  </button>
+                  <React.Fragment key={idx}>
+                    <button 
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDropdownItemClick(menuName, item.label);
+                      }}
+                    >
+                      <span className="icon-emoji">
+                        {item.icon || ''}
+                      </span>
+                      <span className="dropdown-label">{item.label}</span>
+                      {item.shortcut && <span className="dropdown-shortcut">{item.shortcut}</span>}
+                      {item.hasSub && <ChevronRight size={14} className="dropdown-submenu-arrow" />}
+                    </button>
+                    {item.dividerAfter && <div className="dropdown-divider" />}
+                  </React.Fragment>
                 ))}
               </div>
             )}

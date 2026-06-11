@@ -98,6 +98,12 @@
   color: white;
 }
 
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-strong);
+  margin: 0.25rem 0;
+}
+
 
 /* Top Toolbar */
 .checkout-topbar {

@@ -1,0 +1,51 @@
+/* src/telas/ModalProdutos/components/tabs/TabPacotes/TabPacotes.css */
+
+/* Célula sticky de ações para a tabela de opções de pacotes (tabela de baixo) */
+.tab-pacotes-actions-td {
+  position: sticky !important;
+  right: 0;
+  z-index: 2; /* Garante que fique acima de outros conteúdos da linha */
+  padding: 0.25rem 0.75rem !important;
+  text-align: center;
+  vertical-align: middle;
+  transition: background-color var(--transition-fast);
+  
+  /* Cor de fundo padrão (deve ser opaca para sumir as informações atrás dela) */
+  background-color: var(--bg-surface) !important; 
+}
+
+/* Quando a linha está em hover */
+.package-row-hover:hover .tab-pacotes-actions-td {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+/* Quando a linha está selecionada */
+.package-row-hover.selected .tab-pacotes-actions-td {
+  background-color: #2e221b !important; /* Laranja escuro mesclado com fundo escuro */
+}
+
+/* Quando a linha selecionada está em hover */
+.package-row-hover.selected:hover .tab-pacotes-actions-td {
+  background-color: #382921 !important;
+}
+
+/* Suporte para temas claros (light mode) */
+[data-theme*="-light"] .package-row-hover.selected .tab-pacotes-actions-td,
+[data-theme*="light"] .package-row-hover.selected .tab-pacotes-actions-td {
+  background-color: #ffecd9 !important; /* Laranja claro mesclado com fundo claro */
+}
+
+[data-theme*="-light"] .package-row-hover.selected:hover .tab-pacotes-actions-td,
+[data-theme*="light"] .package-row-hover.selected:hover .tab-pacotes-actions-td {
+  background-color: #ffe0c2 !important;
+}
+
+/* Garantia que o cabeçalho sticky das Ações também fique opaco e correto */
+.tab-pacotes-actions-th {
+  position: sticky !important;
+  right: 0;
+  z-index: 10;
+  background-color: #1e293b !important; /* Cor sólida do cabeçalho */
+  text-align: center;
+  width: 90px;
+}

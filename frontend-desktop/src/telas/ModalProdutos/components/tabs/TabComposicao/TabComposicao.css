@@ -1,0 +1,267 @@
+.tab-composicao-header-group {
+  margin-bottom: 1.25rem;
+}
+
+.tab-composicao-title {
+  margin: 0;
+}
+
+.tab-composicao-subtitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tab-composicao-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: rgba(30, 41, 59, 0.3);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.tab-composicao-row-1 {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.tab-composicao-col-main {
+  flex: 1;
+}
+
+.tab-composicao-label-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tab-composicao-select-full {
+  width: 100%;
+}
+
+.tab-composicao-col-qty {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tab-composicao-qty-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.tab-composicao-qty-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tab-composicao-qty-input {
+  width: 90px;
+  height: 38px;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: right;
+}
+
+.tab-composicao-unit-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.tab-composicao-row-2 {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.tab-composicao-col-type {
+  flex: 1;
+  min-width: 150px;
+}
+
+.tab-composicao-col-price {
+  width: 120px;
+}
+
+.tab-composicao-price-input {
+  height: 38px;
+}
+
+.tab-composicao-col-active {
+  display: flex;
+  align-items: center;
+  height: 38px;
+}
+
+.tab-composicao-active-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  user-select: none;
+  margin: 0;
+}
+
+.tab-composicao-active-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.tab-composicao-col-btn {
+  margin-left: auto;
+}
+
+.tab-composicao-add-btn {
+  padding: 0.65rem 1rem;
+  height: 38px;
+}
+
+.tab-composicao-table-wrapper {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.tab-composicao-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tab-composicao-thead {
+  background: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.tab-composicao-th {
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tab-composicao-th-qty {
+  width: 120px;
+}
+
+.tab-composicao-th-status {
+  width: 90px;
+  text-align: center;
+}
+
+.tab-composicao-th-actions {
+  width: 60px;
+  text-align: center;
+}
+
+.tab-composicao-empty-row {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.tab-composicao-tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab-composicao-td-name {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.tab-composicao-td-qty {
+  padding: 0.5rem 1rem;
+}
+
+.tab-composicao-td-qty-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tab-composicao-row-qty-input {
+  width: 90px;
+  height: 32px;
+  padding: 0.25rem 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+.tab-composicao-row-unit-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.tab-composicao-td-type {
+  padding: 1rem;
+  color: var(--text-primary);
+}
+
+.tab-composicao-row-select {
+  padding: 0.25rem 0.5rem;
+  height: 32px;
+  font-size: 0.85rem;
+}
+
+.tab-composicao-td-price {
+  padding: 0.5rem 1rem;
+}
+
+.tab-composicao-row-price-input {
+  width: 100px;
+  padding: 0.25rem 0.5rem;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 0.85rem;
+}
+
+.tab-composicao-row-no-price {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tab-composicao-td-status {
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.tab-composicao-row-status-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.tab-composicao-row-status-always {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.tab-composicao-td-actions {
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.tab-composicao-row-delete-btn {
+  margin: 0 auto;
+}

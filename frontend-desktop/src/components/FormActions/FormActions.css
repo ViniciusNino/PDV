@@ -1,0 +1,25 @@
+/* src/components/FormActions/FormActions.css */
+.form-actions-container {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--border-strong);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: var(--bg-surface);
+}
+
+.spinner-small {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

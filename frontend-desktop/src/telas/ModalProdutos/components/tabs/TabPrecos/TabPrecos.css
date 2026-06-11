@@ -1,0 +1,83 @@
+.tab-precos-header-group {
+  margin-bottom: 1.5rem;
+}
+
+.tab-precos-title {
+  margin: 0;
+}
+
+.tab-precos-subtitle {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tab-precos-table-wrapper {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.tab-precos-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tab-precos-thead {
+  background: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.tab-precos-th {
+  padding: 1rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.tab-precos-th-canal {
+  width: 45%;
+}
+
+.tab-precos-th-preco {
+  width: 35%;
+}
+
+.tab-precos-th-status {
+  text-align: center;
+}
+
+.tab-precos-tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab-precos-td-canal {
+  padding: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tab-precos-td-input {
+  padding: 0.5rem 1rem;
+}
+
+.tab-precos-input-field {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 0.75rem;
+}
+
+.tab-precos-td-checkbox {
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.tab-precos-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}

@@ -1,0 +1,112 @@
+.tab-estoque-span-2 {
+  grid-column: span 2;
+}
+
+.tab-estoque-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+}
+
+.tab-estoque-checkbox-field {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.tab-estoque-select-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.tab-estoque-select-field {
+  flex: 1;
+}
+
+.tab-estoque-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.tab-estoque-add-tooltip {
+  bottom: 125%;
+  right: 0;
+  left: auto;
+  transform: none;
+  width: 150px;
+}
+
+.tab-estoque-fator-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tab-estoque-fator-label {
+  margin: 0;
+}
+
+.tab-estoque-fator-help-icon {
+  cursor: help;
+  color: var(--text-muted);
+}
+
+.tab-estoque-fator-tooltip {
+  width: 260px;
+}
+
+.tab-estoque-options-container {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.tab-estoque-history-row {
+  grid-column: span 2;
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tab-estoque-history-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-estoque-history-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tab-estoque-history-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.tab-estoque-history-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  cursor: not-allowed;
+  width: 200px;
+}

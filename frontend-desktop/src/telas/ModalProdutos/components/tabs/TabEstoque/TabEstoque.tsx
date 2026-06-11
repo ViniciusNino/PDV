@@ -1,7 +1,8 @@
 import React from 'react';
-import { Plus, HelpCircle } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { ProductFormData } from '../../../../../types/product.types';
 import { useTabEstoque } from './TabEstoqueState';
+import { HelpTooltip } from '../../shared/HelpTooltip';
 import './TabEstoque.css';
 
 interface TabEstoqueProps {
@@ -86,12 +87,10 @@ export function TabEstoque({
         <div className="prod-form-group">
           <div className="tab-estoque-fator-label-row">
             <label className="tab-estoque-fator-label">Fator de Conversão</label>
-            <div className="prod-tooltip-container">
-              <HelpCircle size={14} className="prod-help-icon tab-estoque-fator-help-icon" />
-              <div className="prod-tooltip tab-estoque-fator-tooltip">
-                Quantidade contida em uma unidade de estoque. Ex: Se você compra em fardo com 12 unidades, o fator é 12. Se compra avulso, o fator é 1.
-              </div>
-            </div>
+            <HelpTooltip
+              text="Quantidade contida em uma unidade de estoque. Ex: Se você compra em fardo com 12 unidades, o fator é 12. Se compra avulso, o fator é 1."
+              tooltipClassName="tab-estoque-fator-tooltip"
+            />
           </div>
           <input
             type="number"

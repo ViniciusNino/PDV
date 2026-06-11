@@ -3,6 +3,7 @@ import { Plus, X } from 'lucide-react';
 import { formatQuantityDecimal } from '../../../../../utils/formatters';
 import type { ProductFormData } from '../../../../../types/product.types';
 import { useTabComposicao } from './TabComposicaoState';
+import { EmptyTableRow } from '../../shared/EmptyTableRow';
 import './TabComposicao.css';
 
 interface TabComposicaoProps {
@@ -178,11 +179,7 @@ export function TabComposicao({
           </thead>
           <tbody>
             {formData.ingredients.length === 0 && (
-              <tr>
-                <td colSpan={6} className="tab-composicao-empty-row">
-                  Nenhum ingrediente ou opcional adicionado.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={6} message="Nenhum ingrediente ou opcional adicionado." className="tab-composicao-empty-row" />
             )}
             {[...formData.ingredients]
               .sort((a: any, b: any) => a.name.localeCompare(b.name))

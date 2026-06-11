@@ -1,4 +1,5 @@
 import { Pencil, Trash2, Layers, Plus, Search } from 'lucide-react';
+import { EmptyTableRow } from '../../shared/EmptyTableRow';
 import './TabPacotes.css';
 import { formatCurrency } from '../../../../../utils/formatters';
 import type { ProductFormData } from '../../../../../types/product.types';
@@ -62,7 +63,7 @@ export function TabPacotes({
     <div className="prod-tab-section animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       
       {/* 1. PAINEL SUPERIOR - CONFIGURAÇÃO DE ETAPA (CADASTRO E EDIÇÃO) */}
-      <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="prod-crud-card">
         <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Layers size={16} style={{ color: 'var(--primary)' }} />
           {isEditingGroup ? 'Editar Etapa do Pacote' : 'Cadastrar Etapa do Pacote'}
@@ -186,11 +187,7 @@ export function TabPacotes({
             </thead>
             <tbody>
               {formData.modifierGroups.length === 0 && (
-                <tr>
-                  <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    Nenhuma etapa cadastrada. Preencha os campos acima para cadastrar a primeira etapa.
-                  </td>
-                </tr>
+                <EmptyTableRow colSpan={7} message="Nenhuma etapa cadastrada. Preencha os campos acima para cadastrar a primeira etapa." />
               )}
               {formData.modifierGroups.map((group) => {
                 const uiId = group.uiId || group.id || '';
@@ -297,7 +294,7 @@ export function TabPacotes({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', flex: 1, minHeight: '350px' }}>
             
             {/* PAINEL INFERIOR - CADASTRO/EDIÇÃO DE OPÇÕES */}
-            <div style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-strong)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="prod-crud-card">
               <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Layers size={16} style={{ color: '#f97316' }} />
                 {isEditingOption ? `Editar Item da Etapa: ${selectedGroup.name}` : `Cadastrar Item na Etapa: ${selectedGroup.name}`}
@@ -557,11 +554,7 @@ export function TabPacotes({
                 </thead>
                 <tbody>
                   {selectedGroup.options.length === 0 && (
-                    <tr>
-                      <td colSpan={10} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                        Nenhuma opção inserida para esta etapa. Adicione opções acima.
-                      </td>
-                    </tr>
+                    <EmptyTableRow colSpan={10} message="Nenhuma opção inserida para esta etapa. Adicione opções acima." />
                   )}
                   {selectedGroup.options.map((opt: any, optIdx: number) => {
                     const matchedId = opt.id || opt.uiId || opt.name || '';

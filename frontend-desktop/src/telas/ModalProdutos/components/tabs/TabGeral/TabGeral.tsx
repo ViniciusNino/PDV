@@ -1,8 +1,9 @@
 import React from 'react';
-import { HelpCircle, UploadCloud, Pencil } from 'lucide-react';
+import { UploadCloud, Pencil } from 'lucide-react';
 import { formatCurrency } from '../../../../../utils/formatters';
 import type { ProductFormData } from '../../../../../types/product.types';
 import { useTabGeral } from './TabGeralState';
+import { HelpTooltip } from '../../shared/HelpTooltip';
 import './TabGeral.css';
 
 interface TabGeralProps {
@@ -32,12 +33,10 @@ export function TabGeral({
         <div className="prod-form-group tab-geral-img-group">
           <div className="tab-geral-img-label-row">
             <label className="tab-geral-img-label">Imagem do Produto</label>
-            <div className="prod-tooltip-container">
-              <HelpCircle size={14} className="prod-help-icon tab-geral-img-help-icon" />
-              <div className="prod-tooltip">
-                Dimensão recomendada: proporção 1:1 (quadrada), ex: 400x400px. Limite máximo: 2MB e resolução de até 2500x2500px.
-              </div>
-            </div>
+            <HelpTooltip
+              text="Dimensão recomendada: proporção 1:1 (quadrada), ex: 400x400px. Limite máximo: 2MB e resolução de até 2500x2500px."
+              tooltipClassName="tab-geral-img-tooltip"
+            />
           </div>
           <div className="cat-image-upload-area tab-geral-upload-area" onClick={() => document.getElementById('prod-img')?.click()}>
             <input type="file" id="prod-img" accept="image/*" onChange={handleImageUpload} className="tab-geral-hidden-file" />

@@ -1,4 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react';
+import { EmptyTableRow } from '../../shared/EmptyTableRow';
 import './TabPromocoes.css';
 import { formatCurrency } from '../../../../../utils/formatters';
 import type { ProductFormData } from '../../../../../types/product.types';
@@ -37,7 +38,7 @@ export function TabPromocoes({ formData, promoState, promoActions }: TabPromocoe
         </div>
       </div>
 
-      <div style={{ background: 'rgba(30, 41, 59, 0.3)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="prod-crud-card">
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', width: '100%', alignItems: 'flex-end' }}>
           <div style={{ flex: 1.8, minWidth: '180px', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Do dia</span>
@@ -165,11 +166,7 @@ export function TabPromocoes({ formData, promoState, promoActions }: TabPromocoe
           </thead>
           <tbody>
             {formData.promotions.length === 0 ? (
-              <tr>
-                <td colSpan={7} style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  Nenhuma promoção cadastrada para este produto.
-                </td>
-              </tr>
+              <EmptyTableRow colSpan={7} message="Nenhuma promoção cadastrada para este produto." />
             ) : (
               formData.promotions.map((p, idx) => (
                 <tr key={p.id || p.uiId || idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>

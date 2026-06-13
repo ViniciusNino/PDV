@@ -1,0 +1,130 @@
+/* ==========================================================================
+   Aba XML
+   ========================================================================== */
+
+.xml-tab-container {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.xml-upload-panel {
+  width: 100%;
+  border: 2px dashed var(--border-strong);
+  background-color: rgba(255, 255, 255, 0.01);
+  border-radius: var(--radius-md);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+  transition: var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+}
+
+.xml-upload-panel:hover,
+.xml-upload-panel.drag-over {
+  border-color: var(--primary);
+  background-color: rgba(255, 107, 26, 0.02);
+  box-shadow: 0 0 15px rgba(255, 107, 26, 0.05);
+}
+
+.xml-icon-large {
+  color: var(--primary);
+  background-color: rgba(255, 107, 26, 0.1);
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  box-shadow: 0 0 20px rgba(255, 107, 26, 0.1);
+}
+
+.xml-upload-panel h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.xml-instruction {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 320px;
+}
+
+.xml-upload-btn {
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: white;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.xml-upload-btn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 10px rgba(255, 107, 26, 0.4);
+}
+
+.xml-file-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.xml-info-alert {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background-color: rgba(56, 151, 252, 0.08);
+  border: 1px solid rgba(56, 151, 252, 0.2);
+  border-radius: var(--radius-sm);
+  color: #3897fc;
+  text-align: left;
+}
+
+.xml-alert-content h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.xml-alert-content p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.loader-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 107, 26, 0.2);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

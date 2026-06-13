@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Tabela de lançamentos
+   ========================================================================== */
+
+.estoque-table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-height: 250px;
+  overflow: hidden;
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-header-row h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.btn-clear-table {
+  background: transparent;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.btn-clear-table:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.estoque-table-container {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.estoque-main-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.estoque-main-table th {
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-strong);
+  padding: 10px 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  z-index: 10;
+}
+
+.estoque-main-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.estoque-main-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.estoque-main-table th.num-col,
+.estoque-main-table td.num-col {
+  text-align: right;
+}
+
+.estoque-main-table th.actions-col,
+.estoque-main-table td.actions-col {
+  text-align: center;
+  width: 40px;
+}
+
+.empty-table-row td {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.code-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+.box-icon {
+  font-size: 14px;
+}
+
+.item-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.item-delete-btn:hover {
+  color: var(--danger);
+  background-color: rgba(239, 68, 68, 0.1);
+}

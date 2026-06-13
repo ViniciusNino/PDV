@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Popover de Autocomplete de Produtos
+   ========================================================================== */
+
+.estoque-product-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  max-height: 280px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.popover-header {
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.popover-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.popover-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.popover-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.popover-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.popover-table th {
+  padding: 6px 12px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.popover-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+
+.popover-table tr:hover {
+  background-color: rgba(255, 107, 26, 0.1);
+}
+
+.popover-table tr.selected-row {
+  background-color: rgba(255, 107, 26, 0.15);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.desc-col {
+  width: 50%;
+}
+
+.stock-col.low-stock {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.popover-footer {
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.popover-action-btn {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.popover-action-btn.primary {
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: white;
+}
+
+.popover-action-btn.primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.popover-action-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.popover-action-btn.secondary:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--text-primary);
+}

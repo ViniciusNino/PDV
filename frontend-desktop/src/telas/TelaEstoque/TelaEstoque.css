@@ -1,0 +1,180 @@
+/* ==========================================================================
+   Controle de Estoque - Estilos Globais e do Modal
+   ========================================================================== */
+
+.estoque-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.estoque-window-card {
+  width: 100%;
+  max-width: 950px;
+  height: 90vh;
+  max-height: 720px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+/* Modo Janela MDI */
+.estoque-window-card.window-mode {
+  height: 100%;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  max-width: none;
+  width: 100%;
+}
+
+/* Header */
+.estoque-window-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.header-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-title-wrapper h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.title-icon {
+  color: var(--primary);
+}
+
+.header-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.header-close-btn:hover {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+/* Alertas de Notificação */
+.estoque-alert-notification {
+  margin: 15px 20px 0 20px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.estoque-alert-notification.error {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+}
+
+.estoque-alert-notification.success {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--accent);
+}
+
+/* Abas */
+.estoque-tabs-menu {
+  display: flex;
+  padding: 15px 20px 0 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab-menu-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tab-menu-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-surface-hover);
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+
+.tab-menu-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+/* Content Container */
+.estoque-tab-content-wrapper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.estoque-tab-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   Animações
+   ========================================================================== */
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

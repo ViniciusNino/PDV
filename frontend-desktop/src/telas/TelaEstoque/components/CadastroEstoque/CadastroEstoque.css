@@ -1,0 +1,270 @@
+/* ==========================================================================
+   Aba Estoque - Formulários e Inputs
+   ========================================================================== */
+
+.estoque-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+}
+
+.estoque-form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.estoque-form-row-flexible {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.estoque-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.estoque-field-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Inputs de Tamanhos Específicos */
+.product-search-field-wrapper {
+  flex: 2;
+  position: relative;
+}
+
+.movement-field-wrapper {
+  flex: 1;
+}
+
+.full-width {
+  flex: 1;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.estoque-form-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.sector-field-group {
+  width: 200px;
+}
+
+.entry-date-field-group {
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Estilo dos Inputs */
+.estoque-input {
+  width: 100%;
+  height: 38px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  transition: var(--transition-fast);
+}
+
+.estoque-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.estoque-input.align-right {
+  text-align: right;
+}
+
+.readonly-yellow-field {
+  background-color: rgba(254, 243, 199, 0.08) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.2) !important;
+  cursor: not-allowed;
+}
+
+/* Inputs complexos com ícones/badges */
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.search-input-wrapper .estoque-input {
+  padding-right: 44px;
+}
+
+.search-action-btn {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 36px;
+  background-color: var(--bg-surface-hover);
+  border: none;
+  border-left: 1px solid var(--border-strong);
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: var(--transition-fast);
+}
+
+.search-action-btn svg {
+  color: var(--text-primary) !important;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5px;
+  display: block;
+}
+
+.search-action-btn:hover {
+  background-color: var(--primary-hover);
+  color: white;
+}
+
+.input-with-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-badge .estoque-input {
+  padding-right: 40px;
+}
+
+.unit-badge {
+  position: absolute;
+  right: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.select-with-plus {
+  display: flex;
+  gap: 8px;
+}
+
+.plus-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.plus-btn svg {
+  color: #10b981 !important;
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.5px;
+  display: block;
+  transition: var(--transition-fast);
+}
+
+.plus-btn:hover svg {
+  color: white !important;
+}
+
+.plus-btn:hover {
+  background-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Checkbox com data */
+.checkbox-with-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+}
+
+.estoque-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.disabled-date-input {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Botões do formulário */
+.estoque-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  height: 38px;
+}
+
+.estoque-btn {
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  height: 100%;
+}
+
+.btn-insert {
+  background-color: var(--primary);
+  border: 1px solid var(--primary);
+  color: white;
+}
+
+.btn-insert:hover:not(.disabled) {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 10px rgba(255, 107, 26, 0.4);
+}
+
+.btn-insert.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+
+.btn-clear {
+  background-color: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.btn-clear:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--text-primary);
+}

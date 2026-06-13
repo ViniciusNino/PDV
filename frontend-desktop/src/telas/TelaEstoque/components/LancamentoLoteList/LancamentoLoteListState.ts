@@ -1,4 +1,4 @@
-import { StockItem } from '../../TelaEstoqueState';
+import type { StockItem } from '../../TelaEstoqueState';
 
 interface UseLancamentoLoteListProps {
   stockItems: StockItem[];

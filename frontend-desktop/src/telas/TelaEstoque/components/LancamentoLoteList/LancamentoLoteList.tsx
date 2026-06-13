@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { StockItem } from '../../TelaEstoqueState';
+import type { StockItem } from '../../TelaEstoqueState';
 import { useLancamentoLoteList } from './LancamentoLoteListState';
 import './LancamentoLoteList.css';
 

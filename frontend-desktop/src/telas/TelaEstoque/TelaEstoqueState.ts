@@ -88,12 +88,12 @@ export function useTelaEstoque() {
         { id: '4', name: 'Bar', description: 'Setor de bebidas' }
       ];
       setSectorsList(list);
-      
+
       // Armazena no localStorage caso não exista para sincronia
       if (!local) {
         localStorage.setItem('mock_stocksectors', JSON.stringify(list));
       }
-      
+
       if (list.length > 0) {
         setSectorId(String(list[0].id));
       }
@@ -104,18 +104,18 @@ export function useTelaEstoque() {
   const fetchProducts = useCallback(async () => {
     try {
       const data = await apiClient.get('/products');
-        const mapped = data.map((p: any) => {
-          const displayCode = p.code && p.code.trim() ? p.code.trim() : '-';
-          return {
-            id: String(p.id),
-            code: displayCode,
-            description: p.name || p.description,
-            price: p.salePrice || p.price || 0,
-            stock: p.stockQuantity || p.stock || 0,
-            unit: p.unit || 'UN'
-          };
-        });
-        setProductsList(mapped);
+      const mapped = data.map((p: any) => {
+        const displayCode = p.code && p.code.trim() ? p.code.trim() : '-';
+        return {
+          id: String(p.id),
+          code: displayCode,
+          description: p.name || p.description,
+          price: p.salePrice || p.price || 0,
+          stock: p.stockQuantity || p.stock || 0,
+          unit: p.unit || 'UN'
+        };
+      });
+      setProductsList(mapped);
     } catch (err) {
       // Mantém os mocks locais caso falhe ou esteja sem API
       setProductsList(defaultProducts);
@@ -141,7 +141,7 @@ export function useTelaEstoque() {
       return;
     }
 
-    const filtered = productsList.filter(p => 
+    const filtered = productsList.filter(p =>
       p.description.toLowerCase().includes(query.toLowerCase()) ||
       p.code.includes(query)
     );
@@ -164,21 +164,21 @@ export function useTelaEstoque() {
   const handleUnitsChange = (val: number) => {
     setUnits(val);
     setQuantity(val); // Relação direta 1:1 no exemplo do vídeo
-    
+
     const calculatedTotal = val * purchasePrice;
     setTotalPrice(Number(calculatedTotal.toFixed(2)));
   };
 
   const handleQuantityChange = (val: number) => {
     setQuantity(val);
-    
+
     const calculatedTotal = val * purchasePrice;
     setTotalPrice(Number(calculatedTotal.toFixed(2)));
   };
 
   const handlePurchasePriceChange = (val: number) => {
     setPurchasePrice(val);
-    
+
     const calculatedTotal = quantity * val;
     setTotalPrice(Number(calculatedTotal.toFixed(2)));
   };
@@ -238,7 +238,7 @@ export function useTelaEstoque() {
 
     setStockItems(prev => [...prev, newItem]);
     setSuccessMessage(`Item "${selectedProduct.description}" adicionado com sucesso!`);
-    
+
     // Limpa apenas o formulário mantendo as configurações de Setor, Movimento e Datas
     handleClearForm();
   };
@@ -266,7 +266,7 @@ export function useTelaEstoque() {
     setError,
     successMessage,
     setSuccessMessage,
-    
+
     // Mocks / Listas
     productsList,
     filteredProducts,
@@ -274,7 +274,7 @@ export function useTelaEstoque() {
     setIsProductPopoverOpen,
     sectorsList,
     stockItems,
-    
+
     // Form States
     productQuery,
     setProductQuery,
@@ -300,7 +300,7 @@ export function useTelaEstoque() {
     setUseEntryDate,
     entryDate,
     setEntryDate,
-    
+
     // Ações
     handleProductSearchChange,
     handleSelectProduct,

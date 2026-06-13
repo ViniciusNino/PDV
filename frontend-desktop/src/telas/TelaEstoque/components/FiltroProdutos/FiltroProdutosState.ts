@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ProductMock } from '../../TelaEstoqueState';
+import type { ProductMock } from '../../TelaEstoqueState';
 
 interface UseFiltroProdutosProps {
   products: ProductMock[];

@@ -1,4 +1,4 @@
-import { ProductMock } from '../../TelaEstoqueState';
+import type { ProductMock } from '../../TelaEstoqueState';
 
 interface UseCadastroEstoqueProps {
   selectedProduct: ProductMock | null;

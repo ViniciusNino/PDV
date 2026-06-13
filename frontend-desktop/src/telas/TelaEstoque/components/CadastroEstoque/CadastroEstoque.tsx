@@ -1,8 +1,8 @@
 import { Search, Plus } from 'lucide-react';
-import { ProductMock } from '../../TelaEstoqueState';
 import { FiltroProdutos } from '../FiltroProdutos/FiltroProdutos';
 import { useCadastroEstoque } from './CadastroEstoqueState';
 import './CadastroEstoque.css';
+import type { ProductMock } from '../../TelaEstoqueState';
 
 interface CadastroEstoqueProps {
   productQuery: string;
@@ -129,8 +129,8 @@ export function CadastroEstoque({
 
         <div className="estoque-field-group movement-field-wrapper">
           <label>Movimento:</label>
-          <select 
-            value={movement} 
+          <select
+            value={movement}
             onChange={e => setMovement(e.target.value)}
             className="estoque-input"
           >
@@ -313,16 +313,16 @@ export function CadastroEstoque({
 
         {/* Botões Inserir / Cancelar */}
         <div className="estoque-form-actions">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onSubmit}
             disabled={!selectedProduct}
             className={`estoque-btn btn-insert ${!selectedProduct ? 'disabled' : ''}`}
           >
             Inserir
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleClearForm}
             className="estoque-btn btn-clear"
           >

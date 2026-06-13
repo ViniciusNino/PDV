@@ -17,11 +17,25 @@ export function useStockSectorModal() {
   const fetchSectors = useCallback(() => {
     return apiClient.get('/stocksectors')
       .then((data: any) => {
-        setSectorsList(data);
-        return data;
+        if (data && Array.isArray(data)) {
+          setSectorsList(data);
+          // Atualiza o localStorage local com os dados reais
+          localStorage.setItem('mock_stocksectors', JSON.stringify(data));
+          return data;
+        }
+        throw new Error("Formato inválido");
       })
       .catch((err: any) => {
-        console.error("Erro ao carregar setores:", err);
+        console.warn("Erro ao carregar setores via API (usando mock/offline):", err);
+        const local = localStorage.getItem('mock_stocksectors');
+        const list = local ? JSON.parse(local) : [
+          { id: '1', name: 'Vendas', description: 'Setor de vendas' },
+          { id: '2', name: 'Cozinha', description: 'Cozinha' },
+          { id: '3', name: 'Churrasqueira', description: 'Churrasqueira' },
+          { id: '4', name: 'Bar', description: 'Setor de bebidas' }
+        ];
+        setSectorsList(list);
+        return list;
       });
   }, []);
 
@@ -35,12 +49,13 @@ export function useStockSectorModal() {
       setError("O nome do setor é obrigatório.");
       return;
     }
+
+    const payload = {
+      name: sectorName.trim(),
+      description: sectorDescription.trim()
+    };
+
     try {
-      const payload = {
-        name: sectorName.trim(),
-        description: sectorDescription.trim()
-      };
-      
       if (editingSectorId) {
         await apiClient.put(`/stocksectors/${editingSectorId}`, payload);
       } else {
@@ -53,13 +68,38 @@ export function useStockSectorModal() {
       setEditingSectorId(null);
       fetchSectors();
     } catch (err: any) {
-      setError("Erro ao salvar setor: " + err.message);
+      console.warn("Erro ao salvar setor na API, salvando localmente (mock):", err.message);
+      
+      // Fallback local
+      const local = localStorage.getItem('mock_stocksectors');
+      let list = local ? JSON.parse(local) : [];
+      
+      if (editingSectorId) {
+        list = list.map((s: any) => 
+          String(s.id) === String(editingSectorId) 
+            ? { ...s, name: payload.name, description: payload.description } 
+            : s
+        );
+      } else {
+        list.push({
+          id: Date.now().toString(),
+          name: payload.name,
+          description: payload.description
+        });
+      }
+      
+      localStorage.setItem('mock_stocksectors', JSON.stringify(list));
+      setSuccessMessage(editingSectorId ? "Setor atualizado localmente!" : "Setor cadastrado localmente!");
+      setSectorName('');
+      setSectorDescription('');
+      setEditingSectorId(null);
+      fetchSectors();
     }
   };
 
   const handleEditSector = (sector: any) => {
     clearMessages();
-    setEditingSectorId(sector.id);
+    setEditingSectorId(String(sector.id));
     setSectorName(sector.name);
     setSectorDescription(sector.description || '');
   };
@@ -74,9 +114,9 @@ export function useStockSectorModal() {
   const handleDeleteSector = async (sectorId: string, name: string) => {
     clearMessages();
     if (!window.confirm(`Tem certeza que deseja excluir o setor "${name}"?`)) return;
+    
     try {
       await apiClient.delete(`/stocksectors/${sectorId}`);
-
       setSuccessMessage("Setor excluído com sucesso!");
       if (editingSectorId === sectorId) {
         setEditingSectorId(null);
@@ -85,7 +125,23 @@ export function useStockSectorModal() {
       }
       fetchSectors();
     } catch (err: any) {
-      setError("Erro ao excluir setor: " + err.message);
+      console.warn("Erro ao excluir setor na API, excluindo localmente (mock):", err.message);
+      
+      // Fallback local
+      const local = localStorage.getItem('mock_stocksectors');
+      if (local) {
+        let list = JSON.parse(local);
+        list = list.filter((s: any) => String(s.id) !== String(sectorId));
+        localStorage.setItem('mock_stocksectors', JSON.stringify(list));
+      }
+      
+      setSuccessMessage("Setor excluído localmente!");
+      if (editingSectorId === sectorId) {
+        setEditingSectorId(null);
+        setSectorName('');
+        setSectorDescription('');
+      }
+      fetchSectors();
     }
   };
 

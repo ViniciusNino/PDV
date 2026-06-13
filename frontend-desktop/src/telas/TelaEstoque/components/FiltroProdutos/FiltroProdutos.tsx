@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { ProductMock } from '../../TelaEstoqueState';
+import type { ProductMock } from '../../TelaEstoqueState';
 import { useFiltroProdutos } from './FiltroProdutosState';
 import './FiltroProdutos.css';
 

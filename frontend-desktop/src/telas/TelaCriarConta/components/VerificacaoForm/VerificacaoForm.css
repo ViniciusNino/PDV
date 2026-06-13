@@ -1,0 +1,134 @@
+.verify-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  gap: 1.25rem;
+}
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  margin-left: -0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.btn-back:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.verify-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: -0.5rem;
+}
+
+.highlight-email {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.verify-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.code-digits-grid {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.code-digit-input {
+  flex: 1;
+  max-width: 72px;
+  height: 64px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  outline: none;
+  padding: 0;
+}
+
+.code-digit-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
+.code-digit-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-verify {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-verify:hover {
+  background: var(--primary-hover);
+}
+
+.btn-verify:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resend-section {
+  width: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.timer-text {
+  color: var(--text-muted);
+}
+
+.timer-text strong {
+  color: var(--text-secondary);
+}
+
+.resend-prompt {
+  color: var(--text-secondary);
+}
+
+.resend-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.resend-link:hover {
+  text-decoration: underline;
+}

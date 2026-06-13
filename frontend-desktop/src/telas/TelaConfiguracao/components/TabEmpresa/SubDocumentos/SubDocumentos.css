@@ -1,0 +1,9 @@
+/* ─── SubDocumentos: estilos locais ─── */
+
+.date-input {
+  color-scheme: dark;
+}
+
+[data-theme$="-light"] .date-input {
+  color-scheme: light;
+}

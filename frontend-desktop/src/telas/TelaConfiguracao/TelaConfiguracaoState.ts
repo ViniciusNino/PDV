@@ -24,6 +24,9 @@ export interface CompanyConfig {
   number: string;
   complement: string;
   referencePoint: string;
+  facebook: string;
+  twitter: string;
+  linkedin: string;
 }
 
 export interface SystemConfig {
@@ -123,7 +126,10 @@ export function useTelaConfiguracao({ isModal, onClose }: UseTelaConfiguracaoPro
     street: '',
     number: '',
     complement: '',
-    referencePoint: ''
+    referencePoint: '',
+    facebook: '',
+    twitter: '',
+    linkedin: ''
   });
 
   const [print, setPrint] = useState<Record<string, boolean>>({

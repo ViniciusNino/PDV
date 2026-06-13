@@ -1,0 +1,35 @@
+/* ─── SubOutros: limite de compra + campo acionista ─── */
+
+.money-input-wrapper,
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.money-input-wrapper input {
+  width: 100%;
+  padding-right: 0.75rem;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem;
+}
+
+.search-icon-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.search-icon-btn:hover {
+  color: var(--primary);
+}

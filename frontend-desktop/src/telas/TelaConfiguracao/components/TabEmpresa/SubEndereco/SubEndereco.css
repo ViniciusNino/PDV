@@ -1,0 +1,34 @@
+/* ─── SubEndereco: seção de endereço ─── */
+
+.address-section {
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.address-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.address-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.address-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.address-grid-full {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+}

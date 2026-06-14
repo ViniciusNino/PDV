@@ -153,6 +153,7 @@ export function companyToFornecedor(c: CompanyConfig): Omit<Fornecedor, 'id'> {
 }
 
 // ─── Mock inicial de fornecedores ────────────────────────────────────────────
+/*
 const mockFornecedores: Fornecedor[] = [
   {
     id: '1',
@@ -219,6 +220,7 @@ const mockFornecedores: Fornecedor[] = [
     floor: '',
   },
 ];
+*/
 
 // ─── Hook principal ──────────────────────────────────────────────────────────
 export function useTelaFornecedores() {

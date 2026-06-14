@@ -1,4 +1,4 @@
-import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Search, Pencil, Trash2 } from 'lucide-react';
 import type { Fornecedor } from '../../TelaFornecedoresState';
 import { useListaFornecedores } from './ListaFornecedoresState';
 import './ListaFornecedores.css';
@@ -9,7 +9,6 @@ interface ListaFornecedoresProps {
   setFilterQuery: (q: string) => void;
   selectedId: string | null;
   setSelectedId: (id: string | null) => void;
-  onNovo: () => void;
   onEditar: (id?: string) => void;
   onExcluir: (id?: string) => void;
   onSalvar: () => void;
@@ -22,7 +21,6 @@ export function ListaFornecedores({
   setFilterQuery,
   selectedId,
   setSelectedId,
-  onNovo,
   onEditar,
   onExcluir,
   onSalvar,

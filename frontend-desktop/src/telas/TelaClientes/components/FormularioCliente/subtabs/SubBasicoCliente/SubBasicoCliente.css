@@ -1,0 +1,122 @@
+/* ─── SubBasicoCliente: avatar upload + campos principais do cliente ─── */
+
+.cliente-basico-grid {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.cliente-avatar-upload {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text-muted);
+  height: 150px;
+  width: 150px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.cliente-avatar-upload:hover {
+  border-color: var(--primary);
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.25rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.cliente-avatar-upload:hover .avatar-actions {
+  opacity: 1;
+}
+
+.avatar-action-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.avatar-action-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--primary);
+}
+
+.cliente-basico-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.field-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.w-200 {
+  width: 200px;
+}
+
+.w-150 {
+  width: 150px;
+}
+
+[data-theme$="-light"] .cliente-avatar-upload {
+  background: rgba(0, 0, 0, 0.02);
+}

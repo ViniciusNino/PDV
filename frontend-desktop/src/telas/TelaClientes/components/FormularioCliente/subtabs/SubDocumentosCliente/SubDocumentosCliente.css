@@ -1,0 +1,24 @@
+/* ─── SubDocumentosCliente ─── */
+
+.documentos-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.documentos-row:last-child {
+  margin-bottom: 0;
+}
+
+.birthday-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.birthday-title {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}

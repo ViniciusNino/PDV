@@ -1,0 +1,99 @@
+/* ==========================================================================
+   ListaClientes — Tabela de Listagem de Clientes
+   ========================================================================== */
+
+.lista-clientes-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.lista-clientes-table-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.lista-clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.lista-clientes-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.lista-clientes-table th {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.lista-clientes-table td {
+  padding: 0.6rem 0.875rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-clientes-table tbody tr {
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.lista-clientes-table tbody tr:hover {
+  background: var(--bg-surface-hover);
+}
+
+.lista-clientes-table tbody tr.selected {
+  background: rgba(255, 107, 26, 0.12);
+  border-left: 2px solid var(--primary);
+}
+
+.lista-clientes-table tbody tr.selected td {
+  color: var(--text-primary);
+}
+
+/* Estado vazio */
+.lista-clientes-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.lista-clientes-empty-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+/* Rodapé */
+.lista-clientes-footer {
+  padding: 0.4rem 0.875rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.1);
+}

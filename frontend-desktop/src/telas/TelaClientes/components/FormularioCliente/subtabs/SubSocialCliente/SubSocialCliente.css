@@ -1,0 +1,12 @@
+/* ─── SubSocialCliente ─── */
+
+.social-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.social-row {
+  display: flex;
+  gap: 1rem;
+}

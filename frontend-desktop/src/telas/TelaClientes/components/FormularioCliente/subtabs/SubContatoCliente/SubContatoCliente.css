@@ -1,0 +1,6 @@
+/* ─── SubContatoCliente ─── */
+
+.contato-row {
+  display: flex;
+  gap: 1rem;
+}

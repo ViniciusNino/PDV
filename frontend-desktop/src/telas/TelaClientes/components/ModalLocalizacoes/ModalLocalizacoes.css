@@ -1,0 +1,260 @@
+/* ─── ModalLocalizacoes: Janela de endereços extras do cliente ─── */
+
+.loc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loc-modal-container {
+  width: 750px;
+  max-height: 90vh;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.loc-modal-header {
+  padding: 12px 18px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loc-modal-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.loc-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.loc-modal-close-btn:hover {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+/* Informações do Cliente no topo do modal */
+.loc-modal-client-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 12px 18px;
+  background-color: rgba(255, 255, 255, 0.01);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.loc-client-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.loc-client-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loc-client-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.loc-client-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.loc-client-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 1rem;
+}
+
+.loc-client-meta span {
+  font-weight: 500;
+}
+
+/* Corpo do Modal */
+.loc-modal-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Alertas locais no modal */
+.loc-modal-alert {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loc-modal-alert.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--danger);
+  color: #f87171;
+}
+
+.loc-modal-alert.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--accent);
+  color: #34d399;
+}
+
+/* Área do Formulário e Botões */
+.loc-form-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.loc-actions-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1rem;
+}
+
+.loc-btn {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.loc-btn:hover:not(:disabled) {
+  background: var(--bg-surface-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.loc-btn.primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.loc-btn.primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.loc-btn.danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.loc-btn.danger:hover:not(:disabled) {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+.loc-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tabela inferior */
+.loc-table-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.loc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.loc-table th {
+  padding: 6px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.loc-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loc-table tbody tr {
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.loc-table tbody tr:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.loc-table tbody tr.selected {
+  background-color: rgba(255, 107, 26, 0.1);
+  border-left: 2px solid var(--primary);
+}

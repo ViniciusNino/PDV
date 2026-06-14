@@ -29,7 +29,6 @@ export function TelaFornecedores({ onClose, isWindowMode = false }: TelaForneced
     setError,
     successMessage,
     setSuccessMessage,
-    handleNovo,
     handleEditar,
     handleSalvar,
     handleExcluir,
@@ -78,10 +77,6 @@ export function TelaFornecedores({ onClose, isWindowMode = false }: TelaForneced
               activeSubTab={activeSubTab}
               setActiveSubTab={setActiveSubTab}
               setIsSearchModalOpen={setIsSearchModalOpen}
-              setError={msg => {
-                setSuccessMessage('');
-                setError(msg);
-              }}
             />
           </div>
 
@@ -97,11 +92,6 @@ export function TelaFornecedores({ onClose, isWindowMode = false }: TelaForneced
               }}
               selectedId={selectedId}
               setSelectedId={setSelectedId}
-              onNovo={() => {
-                setError('');
-                setSuccessMessage('');
-                handleNovo();
-              }}
               onEditar={(id) => {
                 setError('');
                 setSuccessMessage('');

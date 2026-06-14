@@ -6,7 +6,6 @@ import { SubContato } from '../../../TelaConfiguracao/components/TabEmpresa/SubC
 import { SubSocial } from '../../../TelaConfiguracao/components/TabEmpresa/SubSocial/SubSocial';
 import { SubOutros } from '../../../TelaConfiguracao/components/TabEmpresa/SubOutros/SubOutros';
 import { SubEndereco } from '../../../TelaConfiguracao/components/TabEmpresa/SubEndereco/SubEndereco';
-import { useFormularioFornecedor } from './FormularioFornecedorState';
 import './FormularioFornecedor.css';
 
 interface FormularioFornecedorProps {
@@ -17,7 +16,6 @@ interface FormularioFornecedorProps {
   activeSubTab: string;
   setActiveSubTab: (tab: string) => void;
   setIsSearchModalOpen: (open: boolean) => void;
-  setError: (msg: string) => void;
 }
 
 const SUB_TABS = [
@@ -36,7 +34,6 @@ export function FormularioFornecedor({
   activeSubTab,
   setActiveSubTab,
   setIsSearchModalOpen,
-  setError,
 }: FormularioFornecedorProps) {
 
   return (

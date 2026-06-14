@@ -16,9 +16,13 @@ export function useSubBasico({ setCompany, setLogoUrl }: SubBasicoStateProps) {
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setLogoUrl(url);
-      setCompany(prev => ({ ...prev, logoUrl: url }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setLogoUrl(result);
+        setCompany(prev => ({ ...prev, logoUrl: result }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 

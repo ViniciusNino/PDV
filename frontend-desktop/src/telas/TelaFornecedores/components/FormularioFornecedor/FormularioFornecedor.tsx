@@ -7,6 +7,7 @@ import { SubContatoCliente } from '../../../TelaClientes/components/FormularioCl
 import { SubSocialCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubSocialCliente/SubSocialCliente';
 import { SubOutrosCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubOutrosCliente/SubOutrosCliente';
 import { SubEnderecoCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubEnderecoCliente/SubEnderecoCliente';
+import '../../../TelaClientes/components/FormularioCliente/FormularioCliente.css';
 import './FormularioFornecedor.css';
 
 interface FormularioFornecedorProps {
@@ -47,14 +48,14 @@ export function FormularioFornecedor({
   const [showEndereco, setShowEndereco] = useState(true);
 
   return (
-    <div className="fornec-form-wrapper">
+    <div className="cliente-form-wrapper">
       {/* Sub-abas */}
-      <div className="fornec-subtabs">
+      <div className="cliente-subtabs">
         {SUB_TABS.map(({ key, icon, label }) => (
           <button
             key={key}
             type="button"
-            className={`fornec-subtab-btn ${activeSubTab === key ? 'active' : ''}`}
+            className={`cliente-subtab-btn ${activeSubTab === key ? 'active' : ''}`}
             onClick={() => setActiveSubTab(key)}
           >
             {icon} {label}
@@ -63,7 +64,7 @@ export function FormularioFornecedor({
       </div>
 
       {/* Conteúdo da sub-aba */}
-      <div className="fornec-form-content">
+      <div className="cliente-form-content">
         {activeSubTab === 'Basico' && (
           <SubBasicoCliente
             formData={formData}

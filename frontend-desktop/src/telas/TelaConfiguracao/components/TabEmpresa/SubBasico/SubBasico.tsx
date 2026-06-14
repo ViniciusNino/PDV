@@ -29,7 +29,7 @@ export function SubBasico({ company, setCompany, logoUrl, setLogoUrl }: SubBasic
           style={{ display: 'none' }}
         />
         <div className="image-placeholder">
-          {logoUrl ? (
+          {logoUrl && !logoUrl.startsWith('blob:') ? (
             <img src={logoUrl} alt="Logo da empresa" className="logo-preview" />
           ) : (
             <ImageIcon size={48} />

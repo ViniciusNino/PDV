@@ -4,9 +4,14 @@ import './SubContatoCliente.css';
 interface SubContatoClienteProps {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
+  entityType?: 'cliente' | 'fornecedor';
 }
 
-export function SubContatoCliente({ formData, setFormData }: SubContatoClienteProps) {
+export function SubContatoCliente({
+  formData,
+  setFormData,
+  entityType = 'cliente'
+}: SubContatoClienteProps) {
   const { formatCellphone } = useSubContatoCliente();
 
   return (
@@ -33,6 +38,31 @@ export function SubContatoCliente({ formData, setFormData }: SubContatoClientePr
           />
         </div>
       </div>
+
+      {entityType === 'fornecedor' && (
+        <div className="contato-row" style={{ marginTop: '0.75rem' }}>
+          <div className="field-item flex-1">
+            <label className="field-label">Login:</label>
+            <input
+              type="text"
+              className="nino-input"
+              placeholder="Usuário de acesso"
+              value={formData.login || ''}
+              onChange={e => setFormData((prev: any) => ({ ...prev, login: e.target.value }))}
+            />
+          </div>
+          <div className="field-item flex-1">
+            <label className="field-label">Senha:</label>
+            <input
+              type="password"
+              className="nino-input"
+              placeholder="Senha de acesso"
+              value={formData.password || ''}
+              onChange={e => setFormData((prev: any) => ({ ...prev, password: e.target.value }))}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

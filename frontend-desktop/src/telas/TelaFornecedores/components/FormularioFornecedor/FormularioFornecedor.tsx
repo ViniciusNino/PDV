@@ -1,11 +1,12 @@
+import { useState } from 'react';
 import { Building2, FileText, Phone, Share2, MoreHorizontal } from 'lucide-react';
 import type { CompanyConfig } from '../../../TelaConfiguracao/TelaConfiguracaoState';
-import { SubBasico } from '../../../TelaConfiguracao/components/TabEmpresa/SubBasico/SubBasico';
-import { SubDocumentos } from '../../../TelaConfiguracao/components/TabEmpresa/SubDocumentos/SubDocumentos';
-import { SubContato } from '../../../TelaConfiguracao/components/TabEmpresa/SubContato/SubContato';
-import { SubSocial } from '../../../TelaConfiguracao/components/TabEmpresa/SubSocial/SubSocial';
-import { SubOutros } from '../../../TelaConfiguracao/components/TabEmpresa/SubOutros/SubOutros';
-import { SubEndereco } from '../../../TelaConfiguracao/components/TabEmpresa/SubEndereco/SubEndereco';
+import { SubBasicoCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubBasicoCliente/SubBasicoCliente';
+import { SubDocumentosCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubDocumentosCliente/SubDocumentosCliente';
+import { SubContatoCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubContatoCliente/SubContatoCliente';
+import { SubSocialCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubSocialCliente/SubSocialCliente';
+import { SubOutrosCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubOutrosCliente/SubOutrosCliente';
+import { SubEnderecoCliente } from '../../../TelaClientes/components/FormularioCliente/subtabs/SubEnderecoCliente/SubEnderecoCliente';
 import './FormularioFornecedor.css';
 
 interface FormularioFornecedorProps {
@@ -16,6 +17,10 @@ interface FormularioFornecedorProps {
   activeSubTab: string;
   setActiveSubTab: (tab: string) => void;
   setIsSearchModalOpen: (open: boolean) => void;
+  onNovo: () => void;
+  onSalvar: () => void;
+  onCancelar: () => void;
+  selectedId: string | null;
 }
 
 const SUB_TABS = [
@@ -34,7 +39,12 @@ export function FormularioFornecedor({
   activeSubTab,
   setActiveSubTab,
   setIsSearchModalOpen,
+  onNovo,
+  onSalvar,
+  onCancelar,
+  selectedId
 }: FormularioFornecedorProps) {
+  const [showEndereco, setShowEndereco] = useState(true);
 
   return (
     <div className="fornec-form-wrapper">
@@ -55,32 +65,56 @@ export function FormularioFornecedor({
       {/* Conteúdo da sub-aba */}
       <div className="fornec-form-content">
         {activeSubTab === 'Basico' && (
-          <SubBasico
-            company={formData}
-            setCompany={setFormData}
+          <SubBasicoCliente
+            formData={formData}
+            setFormData={setFormData}
             logoUrl={logoUrl}
             setLogoUrl={setLogoUrl}
+            entityType="fornecedor"
           />
         )}
         {activeSubTab === 'Documentos' && (
-          <SubDocumentos company={formData} setCompany={setFormData} />
+          <SubDocumentosCliente
+            formData={formData}
+            setFormData={setFormData}
+            entityType="fornecedor"
+          />
         )}
         {activeSubTab === 'Contato' && (
-          <SubContato company={formData} setCompany={setFormData} />
+          <SubContatoCliente
+            formData={formData}
+            setFormData={setFormData}
+            entityType="fornecedor"
+          />
         )}
         {activeSubTab === 'Social' && (
-          <SubSocial company={formData} setCompany={setFormData} />
+          <SubSocialCliente
+            formData={formData}
+            setFormData={setFormData}
+          />
         )}
         {activeSubTab === 'Outros' && (
-          <SubOutros
-            company={formData}
-            setCompany={setFormData}
+          <SubOutrosCliente
+            formData={formData}
+            setFormData={setFormData}
+            entityType="fornecedor"
             setIsSearchModalOpen={setIsSearchModalOpen}
           />
         )}
 
-        {/* Endereço: sempre visível na parte inferior, igual à TabEmpresa */}
-        <SubEndereco company={formData} setCompany={setFormData} />
+        {/* Endereço e botões CRUD integrados como na TelaClientes */}
+        <SubEnderecoCliente
+          formData={formData}
+          setFormData={setFormData}
+          showEndereco={showEndereco}
+          setShowEndereco={setShowEndereco}
+          selectedId={selectedId}
+          onNovo={onNovo}
+          onSalvar={onSalvar}
+          onCancelar={onCancelar}
+          onExcluir={() => {}}
+          entityType="fornecedor"
+        />
       </div>
     </div>
   );

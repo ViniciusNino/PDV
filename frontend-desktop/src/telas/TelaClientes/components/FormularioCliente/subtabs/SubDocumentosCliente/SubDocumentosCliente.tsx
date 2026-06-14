@@ -4,6 +4,7 @@ import './SubDocumentosCliente.css';
 interface SubDocumentosClienteProps {
   formData: any;
   setFormData: React.Dispatch<React.SetStateAction<any>>;
+  entityType?: 'cliente' | 'fornecedor';
 }
 
 const MESES = [
@@ -22,13 +23,64 @@ const MESES = [
   'Dezembro'
 ];
 
-export function SubDocumentosCliente({ formData, setFormData }: SubDocumentosClienteProps) {
+export function SubDocumentosCliente({
+  formData,
+  setFormData,
+  entityType = 'cliente'
+}: SubDocumentosClienteProps) {
   const { formatCpf, formatCnpj } = useSubDocumentosCliente();
-  const isFisica = formData.type === 'Física';
+  const isFisica = entityType === 'cliente' && formData.type === 'Física';
 
   return (
     <div className="subtab-documentos">
-      {isFisica ? (
+      {entityType === 'fornecedor' ? (
+        <>
+          {/* CNPJ e IE */}
+          <div className="documentos-row">
+            <div className="field-item flex-1">
+              <label className="field-label">CNPJ:</label>
+              <input
+                type="text"
+                className="nino-input"
+                placeholder="__.___.___/____-__"
+                value={formData.cnpj || ''}
+                onChange={e => setFormData((prev: any) => ({ ...prev, cnpj: formatCnpj(e.target.value) }))}
+              />
+            </div>
+            <div className="field-item flex-1">
+              <label className="field-label">RG/IE:</label>
+              <input
+                type="text"
+                className="nino-input"
+                value={formData.stateRegistration || ''}
+                onChange={e => setFormData((prev: any) => ({ ...prev, stateRegistration: e.target.value }))}
+              />
+            </div>
+          </div>
+
+          {/* IM e Data de fundação */}
+          <div className="documentos-row" style={{ marginTop: '0.5rem' }}>
+            <div className="field-item flex-1">
+              <label className="field-label">Inscrição Municipal:</label>
+              <input
+                type="text"
+                className="nino-input"
+                value={formData.municipalRegistration || ''}
+                onChange={e => setFormData((prev: any) => ({ ...prev, municipalRegistration: e.target.value }))}
+              />
+            </div>
+            <div className="field-item flex-1">
+              <label className="field-label">Data de fundação:</label>
+              <input
+                type="date"
+                className="nino-input"
+                value={formData.foundationDate || ''}
+                onChange={e => setFormData((prev: any) => ({ ...prev, foundationDate: e.target.value }))}
+              />
+            </div>
+          </div>
+        </>
+      ) : isFisica ? (
         <>
           {/* CPF e RG */}
           <div className="documentos-row">

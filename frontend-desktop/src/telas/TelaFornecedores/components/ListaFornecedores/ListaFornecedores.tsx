@@ -1,30 +1,22 @@
-import { Search, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import type { Fornecedor } from '../../TelaFornecedoresState';
 import { useListaFornecedores } from './ListaFornecedoresState';
 import './ListaFornecedores.css';
 
 interface ListaFornecedoresProps {
   fornecedoresFiltrados: Fornecedor[];
-  filterQuery: string;
-  setFilterQuery: (q: string) => void;
   selectedId: string | null;
   setSelectedId: (id: string | null) => void;
   onEditar: (id?: string) => void;
   onExcluir: (id?: string) => void;
-  onSalvar: () => void;
-  onCancelar: () => void;
 }
 
 export function ListaFornecedores({
   fornecedoresFiltrados,
-  filterQuery,
-  setFilterQuery,
   selectedId,
   setSelectedId,
   onEditar,
   onExcluir,
-  onSalvar,
-  onCancelar,
 }: ListaFornecedoresProps) {
   const { handleRowClick, handleRowDoubleClick } = useListaFornecedores({
     selectedId,
@@ -33,47 +25,12 @@ export function ListaFornecedores({
 
   return (
     <>
-      {/* Toolbar */}
-      <div className="lista-fornec-toolbar">
-        <div className="lista-fornec-search-wrapper">
-          <Search size={14} />
-          <input
-            type="text"
-            className="lista-fornec-search"
-            placeholder="Pesquisar por fantasia, nome, CNPJ, telefone ou cidade..."
-            value={filterQuery}
-            onChange={e => setFilterQuery(e.target.value)}
-          />
-        </div>
-
-        <button
-          type="button"
-          className="lista-fornec-btn lista-fornec-btn-salvar"
-          onClick={onSalvar}
-          title={selectedId ? "Salvar alterações do fornecedor" : "Cadastrar novo fornecedor"}
-        >
-          {selectedId ? "Salvar" : "Cadastrar"}
-        </button>
-        <button
-          type="button"
-          className="lista-fornec-btn lista-fornec-btn-cancelar"
-          onClick={onCancelar}
-          title="Limpar formulário"
-        >
-          Cancelar
-        </button>
-      </div>
-
       {/* Tabela */}
       <div className="lista-fornec-table-wrapper">
         {fornecedoresFiltrados.length === 0 ? (
           <div className="lista-fornec-empty">
             <span className="lista-fornec-empty-icon">🚚</span>
-            <span>
-              {filterQuery
-                ? 'Nenhum fornecedor encontrado para a pesquisa.'
-                : 'Nenhum fornecedor cadastrado. Clique em "Novo" para começar.'}
-            </span>
+            <span>Nenhum fornecedor cadastrado ou encontrado com os filtros.</span>
           </div>
         ) : (
           <table className="lista-fornec-table">

@@ -248,8 +248,11 @@ export function useTelaFornecedores() {
   // Modal de busca (para SubOutros)
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  // Filtro da lista
-  const [filterQuery, setFilterQuery] = useState('');
+  // Filtros individuais
+  const [filterNome, setFilterNome] = useState('');
+  const [filterCnpj, setFilterCnpj] = useState('');
+  const [filterTelefone, setFilterTelefone] = useState('');
+  const [filterEmail, setFilterEmail] = useState('');
 
   // Carrega os fornecedores a partir da API
   const carregarFornecedores = useCallback(async () => {
@@ -402,25 +405,36 @@ export function useTelaFornecedores() {
   }, []);
 
   // ─── Lista filtrada ──────────────────────────────────────────────────────
-  const fornecedoresFiltrados = filterQuery.trim()
-    ? fornecedores.filter(f => {
-        const q = filterQuery.toLowerCase();
-        return (
-          f.tradingName.toLowerCase().includes(q) ||
-          f.companyName.toLowerCase().includes(q) ||
-          f.cnpj.includes(q) ||
-          f.phone.includes(q) ||
-          f.city.toLowerCase().includes(q)
-        );
-      })
-    : fornecedores;
+  const fornecedoresFiltrados = fornecedores.filter(f => {
+    if (filterNome && !(f.tradingName?.toLowerCase().includes(filterNome.toLowerCase()) || f.companyName?.toLowerCase().includes(filterNome.toLowerCase()))) {
+      return false;
+    }
+    if (filterCnpj && !f.cnpj?.replace(/\D/g, '').includes(filterCnpj.replace(/\D/g, ''))) {
+      return false;
+    }
+    if (filterTelefone && !f.phone?.replace(/\D/g, '').includes(filterTelefone.replace(/\D/g, ''))) {
+      return false;
+    }
+    if (filterEmail && !f.email?.toLowerCase().includes(filterEmail.toLowerCase())) {
+      return false;
+    }
+    return true;
+  });
 
   return {
     // Lista
     fornecedores,
     fornecedoresFiltrados,
-    filterQuery,
-    setFilterQuery,
+    
+    // Filtros
+    filterNome,
+    setFilterNome,
+    filterCnpj,
+    setFilterCnpj,
+    filterTelefone,
+    setFilterTelefone,
+    filterEmail,
+    setFilterEmail,
 
     // Seleção
     selectedId,

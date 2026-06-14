@@ -7,6 +7,7 @@ interface SubBasicoClienteProps {
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   logoUrl: string | null;
   setLogoUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  entityType?: 'cliente' | 'fornecedor';
 }
 
 export function formatPhone(val: string): string {
@@ -21,18 +22,19 @@ export function SubBasicoCliente({
   formData,
   setFormData,
   logoUrl,
-  setLogoUrl
+  setLogoUrl,
+  entityType = 'cliente'
 }: SubBasicoClienteProps) {
   const { fileInputRef, triggerLogoUpload, handleLogoUpload, clearLogo } = useSubBasicoCliente({
     setFormData,
     setLogoUrl
   });
 
-  const isFisica = formData.type === 'Física';
+  const isFisica = entityType === 'cliente' && formData.type === 'Física';
 
   return (
     <div className="cliente-basico-grid">
-      {/* Upload de Imagem do Cliente */}
+      {/* Upload de Imagem */}
       <div className="cliente-avatar-upload" onClick={triggerLogoUpload}>
         <input
           type="file"
@@ -43,7 +45,7 @@ export function SubBasicoCliente({
         />
         <div className="avatar-placeholder">
           {logoUrl ? (
-            <img src={logoUrl} alt="Foto do cliente" className="avatar-preview" />
+            <img src={logoUrl} alt="Foto" className="avatar-preview" />
           ) : isFisica ? (
             <User size={64} />
           ) : (
@@ -157,19 +159,32 @@ export function SubBasicoCliente({
               </div>
             </div>
 
-            {/* Tipo de Pessoa e Telefone */}
+            {/* Tipo de Pessoa/Slogan e Telefone */}
             <div className="field-row">
-              <div className="field-item flex-1">
-                <label className="field-label">Tipo de pessoa:</label>
-                <select
-                  className="nino-input"
-                  value={formData.type}
-                  onChange={e => setFormData((prev: any) => ({ ...prev, type: e.target.value }))}
-                >
-                  <option value="Física">Física</option>
-                  <option value="Jurídica">Jurídica</option>
-                </select>
-              </div>
+              {entityType === 'cliente' ? (
+                <div className="field-item flex-1">
+                  <label className="field-label">Tipo de pessoa:</label>
+                  <select
+                    className="nino-input"
+                    value={formData.type}
+                    onChange={e => setFormData((prev: any) => ({ ...prev, type: e.target.value }))}
+                  >
+                    <option value="Física">Física</option>
+                    <option value="Jurídica">Jurídica</option>
+                  </select>
+                </div>
+              ) : (
+                <div className="field-item flex-1">
+                  <label className="field-label">Slogan:</label>
+                  <input
+                    type="text"
+                    className="nino-input"
+                    placeholder="Slogan do fornecedor"
+                    value={formData.slogan || ''}
+                    onChange={e => setFormData((prev: any) => ({ ...prev, slogan: e.target.value }))}
+                  />
+                </div>
+              )}
 
               <div className="field-item w-200">
                 <label className="field-label">Telefone:</label>

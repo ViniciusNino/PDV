@@ -11,7 +11,8 @@ interface SubEnderecoClienteProps {
   onSalvar: () => void;
   onCancelar: () => void;
   onExcluir: () => void;
-  setIsLocalizacoesOpen: (open: boolean) => void;
+  setIsLocalizacoesOpen?: (open: boolean) => void;
+  entityType?: 'cliente' | 'fornecedor';
 }
 
 const ESTADOS_BRASIL = [
@@ -55,7 +56,8 @@ export function SubEnderecoCliente({
   onSalvar,
   onCancelar,
   onExcluir,
-  setIsLocalizacoesOpen
+  setIsLocalizacoesOpen,
+  entityType = 'cliente'
 }: SubEnderecoClienteProps) {
   const { handleCepSearch } = useSubEnderecoCliente({ setFormData });
 
@@ -78,15 +80,17 @@ export function SubEnderecoCliente({
 
         {/* Ações do Cadastro (Cadastrar/Salvar, Editar/Cancelar, Excluir) */}
         <div className="endereco-actions-right">
-          <button
-            type="button"
-            className="endereco-btn"
-            onClick={() => setIsLocalizacoesOpen(true)}
-            disabled={!selectedId}
-            title={selectedId ? 'Ver múltiplos endereços' : 'Salve o cliente primeiro para gerenciar localizações'}
-          >
-            Outros endereços
-          </button>
+          {entityType === 'cliente' && (
+            <button
+              type="button"
+              className="endereco-btn"
+              onClick={() => setIsLocalizacoesOpen?.(true)}
+              disabled={!selectedId}
+              title={selectedId ? 'Ver múltiplos endereços' : 'Salve o cliente primeiro para gerenciar localizações'}
+            >
+              Outros endereços
+            </button>
+          )}
           
           <button
             type="button"

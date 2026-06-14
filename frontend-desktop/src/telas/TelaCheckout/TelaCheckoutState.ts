@@ -342,6 +342,9 @@ export function useTelaCheckout() {
     if (menuName === 'Cadastro' && label === 'Estoque...') {
       openWindow('estoque', 'Controle de Estoque', '📦');
     }
+    if (menuName === 'Cadastro' && label === 'Fornecedores') {
+      openWindow('fornecedores', 'Cadastro de Fornecedores', '🚚');
+    }
     if (menuName === 'Configurações' && label === 'Empresa e Sistema...') {
       openWindow('configuracoes', 'Configurações da Empresa e Sistema', '⚙️');
     }

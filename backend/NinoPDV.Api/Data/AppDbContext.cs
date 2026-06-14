@@ -15,6 +15,7 @@ namespace NinoPDV.Api.Data
         public DbSet<SaleItem> SaleItems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<PrintSetting> PrintSettings { get; set; }
         public DbSet<SystemSetting> SystemSettings { get; set; }
         public DbSet<EmailSetting> EmailSettings { get; set; }

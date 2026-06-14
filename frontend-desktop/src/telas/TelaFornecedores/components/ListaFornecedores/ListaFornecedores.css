@@ -1,0 +1,223 @@
+/* ==========================================================================
+   ListaFornecedores — Toolbar + Tabela
+   ========================================================================== */
+
+/* ─── Toolbar ─── */
+.lista-fornec-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.lista-fornec-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.lista-fornec-search-wrapper svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.lista-fornec-search {
+  width: 100%;
+  height: 36px;
+  padding: 0 0.75rem 0 2.1rem;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.lista-fornec-search:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.lista-fornec-search::placeholder {
+  color: var(--text-muted);
+}
+
+/* ─── Botões da toolbar ─── */
+.lista-fornec-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 0.9rem;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.lista-fornec-btn-novo {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+}
+
+.lista-fornec-btn-novo:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.lista-fornec-btn-salvar {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+}
+
+.lista-fornec-btn-salvar:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+.lista-fornec-btn-cancelar {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+}
+
+.lista-fornec-btn-cancelar:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.lista-fornec-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Tabela ─── */
+.lista-fornec-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.lista-fornec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.lista-fornec-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.lista-fornec-table th {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.lista-fornec-table td {
+  padding: 0.6rem 0.875rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-fornec-table tbody tr {
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.lista-fornec-table tbody tr:hover {
+  background: var(--bg-surface-hover);
+}
+
+.lista-fornec-table tbody tr.selected {
+  background: rgba(255, 107, 26, 0.12);
+  border-left: 2px solid var(--primary);
+}
+
+.lista-fornec-table tbody tr.selected td {
+  color: var(--text-primary);
+}
+
+/* ─── Estado vazio ─── */
+.lista-fornec-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.lista-fornec-empty-icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+/* ─── Rodapé com contagem ─── */
+.lista-fornec-footer {
+  padding: 0.5rem 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* ─── Ações da Tabela ─── */
+.lista-fornec-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lista-fornec-actions .action-btn {
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.lista-fornec-actions .edit-btn:hover {
+  background: rgba(255, 107, 26, 0.15);
+  color: var(--primary);
+}
+
+.lista-fornec-actions .delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}

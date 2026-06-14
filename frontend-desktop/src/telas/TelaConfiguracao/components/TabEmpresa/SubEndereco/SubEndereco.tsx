@@ -9,6 +9,7 @@ interface SubEnderecoProps {
 
 export function SubEndereco({ company, setCompany }: SubEnderecoProps) {
   const { handleCepSearch } = useSubEndereco({ setCompany });
+  const isApartamento = company.locationType === 'Apartamento';
 
   return (
     <div className="address-section">
@@ -58,6 +59,7 @@ export function SubEndereco({ company, setCompany }: SubEnderecoProps) {
           >
             <option>Casa</option>
             <option>Loja</option>
+            <option>Apartamento</option>
           </select>
         </div>
         <div className="field-group" style={{ gridColumn: 'span 2' }}>
@@ -76,6 +78,48 @@ export function SubEndereco({ company, setCompany }: SubEnderecoProps) {
             onChange={e => setCompany({ ...company, number: e.target.value })}
           />
         </div>
+
+        {/* Campos condicionais de Apartamento */}
+        {isApartamento && (
+          <>
+            <div className="field-group address-apt-field animate-fade-in" style={{ gridColumn: 'span 2' }}>
+              <label>Edifício / Condomínio:</label>
+              <input
+                type="text"
+                placeholder="Ex: Edifício Central Park"
+                value={company.building || ''}
+                onChange={e => setCompany({ ...company, building: e.target.value })}
+              />
+            </div>
+            <div className="field-group address-apt-field animate-fade-in">
+              <label>Nº Apartamento:</label>
+              <input
+                type="text"
+                placeholder="Ex: 301"
+                value={company.apartmentNumber || ''}
+                onChange={e => setCompany({ ...company, apartmentNumber: e.target.value })}
+              />
+            </div>
+            <div className="field-group address-apt-field animate-fade-in">
+              <label>Bloco / Torre:</label>
+              <input
+                type="text"
+                placeholder="Ex: Bloco B"
+                value={company.block || ''}
+                onChange={e => setCompany({ ...company, block: e.target.value })}
+              />
+            </div>
+            <div className="field-group address-apt-field animate-fade-in">
+              <label>Andar:</label>
+              <input
+                type="text"
+                placeholder="Ex: 3º andar"
+                value={company.floor || ''}
+                onChange={e => setCompany({ ...company, floor: e.target.value })}
+              />
+            </div>
+          </>
+        )}
 
         <div className="field-group" style={{ gridColumn: 'span 2' }}>
           <label>Complemento:</label>

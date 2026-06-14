@@ -5,6 +5,7 @@ import { ModalProdutos } from '../../../ModalProdutos/ModalProdutos';
 import { TelaConfiguracao } from '../../../TelaConfiguracao/TelaConfiguracao';
 import { TelaBalcao } from '../../../TelaBalcao/TelaBalcao';
 import { TelaEstoque } from '../../../TelaEstoque/TelaEstoque';
+import { TelaFornecedores } from '../../../TelaFornecedores/TelaFornecedores';
 import './MdiWorkspace.css';
 
 interface MdiWorkspaceProps {
@@ -286,6 +287,8 @@ export function MdiWorkspace({
         return renderPlaceholderContent('contasm', 'Abertura/Fechamento de Caixa');
       case 'estoque':
         return <TelaEstoque isWindowMode={true} onClose={() => closeWindow('estoque')} />;
+      case 'fornecedores':
+        return <TelaFornecedores isWindowMode={true} onClose={() => closeWindow('fornecedores')} />;
       case 'delivery':
         return renderPlaceholderContent('delivery', 'Painel de Delivery');
       default:

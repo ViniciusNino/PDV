@@ -371,3 +371,14 @@ button:disabled {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* Correção global para o ícone de calendário nativo */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.9);
+  cursor: pointer;
+}
+
+[data-theme$="-light"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+

@@ -13,11 +13,21 @@ export function SubContato({ company, setCompany }: SubContatoProps) {
       <div style={{ display: 'flex', gap: '1rem' }}>
         <div className="field-group" style={{ flex: 1 }}>
           <label>Login:</label>
-          <input type="text" disabled placeholder="Admin" />
+          <input
+            type="text"
+            placeholder="Usuário"
+            value={company.login || ''}
+            onChange={e => setCompany({ ...company, login: e.target.value })}
+          />
         </div>
         <div className="field-group" style={{ flex: 1 }}>
           <label>Senha:</label>
-          <input type="password" disabled placeholder="******" />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={company.password || ''}
+            onChange={e => setCompany({ ...company, password: e.target.value })}
+          />
         </div>
         <div className="field-group" style={{ flex: 2 }}>
           <label>E-mail:</label>

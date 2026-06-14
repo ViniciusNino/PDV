@@ -1,0 +1,151 @@
+/* ==========================================================================
+   TelaFornecedores — Container principal e estrutura MDI
+   ========================================================================== */
+
+.fornec-window-card {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+/* ─── Header ─── */
+.fornec-window-header {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.fornec-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fornec-header-title h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.fornec-header-title svg {
+  color: var(--primary);
+}
+
+.fornec-header-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fornec-header-close:hover {
+  background-color: var(--danger);
+  color: #fff;
+}
+
+/* ─── Alertas como Toasts Flutuantes ─── */
+.fornec-alert {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  min-width: 320px;
+  justify-content: center;
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.fornec-alert.error {
+  background-color: #1e1e24; /* Fundo sólido para cobrir inputs atrás */
+  border: 1px solid var(--danger);
+  color: #f87171;
+}
+
+.fornec-alert.success {
+  background-color: #1e1e24;
+  border: 1px solid var(--accent);
+  color: #34d399;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -15px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+
+/* ─── Corpo principal ─── */
+.fornec-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px 18px;
+  gap: 14px;
+}
+
+/* ─── Painel do formulário (expansível) ─── */
+.fornec-panel-formulario {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 14px;
+  animation: fadeIn 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+  max-height: 55%;
+  overflow-y: auto;
+}
+
+/* ─── Painel da lista ─── */
+.fornec-panel-lista {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Quando formulário está fechado, lista ocupa tudo */
+.fornec-panel-lista.full-height {
+  flex: 1;
+}
+
+/* ─── Animações ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+

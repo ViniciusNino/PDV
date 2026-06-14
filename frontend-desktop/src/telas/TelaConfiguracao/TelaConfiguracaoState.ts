@@ -27,6 +27,13 @@ export interface CompanyConfig {
   facebook: string;
   twitter: string;
   linkedin: string;
+  // Campos condicionais de apartamento
+  building: string;
+  apartmentNumber: string;
+  block: string;
+  floor: string;
+  login?: string;
+  password?: string;
 }
 
 export interface SystemConfig {
@@ -129,7 +136,13 @@ export function useTelaConfiguracao({ isModal, onClose }: UseTelaConfiguracaoPro
     referencePoint: '',
     facebook: '',
     twitter: '',
-    linkedin: ''
+    linkedin: '',
+    building: '',
+    apartmentNumber: '',
+    block: '',
+    floor: '',
+    login: '',
+    password: ''
   });
 
   const [print, setPrint] = useState<Record<string, boolean>>({

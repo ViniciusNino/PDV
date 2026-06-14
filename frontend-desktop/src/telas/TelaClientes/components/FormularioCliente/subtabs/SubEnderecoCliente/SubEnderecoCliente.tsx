@@ -7,12 +7,13 @@ interface SubEnderecoClienteProps {
   showEndereco: boolean;
   setShowEndereco: (show: boolean) => void;
   selectedId: string | null;
-  onNovo: () => void;
-  onSalvar: () => void;
-  onCancelar: () => void;
-  onExcluir: () => void;
+  onNovo?: () => void;
+  onSalvar?: () => void;
+  onCancelar?: () => void;
+  onExcluir?: () => void;
   setIsLocalizacoesOpen?: (open: boolean) => void;
   entityType?: 'cliente' | 'fornecedor';
+  showActions?: boolean;
 }
 
 const ESTADOS_BRASIL = [
@@ -57,7 +58,8 @@ export function SubEnderecoCliente({
   onCancelar,
   onExcluir,
   setIsLocalizacoesOpen,
-  entityType = 'cliente'
+  entityType = 'cliente',
+  showActions = true
 }: SubEnderecoClienteProps) {
   const { handleCepSearch } = useSubEnderecoCliente({ setFormData });
 
@@ -79,45 +81,47 @@ export function SubEnderecoCliente({
         </div>
 
         {/* Ações do Cadastro (Cadastrar/Salvar, Editar/Cancelar, Excluir) */}
-        <div className="endereco-actions-right">
-          {entityType === 'cliente' && (
+        {showActions && (
+          <div className="endereco-actions-right">
+            {entityType === 'cliente' && (
+              <button
+                type="button"
+                className="endereco-btn"
+                onClick={() => setIsLocalizacoesOpen?.(true)}
+                disabled={!selectedId}
+                title={selectedId ? 'Ver múltiplos endereços' : 'Salve o cliente primeiro para gerenciar localizações'}
+              >
+                Outros endereços
+              </button>
+            )}
+            
             <button
               type="button"
-              className="endereco-btn"
-              onClick={() => setIsLocalizacoesOpen?.(true)}
-              disabled={!selectedId}
-              title={selectedId ? 'Ver múltiplos endereços' : 'Salve o cliente primeiro para gerenciar localizações'}
+              className="endereco-btn primary"
+              onClick={onSalvar}
             >
-              Outros endereços
+              {isEditMode ? 'Salvar' : 'Cadastrar'}
             </button>
-          )}
-          
-          <button
-            type="button"
-            className="endereco-btn primary"
-            onClick={onSalvar}
-          >
-            {isEditMode ? 'Salvar' : 'Cadastrar'}
-          </button>
 
-          {isEditMode ? (
-            <button
-              type="button"
-              className="endereco-btn"
-              onClick={onCancelar}
-            >
-              Cancelar
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="endereco-btn"
-              onClick={onNovo}
-            >
-              Limpar
-            </button>
-          )}
-        </div>
+            {isEditMode ? (
+              <button
+                type="button"
+                className="endereco-btn"
+                onClick={onCancelar}
+              >
+                Cancelar
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="endereco-btn"
+                onClick={onNovo}
+              >
+                Limpar
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Grid de Campos Expansível */}
@@ -214,36 +218,38 @@ export function SubEnderecoCliente({
             </div>
           </div>
 
-          {/* Linha 3: Condomínio, Bloco, Apartamento */}
-          <div className="field-row">
-            <div className="field-item flex-2">
-              <label className="field-label">Condomínio:</label>
-              <input
-                type="text"
-                className="nino-input"
-                value={formData.building || ''}
-                onChange={e => setFormData((prev: any) => ({ ...prev, building: e.target.value }))}
-              />
+          {/* Linha 3: Condomínio, Bloco, Apartamento (apenas para Apartamento e Comercial) */}
+          {(formData.locationType === 'Apartamento' || formData.locationType === 'Comercial') && (
+            <div className="field-row address-apt-field">
+              <div className="field-item flex-2">
+                <label className="field-label">Condomínio:</label>
+                <input
+                  type="text"
+                  className="nino-input"
+                  value={formData.building || ''}
+                  onChange={e => setFormData((prev: any) => ({ ...prev, building: e.target.value }))}
+                />
+              </div>
+              <div className="field-item w-150">
+                <label className="field-label">Bloco:</label>
+                <input
+                  type="text"
+                  className="nino-input"
+                  value={formData.block || ''}
+                  onChange={e => setFormData((prev: any) => ({ ...prev, block: e.target.value }))}
+                />
+              </div>
+              <div className="field-item w-150">
+                <label className="field-label">Apartamento:</label>
+                <input
+                  type="text"
+                  className="nino-input"
+                  value={formData.apartmentNumber || ''}
+                  onChange={e => setFormData((prev: any) => ({ ...prev, apartmentNumber: e.target.value }))}
+                />
+              </div>
             </div>
-            <div className="field-item w-150">
-              <label className="field-label">Bloco:</label>
-              <input
-                type="text"
-                className="nino-input"
-                value={formData.block || ''}
-                onChange={e => setFormData((prev: any) => ({ ...prev, block: e.target.value }))}
-              />
-            </div>
-            <div className="field-item w-150">
-              <label className="field-label">Apartamento:</label>
-              <input
-                type="text"
-                className="nino-input"
-                value={formData.apartmentNumber || ''}
-                onChange={e => setFormData((prev: any) => ({ ...prev, apartmentNumber: e.target.value }))}
-              />
-            </div>
-          </div>
+          )}
 
           {/* Linha 4: Complemento, Ponto de referência */}
           <div className="field-row">

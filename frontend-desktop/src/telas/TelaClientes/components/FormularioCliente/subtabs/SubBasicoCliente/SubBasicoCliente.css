@@ -89,6 +89,7 @@
   display: flex;
   gap: 1rem;
   width: 100%;
+  align-items: flex-end;
 }
 
 .field-item {

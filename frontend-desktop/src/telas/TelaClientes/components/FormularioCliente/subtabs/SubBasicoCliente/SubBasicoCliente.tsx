@@ -44,7 +44,7 @@ export function SubBasicoCliente({
           style={{ display: 'none' }}
         />
         <div className="avatar-placeholder">
-          {logoUrl ? (
+          {logoUrl && !logoUrl.startsWith('blob:') ? (
             <img src={logoUrl} alt="Foto" className="avatar-preview" />
           ) : isFisica ? (
             <User size={64} />

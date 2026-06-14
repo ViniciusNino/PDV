@@ -45,6 +45,7 @@ export function TelaClientes({ onClose, isWindowMode = false }: TelaClientesProp
 
     // CRUD
     handleNovo,
+    handleEditar,
     handleSalvar,
     handleExcluir,
     handleCancelar
@@ -132,6 +133,8 @@ export function TelaClientes({ onClose, isWindowMode = false }: TelaClientesProp
                 clientes={clientesFiltrados}
                 selectedId={selectedId}
                 setSelectedId={setSelectedId}
+                onEditar={handleEditar}
+                onExcluir={handleExcluir}
               />
             </div>
           </div>

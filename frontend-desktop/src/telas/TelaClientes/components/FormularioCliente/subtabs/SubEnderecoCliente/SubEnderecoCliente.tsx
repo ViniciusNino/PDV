@@ -113,15 +113,6 @@ export function SubEnderecoCliente({
               Limpar
             </button>
           )}
-
-          <button
-            type="button"
-            className="endereco-btn danger"
-            onClick={() => onExcluir()}
-            disabled={!selectedId}
-          >
-            Excluir
-          </button>
         </div>
       </div>
 

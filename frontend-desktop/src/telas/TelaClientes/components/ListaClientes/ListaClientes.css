@@ -97,3 +97,36 @@
   border-top: 1px solid var(--border-subtle);
   background: rgba(0, 0, 0, 0.1);
 }
+
+/* Ações da Tabela de Clientes */
+.lista-clientes-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lista-clientes-actions .action-btn {
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.lista-clientes-actions .edit-btn:hover {
+  background: rgba(255, 107, 26, 0.15);
+  color: var(--primary);
+}
+
+.lista-clientes-actions .delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
